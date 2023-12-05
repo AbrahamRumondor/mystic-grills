@@ -17,7 +17,10 @@ public class Main extends Application{
 	@Override
 	public void start(Stage s) throws Exception {
 		// TODO Auto-generated method stub
-		GuestDefault.display(s);
+		
+		GuestDefault guestDefault = new GuestDefault();
+		
+		guestDefault.display(s);
 		
 	}
 	

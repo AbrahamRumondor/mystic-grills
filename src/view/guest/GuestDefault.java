@@ -12,18 +12,25 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import view.MGWindow;
+import controller.UserController.*;
 
 public class GuestDefault {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	public static void display(Stage s) {
+	private static UserController userController = new UserController();
+	
+	public void display(Stage s) {
 		
+		MGWindow window = MGWindow.setWindow(s);
 		
-		StackPane root = new StackPane();
-		Scene scene = new Scene(root, 500, 500);
+		StackPane root = window.root;
+		Scene scene = window.scene;
+		
 		
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
@@ -77,10 +84,11 @@ public class GuestDefault {
         show(scene, s);
 	}
 	
-	private static void addAction(Button login, Button back, Button signup, Stage s, Scene scene, BorderPane borderPane) {
+	private void addAction(Button login, Button back, Button signup, Stage s, Scene scene, BorderPane borderPane) {
 		login.setOnAction(
 				e -> {
-					activityLog.add(GuestLogin.display());
+					
+					activityLog.add(userController.displayGuestLogin());
 					borderPane.setCenter(activityLog.getSceneStack().lastElement());
         			
                 	show(scene, s);
@@ -89,7 +97,7 @@ public class GuestDefault {
 		
 		signup.setOnAction(
 				e -> {
-					activityLog.add(GuestSignup.display());
+					activityLog.add(userController.displayGuestSignup());
 					borderPane.setCenter(activityLog.getSceneStack().lastElement());
         			
                 	show(scene, s);
@@ -98,6 +106,7 @@ public class GuestDefault {
 		
         back.setOnAction(
         		e -> {
+        			// ini tidak masuk controller, karena pada dasarnya back hanya dimiliki oleh Main Screen.
         			if(activityLog.getSceneStack().size() > 1) 
         				activityLog.pop();
         			
@@ -109,7 +118,7 @@ public class GuestDefault {
         
 	}
 	
-	private static void show(Scene scene, Stage s) {
+	public static void show(Scene scene, Stage s) {
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
 		s.show();

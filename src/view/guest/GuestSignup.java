@@ -1,10 +1,13 @@
 package view.guest;
 
 import model.ActivityLog;
+import controller.UserController.UserController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,15 +15,19 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import model.User;
+import view.MGWindow;
 
 public class GuestSignup{
 	
+	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	
-	public static GridPane display() {
+	public GridPane display() {
+		
+		MGWindow window = MGWindow.getWindow();
 		
 		GridPane gridPane = new GridPane();
 		
@@ -38,22 +45,13 @@ public class GuestSignup{
 		PasswordField confirmPf = new PasswordField();
 
 		Button submit = new Button("Submit");
-
-		Label t1 = new Label();
-		
-		
-		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() { 
-            public void handle(ActionEvent e) 
-            { 	
-//            	User newUser = new User(nameTf.getText(), passwordPf.getText());
-//            	newUser.insert();
-            	
-            	
-            	
-            } 
-        }; 
         
-        submit.setOnAction(event); 
+        submit.setOnAction(
+			e -> {
+				// disini nanti view notification akan dipanggil.
+	            UserController.createUser("Customer", nameTf.getText(), emailTf.getText(), passwordPf.getText(), confirmPf.getText());
+			}	
+		);
         
         gridPane.add(username, 1, 1); 
 		gridPane.add(email, 1, 2);
@@ -66,21 +64,13 @@ public class GuestSignup{
 		gridPane.add(confirmPf, 2, 4);
 		
 		gridPane.add(submit, 1, 5);
-		gridPane.add(t1, 1, 6); 
 		
 		gridPane.setHgap(50);
 		gridPane.setVgap(50);
 		gridPane.setMaxSize(350, 250);
 		
 		
-		
-		
 		return gridPane;
 	}
 	
-	
-	
-	
-	
 }
-
