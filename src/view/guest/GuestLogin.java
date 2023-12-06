@@ -1,6 +1,7 @@
 package view.guest;
 
 import model.ActivityLog;
+import controller.WindowController;
 import controller.UserController.UserController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,11 +24,11 @@ import view.MGWindow;
 
 public class GuestLogin{
 	
-	private static ActivityLog activityLog = ActivityLog.getInstance();
+	private WindowController windowController = WindowController.getInstance();
+	
+	private static UserController userController = UserController.getInstance();
 	
 	public GridPane display() {
-		
-		MGWindow window = MGWindow.getWindow();
 		
 		GridPane gridPane = new GridPane();
 		
@@ -46,7 +47,14 @@ public class GuestLogin{
             public void handle(ActionEvent e) 
             { 	
             	// disini nanti view notification akan dipanggil.
-	            UserController.authenticateUser(emailTf.getText(),passwordPf.getText());
+	            Integer validityId = UserController.authenticateUser(emailTf.getText(),passwordPf.getText());
+	            
+	            if(validityId != null) {
+	            	User user = UserController.getUserById(validityId);
+	            	userController.setCurrentUser(user);
+	            	
+	            	windowController.goToMainMenu(user);
+	            }
 	            
             } 
         }; 

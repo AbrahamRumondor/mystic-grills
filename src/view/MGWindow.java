@@ -9,10 +9,10 @@ public class MGWindow {
 	
 /*
  * 		 NOTE: 
- * 		 class ini tidak dimasukkan ke dalam controller
- * 		 karena MGWindow pada dasarnya adalah canvas/screen base dari aplikasi ini.
- * 		 Oleh karena itu MGWindow dipakai disemua view yang membuatnya
- * 		 tidak dibatasi oleh controller apapun.
+ * 		 class ini merupakan canvas dari aplikasi/ base display dr aplikasi.
+ * 		 karena sistem aplikasi tidak timpa keseluruhan screen (melainkan hanya ganti yang perlu di ganti)
+ * 		 sehingga dibuat class ini karena base root, scene, stage nya biasa dipake oleh file lain.
+ * 		 Oleh karena itu juga class ini ada controllernya.
  * 
  * */
 	
@@ -28,6 +28,7 @@ public class MGWindow {
 	
 	private static MGWindow mgwindow;
 	
+//	mastiin jgn sampe window kita jadi ada banyak.
 	public static MGWindow setWindow(Stage s) {
 		if(mgwindow == null) {
 			synchronized (MGWindow.class) {
@@ -40,5 +41,9 @@ public class MGWindow {
 	public static MGWindow getWindow() {
 		return mgwindow;
 	}
+
+
+	
+	
 	
 }

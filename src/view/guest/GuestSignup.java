@@ -23,11 +23,8 @@ import view.MGWindow;
 
 public class GuestSignup{
 	
-	private static ActivityLog activityLog = ActivityLog.getInstance();
-	
+
 	public GridPane display() {
-		
-		MGWindow window = MGWindow.getWindow();
 		
 		GridPane gridPane = new GridPane();
 		

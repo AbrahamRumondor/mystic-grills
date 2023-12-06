@@ -1,4 +1,4 @@
-package view.guest;
+package view.customer;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,17 +15,18 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.User;
 import view.MGWindow;
 import controller.WindowController;
 import controller.UserController.*;
 
-public class GuestDefault {
+public class CustomerMenu {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
 	private static UserController userController = UserController.getInstance();
 	
-	
+	private static WindowController windowController = WindowController.getInstance();
 	
 	public void display(Stage s) {
 		
@@ -34,42 +35,55 @@ public class GuestDefault {
 		StackPane root = window.root;
 		Scene scene = window.scene;
 		
-		
-		s.setScene(scene);
-		s.setTitle("Mystic Grills");
-		s.show();
-		
-		
 		BorderPane borderPane = new BorderPane();
 		
+		String userName = userController.getCurrentUser().getUserName();
 		
-		Label restaurantName = new Label("WELCOME TO MYSTIC GRILLS");
-		Font font = Font.font(null, FontWeight.BOLD, 20);
-		restaurantName.setFont(font);
+		Label userNameLbl = new Label("Welcome, " + userName);
+		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 		
+//		set header
 		HBox header = new HBox();
 		
-//		 define header
-		header.getChildren().addAll(restaurantName);
-		header.setAlignment(Pos.CENTER);
+		header.getChildren().addAll(userNameLbl);
+		header.setAlignment(Pos.TOP_LEFT);
+		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
 		borderPane.setTop(header);
 		
-//		set borderpane ke stackpane
+		HBox topButtonBox = new HBox();
+		
+		topButtonBox.setMaxSize(250, 50);
+
+		Button allMenuBtn = new Button("All Menu");
+		Button viewOrderBtn = new Button("My Order");
+		Button logOutBtn = new Button("Log Out");
+		
+		topButtonBox.setAlignment(Pos.TOP_RIGHT);
+		topButtonBox.setSpacing(20);
+		
+		topButtonBox.getChildren().addAll(allMenuBtn, viewOrderBtn, logOutBtn);
+		
+        StackPane.setMargin(topButtonBox, new Insets(12,10,10,10));
+        StackPane.setAlignment(topButtonBox, Pos.TOP_RIGHT);
+		
+        
+//        set contents
 		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
 		
 //		set button back ke stackpane
-		Button back = new Button("Back");
-        StackPane.setMargin(back, new Insets(12,10,10,10));
-        StackPane.setAlignment(back, Pos.TOP_LEFT);
+		Button home = new Button("Home");
+        StackPane.setMargin(home, new Insets(12,10,10,10));
+        StackPane.setAlignment(home, Pos.TOP_LEFT);
         
 		
-		Button login = new Button("Log In");
-		Button signup = new Button("Sign Up");
+		Button allMenu = new Button("All Menu");
+		Button orderedMenu = new Button("Ordered Menu");
 		
 //		 untuk login dan signup
 		HBox tengah = new HBox();
+		tengah.setMouseTransparent(false);
 		tengah.setAlignment(Pos.CENTER);
-		tengah.getChildren().addAll(login, signup);
+		tengah.getChildren().addAll(allMenu, orderedMenu);
 		tengah.setSpacing(100);
 		
 		borderPane.setCenter(tengah);
@@ -78,27 +92,24 @@ public class GuestDefault {
 		
 	
 //     define semua action button          
-        addAction(login, back, signup, s, scene, borderPane);
+        addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane);
         
 //        masukin semuanya ke stackpane
-        root.getChildren().addAll(borderPane, back);
+        root.getChildren().addAll(borderPane, home, topButtonBox);
 		
+        root.setStyle("-fx-background-color: #f4f4f4;");
         
         show(scene, s);
 	}
 	
-	private void addAction(Button login, Button back, Button signup, Stage s, Scene scene, BorderPane borderPane) {
-		login.setOnAction(
+	private static void addAction(Button allMenuBtn, Button home, Button viewOrderBtn, Stage s, Scene scene, BorderPane borderPane) {
+		allMenuBtn.setOnAction(
 				e -> {
-					
-					activityLog.add(userController.displayGuestLogin());
-					borderPane.setCenter(activityLog.getSceneStack().lastElement());
-        			
-                	show(scene, s);
+					windowController.displayCustomerMenu();
 				}	
 		);
 		
-		signup.setOnAction(
+		viewOrderBtn.setOnAction(
 				e -> {
 					activityLog.add(userController.displayGuestSignup());
 					borderPane.setCenter(activityLog.getSceneStack().lastElement());
@@ -107,15 +118,11 @@ public class GuestDefault {
 				}	
 		);
 		
-        back.setOnAction(
+        home.setOnAction(
         		e -> {
         			// ini tidak masuk controller, karena pada dasarnya back hanya dimiliki oleh Main Screen.
-        			if(activityLog.getSceneStack().size() > 1) 
-        				activityLog.pop();
-        			
-        			borderPane.setCenter(activityLog.getSceneStack().lastElement());
-        			
-                	show(scene, s);
+        			User user = userController.getCurrentUser();
+	            	windowController.goToMainMenu(user);
         		}	
         ); 
         

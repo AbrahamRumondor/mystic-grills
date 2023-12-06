@@ -1,6 +1,7 @@
 package view;
 
 import javafx.scene.layout.BorderPane;
+import controller.WindowController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,7 +25,7 @@ public class Notification {
 	
 	public static StackPane showErrorMessage(String message) {
 		
-		MGWindow window = MGWindow.getWindow();
+		MGWindow window = WindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
@@ -56,7 +57,7 @@ public class Notification {
 		
 		container.setStyle("-fx-background-color: #f4f4f4;" +
                 "-fx-border-color: black;" +
-                "-fx-border-width: 2px;");
+                "-fx-border-width: 1px;");
 		
 		StackPane.setMargin(container, new Insets(10,10,10,10));
         window.root.getChildren().add(container);
