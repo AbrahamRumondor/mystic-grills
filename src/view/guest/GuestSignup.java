@@ -2,6 +2,7 @@ package view.guest;
 
 import model.ActivityLog;
 import controller.UserController.UserController;
+import controller.guest.GuestController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -43,31 +44,36 @@ public class GuestSignup{
 
 		Button submit = new Button("Submit");
         
-        submit.setOnAction(
-			e -> {
-				// disini nanti view notification akan dipanggil.
-	            UserController.createUser("Customer", nameTf.getText(), emailTf.getText(), passwordPf.getText(), confirmPf.getText());
-			}	
-		);
+		GuestController.addGuestSignupAction(submit, nameTf, emailTf, passwordPf, confirmPf);
         
-        gridPane.add(username, 1, 1); 
-		gridPane.add(email, 1, 2);
-		gridPane.add(nameTf, 2, 1); 
-		gridPane.add(emailTf, 2, 2);
+//      masukin semua ke gridpane
+        addGridpane(gridPane,username,email, nameTf, emailTf, password, confirmPassword, passwordPf, confirmPf, submit);
 		
-		gridPane.add(password, 1, 3); 
-		gridPane.add(confirmPassword, 1, 4);
-		gridPane.add(passwordPf, 2, 3);
-		gridPane.add(confirmPf, 2, 4);
-		
-		gridPane.add(submit, 1, 5);
-		
-		gridPane.setHgap(50);
-		gridPane.setVgap(50);
-		gridPane.setMaxSize(350, 250);
+//		set gridpane
+        setGridpane(gridPane);
 		
 		
 		return gridPane;
+	}
+	
+	private void addGridpane(GridPane gridPane, Label username, Label email, TextField nameTf, TextField emailTf, Label password, Label confirmPassword, PasswordField passwordPf, PasswordField confirmPf, Button submit) {
+		gridPane.add(username, 1, 0); 
+		gridPane.add(email, 1, 1);
+		gridPane.add(nameTf, 2, 0); 
+		gridPane.add(emailTf, 2, 1);
+		
+		gridPane.add(password, 1, 2); 
+		gridPane.add(confirmPassword, 1, 3);
+		gridPane.add(passwordPf, 2, 2);
+		gridPane.add(confirmPf, 2, 3);
+		
+		gridPane.add(submit, 1, 4);
+	}
+	
+	private void setGridpane(GridPane gridPane) {
+		gridPane.setHgap(50);
+		gridPane.setVgap(50);
+		gridPane.setMaxSize(350, 250);
 	}
 	
 }

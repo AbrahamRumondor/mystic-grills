@@ -3,6 +3,7 @@ package view.guest;
 import model.ActivityLog;
 import controller.WindowController;
 import controller.UserController.UserController;
+import controller.guest.GuestController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -24,10 +25,6 @@ import view.MGWindow;
 
 public class GuestLogin{
 	
-	private WindowController windowController = WindowController.getInstance();
-	
-	private static UserController userController = UserController.getInstance();
-	
 	public GridPane display() {
 		
 		GridPane gridPane = new GridPane();
@@ -41,39 +38,29 @@ public class GuestLogin{
 		passwordPf.setPromptText("Enter Password");
 		
 		Button submit = new Button("Submit");
-		
-		
-		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() { 
-            public void handle(ActionEvent e) 
-            { 	
-            	// disini nanti view notification akan dipanggil.
-	            Integer validityId = UserController.authenticateUser(emailTf.getText(),passwordPf.getText());
-	            
-	            if(validityId != null) {
-	            	User user = UserController.getUserById(validityId);
-	            	userController.setCurrentUser(user);
-	            	
-	            	windowController.goToMainMenu(user);
-	            }
-	            
-            } 
-        }; 
+		GuestController.addGuestLoginAction(submit, emailTf,passwordPf);
         
-        submit.setOnAction(event); 
-        
-//        masukin semua ke gridpane
-        gridPane.add(email, 1, 1); 
-		gridPane.add(password, 1, 2);
-		gridPane.add(emailTf, 2, 1); 
-		gridPane.add(passwordPf, 2, 2);
-		gridPane.add(submit, 1, 3);
+//      masukin semua ke gridpane
+        addGridpane(gridPane, email, password, emailTf, passwordPf, submit);
 		
 //		set gridpane
+		setGridpane(gridPane);
+		
+		return gridPane;
+	}
+	
+	private void addGridpane(GridPane gridPane, Label email, Label password, TextField emailTf, PasswordField passwordPf, Button submit) {
+		gridPane.add(email, 1, 0); 
+		gridPane.add(password, 1, 1);
+		gridPane.add(emailTf, 2, 0); 
+		gridPane.add(passwordPf, 2, 1);
+		gridPane.add(submit, 1, 2);
+	}
+	
+	private void setGridpane(GridPane gridPane) {
 		gridPane.setHgap(50);
 		gridPane.setVgap(50);
 		gridPane.setMaxSize(350, 250);
-		
-		return gridPane;
 	}
 	
 	

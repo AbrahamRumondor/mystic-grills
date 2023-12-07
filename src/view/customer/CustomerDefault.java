@@ -95,14 +95,12 @@ public class CustomerDefault {
 		
 		orderedMenu.setOnAction(
 				e -> {
-					activityLog.add(userController.displayGuestSignup());
-					borderPane.setCenter(activityLog.getSceneStack().lastElement());
-        			
-                	show(scene, s);
+//					activityLog.add(userController.displayGuestSignup());
+//					borderPane.setCenter(activityLog.getSceneStack().lastElement());
+//        			
+//                	show(scene, s);
 				}	
 		);
-		
-        
 	}
 	
 	public static void show(Scene scene, Stage s) {

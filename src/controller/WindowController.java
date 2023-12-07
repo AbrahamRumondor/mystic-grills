@@ -17,8 +17,8 @@ public class WindowController {
 	
 	private static WindowController windowController;
 	
-	private CustomerDefault customerDefault = new CustomerDefault();
-	private CustomerMenu customerMenu = new CustomerMenu();
+	private static CustomerDefault customerDefault = new CustomerDefault();
+	private static CustomerMenu customerMenu = new CustomerMenu();
 	
 	public static WindowController getInstance() {
 		if(windowController == null) {
@@ -37,7 +37,7 @@ public class WindowController {
 		return MGWindow.getWindow();
 	}
 	
-	public void goToMainMenu(User user) {
+	public static void goToMainMenu(User user) {
 //		remove stack, remove isi stackpane
 		activityLog.getSceneStack().removeAllElements();
 		MGWindow.getWindow().root.getChildren().clear();

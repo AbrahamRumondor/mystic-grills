@@ -16,9 +16,6 @@ public class UserController {
 	
 	private static UserController userController;
 	
-	private GuestSignup guestSignup = new GuestSignup();
-	private GuestLogin guestLogin = new GuestLogin();
-	
 //	NOTE: ASUMSI MVC CONTROLLER DISINI MODEL HANYA MENANGANI LOGIC UNTUK KE DATABASE
 //		  SEHINGGA HAL HAL TERKAIT VALIDASI DILUAR ITU, DILAKUKAN DI CONTROLLER
 	
@@ -89,21 +86,15 @@ public class UserController {
 	}
 	
 	
-	public Node displayGuestLogin() {
-		return guestLogin.display();
-	}
-	
-	public Node displayGuestSignup() {
-		return guestSignup.display();
-	}
 
 
-	public User getCurrentUser() {
+
+	public static User getCurrentUser() {
 		return currentUser;
 	}
 
 
-	public void setCurrentUser(User currentuser) {
+	public static void setCurrentUser(User currentuser) {
 		currentUser = currentuser;
 	}
 	

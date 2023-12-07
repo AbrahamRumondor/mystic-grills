@@ -22,7 +22,7 @@ public class MGWindow {
 	
 	public MGWindow(Stage s) {
 		root = new StackPane();
-		scene = new Scene(root, 500, 500);
+		scene = new Scene(root, 960, 600);
 		stage = s;
 	}
 	

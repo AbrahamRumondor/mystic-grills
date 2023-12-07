@@ -24,9 +24,10 @@ public class CustomerMenu {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	private static UserController userController = UserController.getInstance();
-	
 	private static WindowController windowController = WindowController.getInstance();
+	
+	private static CustomerMenuList customerMenuList = new CustomerMenuList();
+	
 	
 	public void display(Stage s) {
 		
@@ -37,7 +38,7 @@ public class CustomerMenu {
 		
 		BorderPane borderPane = new BorderPane();
 		
-		String userName = userController.getCurrentUser().getUserName();
+		String userName = UserController.getCurrentUser().getUserName();
 		
 		Label userNameLbl = new Label("Welcome, " + userName);
 		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
@@ -80,15 +81,11 @@ public class CustomerMenu {
 		Button orderedMenu = new Button("Ordered Menu");
 		
 //		 untuk login dan signup
-		HBox tengah = new HBox();
-		tengah.setMouseTransparent(false);
-		tengah.setAlignment(Pos.CENTER);
-		tengah.getChildren().addAll(allMenu, orderedMenu);
-		tengah.setSpacing(100);
+		StackPane contents = customerMenuList.display(s);
+//		DISINIII
+		borderPane.setCenter(contents);
 		
-		borderPane.setCenter(tengah);
-		
-		activityLog.add(tengah);
+		activityLog.add(contents);
 		
 	
 //     define semua action button          
@@ -111,18 +108,18 @@ public class CustomerMenu {
 		
 		viewOrderBtn.setOnAction(
 				e -> {
-					activityLog.add(userController.displayGuestSignup());
-					borderPane.setCenter(activityLog.getSceneStack().lastElement());
-        			
-                	show(scene, s);
+//					activityLog.add(userController.displayGuestSignup());
+//					borderPane.setCenter(activityLog.getSceneStack().lastElement());
+//        			
+//                	show(scene, s);
 				}	
 		);
 		
         home.setOnAction(
         		e -> {
         			// ini tidak masuk controller, karena pada dasarnya back hanya dimiliki oleh Main Screen.
-        			User user = userController.getCurrentUser();
-	            	windowController.goToMainMenu(user);
+        			User user = UserController.getCurrentUser();
+	            	WindowController.goToMainMenu(user);
         		}	
         ); 
         
