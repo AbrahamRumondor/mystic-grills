@@ -20,7 +20,7 @@ public class MenuItem {
 		this.menuItemPrice = menuItemPrice;
 	}
 	
-	public static ArrayList<MenuItem>getAllUsers() {
+	public static ArrayList<MenuItem>getAllMenuItems() {
 		ArrayList<MenuItem> items = new ArrayList<>();
 		
 		String query = "SELECT * FROM menu_item";
@@ -70,7 +70,7 @@ public class MenuItem {
 	
 	private static boolean validateMenuItemCreation(String name) {
 		
-		ArrayList<MenuItem> items = getAllUsers();
+		ArrayList<MenuItem> items = getAllMenuItems();
 		
 		for (MenuItem item : items) {
 			if(item.menuItemName.equalsIgnoreCase(name)) {
@@ -79,6 +79,18 @@ public class MenuItem {
 		}
 		
 		return true;
+	}
+	
+	public static MenuItem getMenuItemById(Integer menuItemId) {
+		ArrayList<MenuItem> items = getAllMenuItems();
+		
+		for (MenuItem item : items) {
+			if(item.menuItemId == menuItemId) {
+				return item;
+			}
+		}
+	
+		return null;
 	}
 	
 	public Integer getMenuItemId() {

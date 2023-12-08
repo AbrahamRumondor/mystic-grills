@@ -8,6 +8,7 @@ import model.User;
 import view.MGWindow;
 import view.customer.CustomerMenu;
 import view.customer.CustomerDefault;
+import view.customer.CustomerOrder;
 
 public class WindowController {
 	
@@ -19,6 +20,7 @@ public class WindowController {
 	
 	private static CustomerDefault customerDefault = new CustomerDefault();
 	private static CustomerMenu customerMenu = new CustomerMenu();
+	private static CustomerOrder customerOrder = new CustomerOrder();
 	
 	public static WindowController getInstance() {
 		if(windowController == null) {
@@ -57,6 +59,12 @@ public class WindowController {
 		activityLog.getSceneStack().removeAllElements();
 		MGWindow.getWindow().root.getChildren().clear();
 		customerMenu.display(WindowController.getWindow().stage);
+	}
+	
+	public void displayCustomerOrder() {
+		activityLog.getSceneStack().removeAllElements();
+		MGWindow.getWindow().root.getChildren().clear();
+		customerOrder.display(WindowController.getWindow().stage);
 	}
 	
 }

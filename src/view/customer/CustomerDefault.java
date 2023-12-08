@@ -95,10 +95,7 @@ public class CustomerDefault {
 		
 		orderedMenu.setOnAction(
 				e -> {
-//					activityLog.add(userController.displayGuestSignup());
-//					borderPane.setCenter(activityLog.getSceneStack().lastElement());
-//        			
-//                	show(scene, s);
+					windowController.displayCustomerOrder();
 				}	
 		);
 	}

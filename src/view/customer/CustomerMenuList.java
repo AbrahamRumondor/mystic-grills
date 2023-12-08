@@ -99,7 +99,7 @@ public class CustomerMenuList {
 	private ObservableList<MenuItem> getAllData() {
 		ObservableList<MenuItem> items = FXCollections.observableArrayList();
 		
-		ArrayList<MenuItem> arrayItems = MenuItem.getAllUsers();
+		ArrayList<MenuItem> arrayItems = MenuItem.getAllMenuItems();
 		
 		for (MenuItem menuItem : arrayItems) {
 			items.add(menuItem);

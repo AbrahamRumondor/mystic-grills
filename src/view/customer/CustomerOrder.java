@@ -17,10 +17,11 @@ import javafx.stage.Stage;
 import model.ActivityLog;
 import model.User;
 import view.MGWindow;
+import controller.OrderController;
 import controller.WindowController;
 import controller.UserController.*;
 
-public class CustomerMenu {
+public class CustomerOrder {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
@@ -77,15 +78,18 @@ public class CustomerMenu {
         StackPane.setAlignment(home, Pos.TOP_LEFT);
         
 		
-		Button allMenu = new Button("All Menu");
-		Button orderedMenu = new Button("Ordered Menu");
+		Button onGoingOrder = new Button("On-going Order");
+		Button orderHistory = new Button("Order History");
 		
 //		 untuk login dan signup
-		StackPane contents = customerMenuList.display(s);
-//		DISINIII
-		borderPane.setCenter(contents);
+		HBox tengah = new HBox();
+		tengah.setAlignment(Pos.CENTER);
+		tengah.getChildren().addAll(onGoingOrder, orderHistory);
+		tengah.setSpacing(100);
 		
-		activityLog.add(contents);
+		borderPane.setCenter(tengah);
+		
+		activityLog.add(tengah);
 		
 	
 //     define semua action button          

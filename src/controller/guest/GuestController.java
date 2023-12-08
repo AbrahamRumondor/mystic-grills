@@ -1,5 +1,6 @@
 package controller.guest;
 
+import controller.OrderController;
 import controller.WindowController;
 import controller.UserController.UserController;
 import javafx.event.ActionEvent;
@@ -81,6 +82,7 @@ public class GuestController {
     	            
     	            if(validityId != null) {
     	            	User user = UserController.getUserById(validityId);
+    	            	OrderController.setOngoingOrder(user);
     	            	UserController.setCurrentUser(user);
     	            	WindowController.goToMainMenu(user);
     	            }
