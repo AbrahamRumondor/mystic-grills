@@ -24,8 +24,6 @@ public class CustomerDefault {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	private static UserController userController = UserController.getInstance();
-	
 	private static WindowController windowController = WindowController.getInstance();
 	
 	
@@ -39,8 +37,8 @@ public class CustomerDefault {
 		
 		BorderPane borderPane = new BorderPane();
 		
-		String userName = userController.getCurrentUser().getUserName();
-		String userRole = userController.getCurrentUser().getUserRole();
+		String userName = UserController.getCurrentUser().getUserName();
+		String userRole = UserController.getCurrentUser().getUserRole();
 		
 		Label userNameLbl = new Label("Welcome, " + userName );
 		Label userRoleLbl = new Label("Role: " + userRole);
@@ -89,13 +87,13 @@ public class CustomerDefault {
 	private static void addAction(Button allMenu, Button orderedMenu, Stage s, Scene scene, BorderPane borderPane) {
 		allMenu.setOnAction(
 				e -> {	
-					windowController.displayCustomerMenu();
+					windowController.displayCustomerMenu("Menu");
 				}	
 		);
 		
 		orderedMenu.setOnAction(
 				e -> {
-					windowController.displayCustomerOrder();
+					windowController.displayCustomerMenu("Order");
 				}	
 		);
 	}

@@ -19,6 +19,7 @@ import model.User;
 import view.MGWindow;
 import controller.WindowController;
 import controller.UserController.*;
+import controller.customer.CustomerController;
 
 public class CustomerMenu {
 	
@@ -29,7 +30,7 @@ public class CustomerMenu {
 	private static CustomerMenuList customerMenuList = new CustomerMenuList();
 	
 	
-	public void display(Stage s) {
+	public void display(Stage s, String option) {
 		
 		MGWindow window = WindowController.setWindow(s);
 		
@@ -53,8 +54,10 @@ public class CustomerMenu {
 		
 		HBox topButtonBox = new HBox();
 		
-		topButtonBox.setMaxSize(250, 50);
-
+		topButtonBox.setMaxSize(450, 50);
+		
+		Label position = new Label("Restaurant Menu ");
+		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 		Button allMenuBtn = new Button("All Menu");
 		Button viewOrderBtn = new Button("My Order");
 		Button logOutBtn = new Button("Log Out");
@@ -62,7 +65,7 @@ public class CustomerMenu {
 		topButtonBox.setAlignment(Pos.TOP_RIGHT);
 		topButtonBox.setSpacing(20);
 		
-		topButtonBox.getChildren().addAll(allMenuBtn, viewOrderBtn, logOutBtn);
+		topButtonBox.getChildren().addAll(position, allMenuBtn, viewOrderBtn, logOutBtn);
 		
         StackPane.setMargin(topButtonBox, new Insets(12,10,10,10));
         StackPane.setAlignment(topButtonBox, Pos.TOP_RIGHT);
@@ -76,16 +79,11 @@ public class CustomerMenu {
         StackPane.setMargin(home, new Insets(12,10,10,10));
         StackPane.setAlignment(home, Pos.TOP_LEFT);
         
-		
-		Button allMenu = new Button("All Menu");
-		Button orderedMenu = new Button("Ordered Menu");
-		
-//		 untuk login dan signup
-		StackPane contents = customerMenuList.display(s);
-//		DISINIII
-		borderPane.setCenter(contents);
-		
-		activityLog.add(contents);
+        if(option.equals("Menu")) {
+        	CustomerController.getCustomerMenuList(s, borderPane);
+        } else if(option.equals("Order")) {
+        	CustomerController.getCustomerOrder(s, borderPane, position);
+        }
 		
 	
 //     define semua action button          
@@ -102,13 +100,13 @@ public class CustomerMenu {
 	private static void addAction(Button allMenuBtn, Button home, Button viewOrderBtn, Stage s, Scene scene, BorderPane borderPane) {
 		allMenuBtn.setOnAction(
 				e -> {
-					windowController.displayCustomerMenu();
+					windowController.displayCustomerMenu("Menu");;
 				}	
 		);
 		
 		viewOrderBtn.setOnAction(
 				e -> {
-					windowController.displayCustomerOrder();
+					windowController.displayCustomerMenu("Order");
 				}	
 		);
 		

@@ -1,7 +1,10 @@
 package controller;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import model.Connect;
@@ -18,7 +21,7 @@ public class OrderController {
 	}
 	
 	public static void setOngoingOrder(User user) {
-		onGoingOrder = new Order(getLatestOrderId(), user, new ArrayList<OrderItem>() , null );
+		onGoingOrder = new Order(getLatestOrderId()+1, user, new ArrayList<OrderItem>() , null );
 	}
 
 	public static Order getOnGoingOrder() {
@@ -29,6 +32,10 @@ public class OrderController {
 		OrderController.onGoingOrder = onGoingOrder;
 	}
 	
-	
+	public static boolean createOrder(User user, ArrayList<OrderItem> orderItems, Date orderDate) {
+		
+		return Order.createOrder(user, orderItems, orderDate);
+		
+	}
 	
 }

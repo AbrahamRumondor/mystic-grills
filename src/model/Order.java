@@ -4,24 +4,26 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import controller.MenuItemController;
+import controller.OrderItemController;
 import controller.UserController.UserController;
 
 public class Order {
-	private Integer orderId;
-	private User orderUser;
-	private ArrayList<OrderItem> orderItems;
-	private Date orderDate;
-	private Double orderTotal; // buat function khusus
+	private static Integer orderId;
+	private static User orderUser;
+	private static ArrayList<OrderItem> orderItems;
+	private static Date orderDate;
+	private static Double orderTotal; // buat function khusus
 	
-	public Order(Integer orderId, User orderUser, ArrayList<OrderItem> orderItems, Date orderDate) {
+	public Order(Integer id, User user, ArrayList<OrderItem> items, Date date) {
 		super();
-		this.orderId = orderId;
-		this.orderUser = orderUser;
-		this.orderDate = orderDate;
-		this.orderItems = orderItems; 
+		orderId = id;
+		orderUser = user;
+		orderDate = date;
+		orderItems = items; 
 	}
 	
 	public static Integer getLastOrderId() {
@@ -77,16 +79,16 @@ public class Order {
 	}
 	
 //	alasan parameternya berbeda adalah karena ini akan dimasukkan di database, sehingga tidak bisa pakai yang seperti di diagram.
-	public static boolean createOrder(Integer userId, Date orderDate ) {
+	public static boolean createOrder(User user, ArrayList<OrderItem> orderItems, Date orderDate) {
 		
 		// pada '?', '' di VALUES dihilangin, nanti ? dianggapnya sbg char.
 		String query = "INSERT INTO `mystic_grills`.`order` (`user_id`, `order_status`, `order_date`) VALUES (?, ?, ?);";
 		
-		System.out.println(userId);
+		System.out.println(user);
 		
 		PreparedStatement prep = Connect.getConnection().prepare(query);
 		try {
-			prep.setInt(1, userId);
+			prep.setInt(1, user.getUserId());
 			prep.setString(2, "Pending");
 			prep.setDate(3, orderDate);
 			Connect.getConnection().executePreparedUpdate(prep);
@@ -95,48 +97,52 @@ public class Order {
 			e1.printStackTrace();
 		}
 		
+		for(OrderItem item : orderItems) {
+			OrderItemController.createOrderItem(item.getOrderId(), item.getMenuItem().getMenuItemId(), item.getQuantity());
+		}
+		
 		return true;
 		
 	}
 
-	public Integer getOrderId() {
+	public static Integer getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(Integer orderId) {
-		this.orderId = orderId;
+	public static void setOrderId(Integer orderId) {
+		Order.orderId = orderId;
 	}
 
-	public User getOrderUser() {
+	public static User getOrderUser() {
 		return orderUser;
 	}
 
-	public void setOrderUser(User orderUser) {
-		this.orderUser = orderUser;
+	public static void setOrderUser(User orderUser) {
+		Order.orderUser = orderUser;
 	}
 
-	public ArrayList<OrderItem> getOrderItems() {
+	public static ArrayList<OrderItem> getOrderItems() {
 		return orderItems;
 	}
 
-	public void setOrderItems(ArrayList<OrderItem> orderItems) {
-		this.orderItems = orderItems;
+	public static void setOrderItems(ArrayList<OrderItem> orderItems) {
+		Order.orderItems = orderItems;
 	}
 
-	public Date getOrderDate() {
+	public static Date getOrderDate() {
 		return orderDate;
 	}
 
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
+	public static void setOrderDate(Date orderDate) {
+		Order.orderDate = orderDate;
 	}
 
-	public Double getOrderTotal() {
+	public static Double getOrderTotal() {
 		return orderTotal;
 	}
 
-	public void setOrderTotal(Double orderTotal) {
-		this.orderTotal = orderTotal;
+	public static void setOrderTotal(Double orderTotal) {
+		Order.orderTotal = orderTotal;
 	}
 	
 	

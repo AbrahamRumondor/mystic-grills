@@ -26,7 +26,7 @@ import view.guest.GuestDefault;
 import view.guest.GuestLogin;
 import model.ActivityLog;
 
-public class AddMenu {
+public class DeleteMenu {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
@@ -35,22 +35,25 @@ public class AddMenu {
 	static Label nameLbl, descriptionLbl, quantityLbl;
 	static TextField nameTxt, descriptionTxt, quantityTxt;
 	
-	public static StackPane show(MenuItem currentItem, Button btn, String input) {
+	public static StackPane show(MenuItem currentItem, Button btn) {
 		
 		MGWindow window = WindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
-		Label addPopup = new Label("Add Menu");
+		Label addPopup = new Label("Delete Menu");
 		Font font = Font.font(null, FontWeight.BOLD, 20);
 		addPopup.setFont(font);
 		
-		Label content = new Label(currentItem.getMenuItemName());
+		Label deleteMsg = new Label("Are you sure you want to delete ");
+		Label content = new Label(currentItem.getMenuItemName() + "?");
+		deleteMsg.setFont(Font.font(null, 16));
 		content.setFont(Font.font(null, 20));
 		
+		
 		headerPane = new VBox();
-		headerPane.getChildren().addAll(addPopup, content);
-		headerPane.setSpacing(5);
+		headerPane.getChildren().addAll(addPopup, deleteMsg, content);
+		headerPane.setSpacing(10);
 		headerPane.setAlignment(Pos.TOP_CENTER);
 		
 		buttonPane = new HBox();
@@ -60,42 +63,17 @@ public class AddMenu {
 		
 		OrderItem item = OrderItemController.getOrderItemInList(currentItem);
 		
-		quantityTxt = new TextField();
-		quantityTxt.setText(String.valueOf(item == null ? 0 : item.getQuantity()));
-		quantityLbl = new Label("Quantity :");
-//		priceTxt.setDisable(true);
-		
-		quantityPane = new VBox();
-		quantityPane.getChildren().addAll(quantityLbl, quantityTxt);
-		quantityPane.setSpacing(15);
-		
+
 		confirmBtn.setOnAction(
 				e -> {
-										
-					if(item == null) {
-						if(!quantityTxt.getText().equals("0")) {
-							OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-							Order.getOrderItems().add(newOrderItem);
-						}
-					} else {
-						if(quantityTxt.getText().equals("0")) {
-							Order.getOrderItems().remove(item);
-						} else {
-							// cuma ganti value qty doang tidak cukup, entah mengapa harus di hapus dan create lagi baru bisa di refresh tablenya.
-							Order.getOrderItems().remove(item);
-							OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-							Order.getOrderItems().add(newOrderItem);
-						}
-					}
-					
+					Order.getOrderItems().remove(item);
+
 					if(activityLog.getSceneStack().size() > 1) {
 						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-        				activityLog.pop();	
+        				activityLog.pop();
 					}
 					btn.setDisable(false);
-					if(input.equals("Update")) {
-						CustomerOrderList.refreshTableView();
-					}
+					CustomerOrderList.refreshTableView();
 				}
 		);
 		
@@ -105,7 +83,7 @@ public class AddMenu {
 		root.setBottom(buttonPane);
 		
 		StackPane container = new StackPane(root);
-		container.setMaxSize(300, 215);
+		container.setMaxSize(300, 195);
 		
 		container.setStyle("-fx-background-color: #f4f4f4;" +
                 "-fx-border-color: black;" +
@@ -115,6 +93,8 @@ public class AddMenu {
         window.root.getChildren().add(container);
         activityLog.getSceneStack().add(container);
 		
+        
+        
 		return container;
 	}
 	

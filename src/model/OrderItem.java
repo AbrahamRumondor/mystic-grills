@@ -13,11 +13,17 @@ public class OrderItem {
 	private MenuItem menuItem;
 	private Integer quantity;
 	
+//	Dua attribute ini dipakai khusus untuk dipakai buat print table. klo lsng lsng akses menuItem dia error.
+//	private String menuName;
+//	private Double totalPrice;
+	
 	public OrderItem(Integer orderId, MenuItem menuItem, Integer quantity) {
 		super();
 		this.orderId = orderId;
 		this.menuItem = menuItem;
 		this.quantity = quantity;
+//		this.menuName = menuItem.getMenuItemName();
+//		this.totalPrice = menuItem.getMenuItemPrice() * quantity;
 	}
 	
 	public static ArrayList<OrderItem>getAllOrderItemsByOrderId(Integer orderId) {
@@ -76,6 +82,39 @@ public class OrderItem {
 		return true;
 		
 	}
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	public MenuItem getMenuItem() {
+		return menuItem;
+	}
+
+	public void setMenuItem(MenuItem menuItem) {
+		this.menuItem = menuItem;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getMenuName() {
+		return menuItem.getMenuItemName();
+	}
+
+	public Double getTotalPrice() {
+		return menuItem.getMenuItemPrice() * quantity;
+	}
+	
 	
 	
 }

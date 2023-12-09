@@ -37,6 +37,8 @@ public class CustomerMenuList {
 	
 	String menuName, menuDescription, menuPrice;
 	
+	MenuItem currentItem;
+	
 	private void makeTable() {
 		table = new TableView<>();
 
@@ -55,6 +57,7 @@ public class CustomerMenuList {
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
+				currentItem = newValue;
 				System.out.println(newValue.getMenuItemName() + " is " + newValue.getMenuItemId() +" months old");
 				menuName = newValue.getMenuItemName();
 				menuDescription = newValue.getMenuItemDescription();
@@ -84,7 +87,7 @@ public class CustomerMenuList {
 		
 		addBtn.setOnAction(e ->{ 
 			addBtn.setDisable(true);
-			AddMenu.show(menuName,addBtn);
+			AddMenu.show(currentItem,addBtn, "Add");
 		
 			refreshTableView();
 		});
