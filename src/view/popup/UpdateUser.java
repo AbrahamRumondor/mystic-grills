@@ -1,8 +1,10 @@
-package view;
+package view.popup;
 
 import javafx.scene.layout.BorderPane;
 import controller.OrderItemController;
 import controller.WindowController;
+import controller.UserController.UserController;
+import controller.admin.AdminUserListController;
 import controller.customer.CustomerOrderListController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,31 +25,39 @@ import model.ActivityLog;
 import model.MenuItem;
 import model.Order;
 import model.OrderItem;
+import model.User;
+import view.MGWindow;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
 import model.ActivityLog;
 
-public class AddMenu {
+public class UpdateUser {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	static VBox namePane, headerPane, quantityPane;
+	static VBox namePane, headerPane, rolePane;
 	static HBox buttonPane;
-	static Label nameLbl, descriptionLbl, quantityLbl;
-	static TextField nameTxt, descriptionTxt, quantityTxt;
+	static Label nameLbl, descriptionLbl, roleLbl, fillLbl;
+	static TextField nameTxt, descriptionTxt, roleTxt;
 	
-	public static StackPane show(MenuItem currentItem, Button btn, String input) {
+	static User currentUser;
+	
+	public static StackPane show(Integer userId, Button btn) {
+		
+		currentUser = UserController.getUserById(userId);
+		
+		System.out.println(currentUser == null);
 		
 		MGWindow window = WindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
-		Label addPopup = new Label(input + " Menu");
+		Label addPopup = new Label("Update User");
 		Font font = Font.font(null, FontWeight.BOLD, 20);
 		addPopup.setFont(font);
 		
-		Label content = new Label(currentItem.getMenuItemName());
+		Label content = new Label(currentUser.getUserName());
 		content.setFont(Font.font(null, 20));
 		
 		headerPane = new VBox();
@@ -60,52 +70,48 @@ public class AddMenu {
 		buttonPane.getChildren().addAll(confirmBtn);
 		buttonPane.setAlignment(Pos.BOTTOM_CENTER);
 		
-		OrderItem item = OrderItemController.getOrderItemInList(currentItem);
-		
-		quantityTxt = new TextField();
-		quantityTxt.setText(String.valueOf(item == null ? 0 : item.getQuantity()));
-		quantityLbl = new Label("Quantity :");
+		roleTxt = new TextField(currentUser.getUserRole());
+		roleLbl = new Label("Role :");
+		fillLbl = new Label("[‘Admin’, ‘Chef’, ‘Waiter’, ‘Cashier’, ‘Customer’]");
 //		priceTxt.setDisable(true);
 		
-		quantityPane = new VBox();
-		quantityPane.getChildren().addAll(quantityLbl, quantityTxt);
-		quantityPane.setSpacing(15);
+		rolePane = new VBox();
+		rolePane.getChildren().addAll(roleLbl, fillLbl, roleTxt);
+		rolePane.setSpacing(5);
 		
 		confirmBtn.setOnAction(
 				e -> {
-					if(!quantityTxt.getText().equals("")) {		
-						if(item == null) {
-							if(!quantityTxt.getText().equals("0")) {
-								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-								Order.getOrderItems().add(newOrderItem);
-							}
-						} else {
-							if(quantityTxt.getText().equals("0")) {
-								Order.getOrderItems().remove(item);
-							} else {
-								// cuma ganti value qty doang tidak cukup, entah mengapa harus di hapus dan create lagi baru bisa di refresh tablenya.
-								Order.getOrderItems().remove(item);
-								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-								Order.getOrderItems().add(newOrderItem);
-							}
-						}
+					if(roleTxt.getText().equals("Admin") || 
+							roleTxt.getText().equals("Chef") || 
+							roleTxt.getText().equals("Waiter")|| 
+							roleTxt.getText().equals("Cashier")|| 
+							roleTxt.getText().equals("Customer")
+							) {
+	//					Asumsi kami diharuskan untuk menggunakan updateUser pada class diagram.
+	//					(sebab efisiennya dibuat function hanya untuk update role saja).
+						Integer id = currentUser.getUserId();
+						String role = roleTxt.getText();
+						String name = currentUser.getUserName();
+						String email = currentUser.getUserEmail();
+						String password = currentUser.getUserPassword();
 						
+						UserController.updateUser(id, role, name, email, password);
+	
 						if(activityLog.getSceneStack().size() > 1) {
 							window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-	        				activityLog.pop();	
+	        				activityLog.pop();
 						}
 						btn.setDisable(false);
-						if(input.equals("Update")) {
-							TableView<OrderItem> table = CustomerOrderList.table;
-							CustomerOrderListController.refreshTableView(table);
-						}
+						
+						TableView<User> table = AdminUserListController.getTable();
+						AdminUserListController.refreshTableView(table);
 					}
 				}
 		);
 		
 		root.setPadding(new Insets(20, 20, 20, 20));
 		root.setTop(headerPane);
-		root.setCenter(quantityPane);
+		root.setCenter(rolePane);
 		root.setBottom(buttonPane);
 		
 		StackPane container = new StackPane(root);

@@ -1,4 +1,4 @@
-package controller.customer;
+package controller.admin;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import javafx.scene.control.TableView;
 import model.MenuItem;
 import view.popup.AddMenuOrder;
 
-public class CustomerMenuListController {
+public class AdminMenuListController {
 	
 	public static ObservableList<MenuItem> getAllData() {
 		ObservableList<MenuItem> items = FXCollections.observableArrayList();

@@ -1,9 +1,10 @@
-package view.customer;
+package view.admin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import controller.admin.AdminMenuListController;
 import controller.customer.CustomerMenuListController;
 
 import java.sql.PreparedStatement;
@@ -29,7 +30,7 @@ import model.MenuItem;
 import model.Connect;
 
 
-public class CustomerMenuList {
+public class AdminMenuList {
 	public static StackPane root;
 
 	TableView<MenuItem> table;
@@ -66,12 +67,12 @@ public class CustomerMenuList {
 				menuDescription = newValue.getMenuItemDescription();
 				menuPrice = newValue.getMenuItemPrice().toString();
 				
-				CustomerMenuListController.addAction(menuName, addBtn, currentItem,table);
+				AdminMenuListController.addAction(menuName, addBtn, currentItem,table);
 			}
 		});
 		
 	
-		CustomerMenuListController.addAction(menuName, addBtn, currentItem, table);
+		AdminMenuListController.addAction(menuName, addBtn, currentItem, table);
 	}
 
 	void makeForm(){

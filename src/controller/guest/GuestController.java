@@ -2,6 +2,7 @@ package controller.guest;
 
 import controller.OrderController;
 import controller.UserController.UserController;
+import controller.admin.AdminDefaultController;
 import controller.customer.CustomerDefaultController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,6 +20,7 @@ import model.ActivityLog;
 import model.User;
 import view.guest.GuestLogin;
 import view.guest.GuestSignup;
+import view.guest.GuestDefault;
 
 public class GuestController {
 	
@@ -31,6 +33,7 @@ public class GuestController {
 	
 	private static GuestSignup guestSignup = new GuestSignup();
 	private static GuestLogin guestLogin = new GuestLogin();
+	private static GuestDefault guestDefault = new GuestDefault();
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
@@ -42,6 +45,10 @@ public class GuestController {
 	
 	public static Node displayGuestSignup() {
 		return guestSignup.display();
+	}
+	
+	public static void displayGuestDefault(Stage s) {
+		guestDefault.display(s);
 	}
 	
 	
@@ -84,7 +91,11 @@ public class GuestController {
     	            	User user = UserController.getUserById(validityId);
     	            	OrderController.setOngoingOrder(user);
     	            	UserController.setCurrentUser(user);
-    	            	CustomerDefaultController.goToCustomerDefault(user);
+    	            	
+    	            	if(user.getUserRole().equals("Customer"))
+    	            		CustomerDefaultController.goToCustomerDefault();
+    	            	else if(user.getUserRole().equals("Admin"))
+    	            		AdminDefaultController.goToAdminDefault();
     	            }
         		}	
         ); 

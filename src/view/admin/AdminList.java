@@ -1,4 +1,4 @@
-package view.customer;
+package view.admin;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,9 +18,10 @@ import model.ActivityLog;
 import view.MGWindow;
 import controller.WindowController;
 import controller.UserController.*;
+import controller.admin.AdminListController;
 import controller.customer.CustomerMenuController;
 
-public class CustomerMenu {
+public class AdminList {
 	
 	public static WindowController windowController = WindowController.getInstance();	
 	
@@ -44,10 +45,10 @@ public class CustomerMenu {
 		
 		borderPane.setTop(header);
 		
-		Label position = new Label("Restaurant Menu ");
+		Label position = new Label();
 		position.setFont(Font.font(null, FontWeight.BOLD, 20));
-		Button allMenuBtn = new Button("All Menu");
-		Button viewOrderBtn = new Button("My Order");
+		Button allMenuBtn = new Button("View Menu");
+		Button viewOrderBtn = new Button("View User");
 		Button logOutBtn = new Button("Log Out");
 		
 		HBox topButtonBox = new HBox();
@@ -62,10 +63,10 @@ public class CustomerMenu {
         setStackpane(borderPane, topButtonBox, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
-        CustomerMenuController.getDisplay(option, s, borderPane, position);
+        AdminListController.getDisplay(option, s, borderPane, position);
 		
 //     	define semua action button          
-        CustomerMenuController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane, logOutBtn);
+        AdminListController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane, logOutBtn);
         
 //      masukin semuanya ke stackpane
         root.getChildren().addAll(borderPane, home, topButtonBox);

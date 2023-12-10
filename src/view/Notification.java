@@ -41,7 +41,6 @@ public class Notification {
 					if(activityLog.getSceneStack().size() > 1) {
 						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
         				activityLog.pop();
-        				
 					}
 					
 				}

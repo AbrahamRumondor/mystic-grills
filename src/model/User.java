@@ -24,15 +24,6 @@ public class User {
 		this.userPassword = userPassword;
 	}
 
-	public static void deleteUser(Integer id) {
-		
-	}
-	
-//	public static User getUserById(Integer id) {
-////		// masih salah
-////		return new User();
-//	}
-	
 	public static ArrayList<User>getAllUsers() {
 		ArrayList<User> users = new ArrayList<>();
 		
@@ -57,7 +48,7 @@ public class User {
 		
 		return users;
 	}
-	
+
 	public static boolean createUser( String role, String name, String email, String password ) {
 		
 		if(!validateUserCreation(email)) return false;
@@ -125,7 +116,35 @@ public class User {
 		
 	}
 	
+	public static void deleteUser(Integer userId) {
+		String query = "DELETE FROM `mystic_grills`.`user` WHERE (`user_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, userId);;
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 	
+	public static void updateUser(Integer id, String role, String name, String email, String password) {
+		String query = "UPDATE `mystic_grills`.`user` SET `user_name` = ?, `user_email` = ?, `user_password` = ?, `user_role` = ? WHERE (`user_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setString(1, name);
+			prep.setString(2, email);
+			prep.setString(3, password);
+			prep.setString(4, role);
+			prep.setInt(5, id);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 	
 	public Integer getUserId() {
 		return userId;

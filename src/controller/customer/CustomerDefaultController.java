@@ -29,14 +29,12 @@ public class CustomerDefaultController {
 	}
 
 
-	public static void goToCustomerDefault(User user) {
+	public static void goToCustomerDefault() {
 	//		remove stack, remove isi stackpane
 			WindowController.activityLog.getSceneStack().removeAllElements();
 			MGWindow.getWindow().root.getChildren().clear();
 			
-			if(user.getUserRole().equals("Customer")) {
-				WindowController.customerDefault.display(MGWindow.getWindow().stage);
-			}
+			WindowController.customerDefault.display(MGWindow.getWindow().stage);
 		}
 	
 }

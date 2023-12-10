@@ -1,9 +1,11 @@
-package view.customer;
+package view.admin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import controller.admin.AdminMenuListController;
+import controller.admin.AdminUserListController;
 import controller.customer.CustomerMenuListController;
 
 import java.sql.PreparedStatement;
@@ -29,56 +31,56 @@ import model.MenuItem;
 import model.Connect;
 
 
-public class CustomerMenuList {
+public class AdminUserList {
 	public static StackPane root;
 
-	TableView<MenuItem> table;
-	Button addBtn, updateBtn, deleteBtn;
+	public static TableView<User> table;
+	Button updateBtn, deleteBtn;
 	VBox form, namePane, passwordPane, idPane;
-	Label nameLbl, descriptionLbl, priceLbl;
-	TextField nameTxt, descriptionTxt, priceTxt;
+	Label nameLbl, emailLbl, roleLbl;
+	TextField nameTxt, emailTxt, roleTxt;
 	
-	String menuName, menuDescription, menuPrice;
+	String userName, userEmail, userRole;
 	
-	MenuItem currentItem;
+	User currentUser;
 	
 	private void makeTable() {
 		table = new TableView<>();
 
 		table = new TableView<>();
-		TableColumn<MenuItem, String> nameColumn = new TableColumn<>("Name");
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemName" ));
-		TableColumn<MenuItem, String> descriptionColumn = new TableColumn<>("Description");
-		descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemDescription" ));
-		TableColumn<MenuItem, String> priceColumn = new TableColumn<>("Price");
-		priceColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemPrice"));
+		TableColumn<User, String> nameColumn = new TableColumn<>("Name");
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("userName" ));
+		TableColumn<User, String> emailColumn = new TableColumn<>("Email");
+		emailColumn.setCellValueFactory(new PropertyValueFactory<>("userEmail" ));
+		TableColumn<User, String> roleColumn = new TableColumn<>("Role");
+		roleColumn.setCellValueFactory(new PropertyValueFactory<>("userRole"));
 		
-		table.getColumns().addAll(nameColumn, descriptionColumn, priceColumn);
+		table.getColumns().addAll(nameColumn, emailColumn, roleColumn);
 
-		ObservableList<MenuItem> items = CustomerMenuListController.getAllData();
+		ObservableList<User> items = AdminUserListController.getAllData();
 		table.setItems(items);
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
-				currentItem = newValue;
-				System.out.println(newValue.getMenuItemName() + " is " + newValue.getMenuItemId() +" months old");
-				menuName = newValue.getMenuItemName();
-				menuDescription = newValue.getMenuItemDescription();
-				menuPrice = newValue.getMenuItemPrice().toString();
+				currentUser = newValue;
+				System.out.println(newValue.getUserName() + " is " + newValue.getUserRole() +" months old");
+				userName = newValue.getUserName();
+				userEmail = newValue.getUserEmail();
+				userRole = newValue.getUserRole();
 				
-				CustomerMenuListController.addAction(menuName, addBtn, currentItem,table);
+				AdminUserListController.addAction(updateBtn, currentUser,table, deleteBtn);
 			}
 		});
-		
 	
-		CustomerMenuListController.addAction(menuName, addBtn, currentItem, table);
+		AdminUserListController.addAction(updateBtn, currentUser, table, deleteBtn);
 	}
 
 	void makeForm(){
-		addBtn = new Button("Add");
+		updateBtn = new Button("Update User's Role");
+		deleteBtn = new Button("Delete User");
 
 		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(addBtn);
+		buttonPane.getChildren().addAll(updateBtn, deleteBtn);
 		buttonPane.setSpacing(5);
 		form = new VBox(10);
 		form.getChildren().addAll(buttonPane);
@@ -93,9 +95,8 @@ public class CustomerMenuList {
 		page.setPadding(new Insets(10));
 
 		root = new StackPane();
-//		Scene scene = new Scene(root, 400, 400);
 		root.getChildren().add(page);
-		
+
 		return root;
 	}
 

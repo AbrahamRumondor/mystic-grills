@@ -15,9 +15,9 @@ import model.MenuItem;
 import model.Order;
 import model.OrderItem;
 import model.User;
-import view.AddMenu;
-import view.DeleteMenu;
 import view.customer.CustomerOrderList;
+import view.popup.AddMenuOrder;
+import view.popup.DeleteMenuOrder;
 
 public class CustomerOrderListController {
 	
@@ -55,13 +55,13 @@ public class CustomerOrderListController {
 		
 		updBtn.setOnAction(e ->{ 
 			updBtn.setDisable(true);
-			AddMenu.show(currentItem,updBtn, "Update");
+			AddMenuOrder.show(currentItem,updBtn, "Update");
 			refreshTableView(table);
 		});
 		
 		deleteBtn.setOnAction(e ->{ 
 			deleteBtn.setDisable(true);
-			DeleteMenu.show(currentItem,deleteBtn);
+			DeleteMenuOrder.show(currentItem,deleteBtn);
 		});
 		
 		addBtn.setOnAction(e ->{ 
@@ -80,7 +80,7 @@ public class CustomerOrderListController {
 //			reset order trus back to main menu
 			User user = UserController.getCurrentUser();
 			OrderController.setOngoingOrder(user);
-			CustomerDefaultController.goToCustomerDefault(user);
+			CustomerDefaultController.goToCustomerDefault();
 			
 		});
 		

@@ -1,4 +1,4 @@
-package view;
+package view.popup;
 
 import javafx.scene.layout.BorderPane;
 import controller.OrderItemController;
@@ -23,12 +23,13 @@ import model.ActivityLog;
 import model.MenuItem;
 import model.Order;
 import model.OrderItem;
+import view.MGWindow;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
 import model.ActivityLog;
 
-public class DeleteMenu {
+public class AddMenuOrder {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
@@ -37,25 +38,22 @@ public class DeleteMenu {
 	static Label nameLbl, descriptionLbl, quantityLbl;
 	static TextField nameTxt, descriptionTxt, quantityTxt;
 	
-	public static StackPane show(MenuItem currentItem, Button btn) {
+	public static StackPane show(MenuItem currentItem, Button btn, String input) {
 		
 		MGWindow window = WindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
-		Label addPopup = new Label("Delete Menu");
+		Label addPopup = new Label(input + " Menu");
 		Font font = Font.font(null, FontWeight.BOLD, 20);
 		addPopup.setFont(font);
 		
-		Label deleteMsg = new Label("Are you sure you want to delete ");
-		Label content = new Label(currentItem.getMenuItemName() + "?");
-		deleteMsg.setFont(Font.font(null, 16));
+		Label content = new Label(currentItem.getMenuItemName());
 		content.setFont(Font.font(null, 20));
 		
-		
 		headerPane = new VBox();
-		headerPane.getChildren().addAll(addPopup, deleteMsg, content);
-		headerPane.setSpacing(10);
+		headerPane.getChildren().addAll(addPopup, content);
+		headerPane.setSpacing(5);
 		headerPane.setAlignment(Pos.TOP_CENTER);
 		
 		buttonPane = new HBox();
@@ -65,19 +63,44 @@ public class DeleteMenu {
 		
 		OrderItem item = OrderItemController.getOrderItemInList(currentItem);
 		
-
+		quantityTxt = new TextField();
+		quantityTxt.setText(String.valueOf(item == null ? 0 : item.getQuantity()));
+		quantityLbl = new Label("Quantity :");
+//		priceTxt.setDisable(true);
+		
+		quantityPane = new VBox();
+		quantityPane.getChildren().addAll(quantityLbl, quantityTxt);
+		quantityPane.setSpacing(15);
+		
 		confirmBtn.setOnAction(
 				e -> {
-					Order.getOrderItems().remove(item);
-
-					if(activityLog.getSceneStack().size() > 1) {
-						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-        				activityLog.pop();
+					if(!quantityTxt.getText().equals("")) {		
+						if(item == null) {
+							if(!quantityTxt.getText().equals("0")) {
+								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
+								Order.getOrderItems().add(newOrderItem);
+							}
+						} else {
+							if(quantityTxt.getText().equals("0")) {
+								Order.getOrderItems().remove(item);
+							} else {
+								// cuma ganti value qty doang tidak cukup, entah mengapa harus di hapus dan create lagi baru bisa di refresh tablenya.
+								Order.getOrderItems().remove(item);
+								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
+								Order.getOrderItems().add(newOrderItem);
+							}
+						}
+						
+						if(activityLog.getSceneStack().size() > 1) {
+							window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
+	        				activityLog.pop();	
+						}
+						btn.setDisable(false);
+						if(input.equals("Update")) {
+							TableView<OrderItem> table = CustomerOrderList.table;
+							CustomerOrderListController.refreshTableView(table);
+						}
 					}
-					btn.setDisable(false);
-					
-					TableView<OrderItem> table = CustomerOrderList.table;
-					CustomerOrderListController.refreshTableView(table);
 				}
 		);
 		
@@ -87,7 +110,7 @@ public class DeleteMenu {
 		root.setBottom(buttonPane);
 		
 		StackPane container = new StackPane(root);
-		container.setMaxSize(300, 195);
+		container.setMaxSize(300, 215);
 		
 		container.setStyle("-fx-background-color: #f4f4f4;" +
                 "-fx-border-color: black;" +
@@ -97,8 +120,6 @@ public class DeleteMenu {
         window.root.getChildren().add(container);
         activityLog.getSceneStack().add(container);
 		
-        
-        
 		return container;
 	}
 	

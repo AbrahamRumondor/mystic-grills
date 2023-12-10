@@ -1,8 +1,12 @@
 package controller.UserController;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
+import controller.guest.GuestController;
 import javafx.scene.Node;
+import model.Connect;
 import model.User;
 import view.MGWindow;
 import view.Notification;
@@ -85,7 +89,13 @@ public class UserController {
 		return User.getUserById(userid);
 	}
 	
+	public static void deleteUser(Integer userId) {
+		User.deleteUser(userId);
+	}
 	
+	public static void updateUser(Integer id, String role, String name, String email, String password) {
+		User.updateUser(id, role, name, email, password);
+	}
 
 
 
