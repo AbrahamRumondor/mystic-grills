@@ -19,13 +19,11 @@ import model.User;
 import view.MGWindow;
 import controller.WindowController;
 import controller.UserController.*;
+import controller.customer.CustomerDefaultController;
 
 public class CustomerDefault {
 	
-	private static ActivityLog activityLog = ActivityLog.getInstance();
-	
-	private static WindowController windowController = WindowController.getInstance();
-	
+	private static ActivityLog activityLog = ActivityLog.getInstance();	
 	
 	public void display(Stage s) {
 		
@@ -42,7 +40,6 @@ public class CustomerDefault {
 		
 		Label userNameLbl = new Label("Welcome, " + userName );
 		Label userRoleLbl = new Label("Role: " + userRole);
-		
 		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 		userRoleLbl.setFont(Font.font(null, FontWeight.BOLD, 16));
 		
@@ -50,15 +47,12 @@ public class CustomerDefault {
 		BorderPane.setAlignment(userRoleLbl, Pos.BOTTOM_RIGHT);
 		
 		HBox header = new HBox();
-		
-//		 define header
 		header.getChildren().addAll(userNameLbl);
 		header.setAlignment(Pos.CENTER);
 		borderPane.setTop(header);
 		
 //		set borderpane ke stackpane
 		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
-        
 		
 		Button allMenu = new Button("All Menu");
 		Button orderedMenu = new Button("Ordered Menu");
@@ -70,32 +64,15 @@ public class CustomerDefault {
 		tengah.setSpacing(100);
 		
 		borderPane.setCenter(tengah);
-		
 		activityLog.add(tengah);
 		
-	
 //     define semua action button          
-        addAction(allMenu, orderedMenu, s, scene, borderPane);
+        CustomerDefaultController.addAction(allMenu, orderedMenu, s, scene, borderPane);
         
 //        masukin semuanya ke stackpane
         root.getChildren().addAll(borderPane);
-		
-        
+
         show(scene, s);
-	}
-	
-	private static void addAction(Button allMenu, Button orderedMenu, Stage s, Scene scene, BorderPane borderPane) {
-		allMenu.setOnAction(
-				e -> {	
-					windowController.displayCustomerMenu("Menu");
-				}	
-		);
-		
-		orderedMenu.setOnAction(
-				e -> {
-					windowController.displayCustomerMenu("Order");
-				}	
-		);
 	}
 	
 	public static void show(Scene scene, Stage s) {

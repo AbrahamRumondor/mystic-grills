@@ -1,8 +1,8 @@
 package controller.guest;
 
 import controller.OrderController;
-import controller.WindowController;
 import controller.UserController.UserController;
+import controller.customer.CustomerDefaultController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -84,7 +84,7 @@ public class GuestController {
     	            	User user = UserController.getUserById(validityId);
     	            	OrderController.setOngoingOrder(user);
     	            	UserController.setCurrentUser(user);
-    	            	WindowController.goToMainMenu(user);
+    	            	CustomerDefaultController.goToCustomerDefault(user);
     	            }
         		}	
         ); 

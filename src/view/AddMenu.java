@@ -3,6 +3,7 @@ package view;
 import javafx.scene.layout.BorderPane;
 import controller.OrderItemController;
 import controller.WindowController;
+import controller.customer.CustomerOrderListController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -41,7 +43,7 @@ public class AddMenu {
 		
 		BorderPane root = new BorderPane();
 		
-		Label addPopup = new Label("Add Menu");
+		Label addPopup = new Label(input + " Menu");
 		Font font = Font.font(null, FontWeight.BOLD, 20);
 		addPopup.setFont(font);
 		
@@ -71,30 +73,32 @@ public class AddMenu {
 		
 		confirmBtn.setOnAction(
 				e -> {
-										
-					if(item == null) {
-						if(!quantityTxt.getText().equals("0")) {
-							OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-							Order.getOrderItems().add(newOrderItem);
-						}
-					} else {
-						if(quantityTxt.getText().equals("0")) {
-							Order.getOrderItems().remove(item);
+					if(!quantityTxt.getText().equals("")) {		
+						if(item == null) {
+							if(!quantityTxt.getText().equals("0")) {
+								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
+								Order.getOrderItems().add(newOrderItem);
+							}
 						} else {
-							// cuma ganti value qty doang tidak cukup, entah mengapa harus di hapus dan create lagi baru bisa di refresh tablenya.
-							Order.getOrderItems().remove(item);
-							OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-							Order.getOrderItems().add(newOrderItem);
+							if(quantityTxt.getText().equals("0")) {
+								Order.getOrderItems().remove(item);
+							} else {
+								// cuma ganti value qty doang tidak cukup, entah mengapa harus di hapus dan create lagi baru bisa di refresh tablenya.
+								Order.getOrderItems().remove(item);
+								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
+								Order.getOrderItems().add(newOrderItem);
+							}
 						}
-					}
-					
-					if(activityLog.getSceneStack().size() > 1) {
-						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-        				activityLog.pop();	
-					}
-					btn.setDisable(false);
-					if(input.equals("Update")) {
-						CustomerOrderList.refreshTableView();
+						
+						if(activityLog.getSceneStack().size() > 1) {
+							window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
+	        				activityLog.pop();	
+						}
+						btn.setDisable(false);
+						if(input.equals("Update")) {
+							TableView<OrderItem> table = CustomerOrderList.table;
+							CustomerOrderListController.refreshTableView(table);
+						}
 					}
 				}
 		);

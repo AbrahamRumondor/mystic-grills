@@ -3,6 +3,9 @@ package view.customer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import controller.customer.CustomerMenuListController;
+
 import java.sql.PreparedStatement;
 
 import javafx.application.Application;
@@ -52,7 +55,7 @@ public class CustomerMenuList {
 		
 		table.getColumns().addAll(nameColumn, descriptionColumn, priceColumn);
 
-		ObservableList<MenuItem> items = getAllData();
+		ObservableList<MenuItem> items = CustomerMenuListController.getAllData();
 		table.setItems(items);
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -63,12 +66,12 @@ public class CustomerMenuList {
 				menuDescription = newValue.getMenuItemDescription();
 				menuPrice = newValue.getMenuItemPrice().toString();
 				
-				addAction();
+				CustomerMenuListController.addAction(menuName, addBtn, currentItem,table);
 			}
 		});
 		
 	
-		addAction();
+		CustomerMenuListController.addAction(menuName, addBtn, currentItem, table);
 	}
 
 	void makeForm(){
@@ -79,37 +82,6 @@ public class CustomerMenuList {
 		buttonPane.setSpacing(5);
 		form = new VBox(10);
 		form.getChildren().addAll(buttonPane);
-	}
-	
-	void addAction(){
-		if(menuName == null) addBtn.setDisable(true);
-		else addBtn.setDisable(false);
-		
-		addBtn.setOnAction(e ->{ 
-			addBtn.setDisable(true);
-			AddMenu.show(currentItem,addBtn, "Add");
-		
-			refreshTableView();
-		});
-	}
-
-	private void refreshTableView() {
-		ObservableList<MenuItem> items = FXCollections.observableArrayList();
-		items = getAllData();
-		table.setItems(items);
-	}
-
-	private ObservableList<MenuItem> getAllData() {
-		ObservableList<MenuItem> items = FXCollections.observableArrayList();
-		
-		ArrayList<MenuItem> arrayItems = MenuItem.getAllMenuItems();
-		
-		for (MenuItem menuItem : arrayItems) {
-			items.add(menuItem);
-		}
-		
-		return items;
-
 	}
 	
 	public StackPane display(Stage s) {

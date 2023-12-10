@@ -1,7 +1,10 @@
 package model;
 
 import java.util.Stack;
+
+import controller.WindowController;
 import javafx.scene.Node;
+import view.MGWindow;
 
 public class ActivityLog {
 	private Stack<Node> sceneStack = new Stack<>();
@@ -19,8 +22,8 @@ public class ActivityLog {
 	public void add(Node object) {
 		this.sceneStack.add(object);
 	}
-	
-//	singleton
+
+	//	singleton
 	public static ActivityLog getInstance() {
 		if(activityLog == null) {
 			activityLog = new ActivityLog();

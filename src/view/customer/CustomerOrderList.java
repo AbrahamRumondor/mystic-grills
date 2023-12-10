@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import controller.OrderController;
 import controller.WindowController;
 import controller.UserController.UserController;
+import controller.customer.CustomerDefaultController;
+import controller.customer.CustomerOrderListController;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -40,10 +42,8 @@ import model.OrderItem;
 
 public class CustomerOrderList {
 	public static StackPane root;
-	
-	private static WindowController windowController = WindowController.getInstance();
-	
-	static TableView<OrderItem> table;
+		
+	public static TableView<OrderItem> table;
 	Button updBtn, addBtn, deleteBtn, submitBtn;
 	VBox form, namePane, passwordPane, idPane, submitPane;
 	Label nameLbl, descriptionLbl, priceLbl;
@@ -66,7 +66,7 @@ public class CustomerOrderList {
 		
 		table.getColumns().addAll(quantityColumn, menuNameColumn, priceColumn);
 
-		ObservableList<OrderItem> items = getAllData();
+		ObservableList<OrderItem> items = CustomerOrderListController.getAllData();
 		table.setItems(items);
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -77,12 +77,12 @@ public class CustomerOrderList {
 				orderName = newValue.getMenuItem().getMenuItemName();
 				menuPrice = String.valueOf(newValue.getMenuItem().getMenuItemPrice() * newValue.getQuantity());
 				
-				addAction();
+				CustomerOrderListController.addAction(orderQty, updBtn, deleteBtn, submitBtn, addBtn, currentItem, table);
 			}
 		});
 		
 		
-		addAction();
+		CustomerOrderListController.addAction(orderQty, updBtn, deleteBtn, submitBtn, addBtn, currentItem, table);
 	}
 
 	void makeForm(){
@@ -97,7 +97,7 @@ public class CustomerOrderList {
 		form.getChildren().addAll(buttonPane);
 	}
 	
-	void setSubmitBtn(){
+	void makeSubmitPane(){
 		submitBtn = new Button("Submit Order");
 		
 		submitPane = new VBox();
@@ -105,73 +105,9 @@ public class CustomerOrderList {
 		submitPane.setAlignment(Pos.BOTTOM_RIGHT);
 	}
 	
-	void addAction(){
-		if(orderQty == null) {
-			updBtn.setDisable(true);
-			deleteBtn.setDisable(true);
-		}
-		else {
-			updBtn.setDisable(false);
-			deleteBtn.setDisable(false);
-		}
-		
-		if(Order.getOrderItems().size() == 0) submitBtn.setDisable(true);
-		
-		updBtn.setOnAction(e ->{ 
-			updBtn.setDisable(true);
-			AddMenu.show(currentItem,updBtn, "Update");
-			refreshTableView();
-		});
-		
-		deleteBtn.setOnAction(e ->{ 
-			deleteBtn.setDisable(true);
-			DeleteMenu.show(currentItem,deleteBtn);
-		});
-		
-		addBtn.setOnAction(e ->{ 
-			addBtn.setDisable(true);
-			windowController.displayCustomerMenu("Menu");
-		});
-		
-		submitBtn.setOnAction(e ->{ 
-			submitBtn.setDisable(true);
-			
-			LocalDateTime currentDateTime = LocalDateTime.now();
-			Date orderDate = Date.valueOf(currentDateTime.toLocalDate());
-			
-			OrderController.createOrder(Order.getOrderUser(), Order.getOrderItems(), orderDate);
-			
-//			reset order trus back to main menu
-			User user = UserController.getCurrentUser();
-			OrderController.setOngoingOrder(user);
-			WindowController.goToMainMenu(user);
-			
-		});
-		
-		
-	}
-
-	public static void refreshTableView() {
-		ObservableList<OrderItem> items = FXCollections.observableArrayList();
-		items = getAllData();
-		table.setItems(items);
-	}
-
-	private static ObservableList<OrderItem> getAllData() {
-		ObservableList<OrderItem> items = FXCollections.observableArrayList();
-		
-		ArrayList<OrderItem> arrayItems = Order.getOrderItems();
-		
-		for (OrderItem item : arrayItems) {
-			items.add(item);
-		}
-		
-		return items;
-	}
-	
 	public StackPane display(Stage s) {
 		makeForm();
-		setSubmitBtn();
+		makeSubmitPane();
 		makeTable();
 
 		VBox page = new VBox(10);
@@ -179,13 +115,10 @@ public class CustomerOrderList {
 		page.setPadding(new Insets(10));
 
 		root = new StackPane();
-//		Scene scene = new Scene(root, 400, 400);
 		root.getChildren().add(page);
 		
-		refreshTableView();
+		CustomerOrderListController.refreshTableView(table);
 		
 		return root;
 	}
-
-
 }

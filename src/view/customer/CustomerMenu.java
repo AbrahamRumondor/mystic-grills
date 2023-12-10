@@ -15,46 +15,35 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
-import model.User;
 import view.MGWindow;
 import controller.WindowController;
 import controller.UserController.*;
 import controller.customer.CustomerController;
+import controller.customer.CustomerMenuController;
 
 public class CustomerMenu {
 	
-	private static ActivityLog activityLog = ActivityLog.getInstance();
-	
-	private static WindowController windowController = WindowController.getInstance();
-	
-	private static CustomerMenuList customerMenuList = new CustomerMenuList();
-	
+	public static WindowController windowController = WindowController.getInstance();	
 	
 	public void display(Stage s, String option) {
 		
 		MGWindow window = WindowController.setWindow(s);
-		
 		StackPane root = window.root;
 		Scene scene = window.scene;
 		
 		BorderPane borderPane = new BorderPane();
 		
 		String userName = UserController.getCurrentUser().getUserName();
-		
 		Label userNameLbl = new Label("Welcome, " + userName);
 		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 		
 //		set header
 		HBox header = new HBox();
-		
 		header.getChildren().addAll(userNameLbl);
 		header.setAlignment(Pos.TOP_LEFT);
 		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
+		
 		borderPane.setTop(header);
-		
-		HBox topButtonBox = new HBox();
-		
-		topButtonBox.setMaxSize(450, 50);
 		
 		Label position = new Label("Restaurant Menu ");
 		position.setFont(Font.font(null, FontWeight.BOLD, 20));
@@ -62,62 +51,36 @@ public class CustomerMenu {
 		Button viewOrderBtn = new Button("My Order");
 		Button logOutBtn = new Button("Log Out");
 		
+		HBox topButtonBox = new HBox();
+		topButtonBox.setMaxSize(450, 50);
 		topButtonBox.setAlignment(Pos.TOP_RIGHT);
 		topButtonBox.setSpacing(20);
-		
 		topButtonBox.getChildren().addAll(position, allMenuBtn, viewOrderBtn, logOutBtn);
-		
-        StackPane.setMargin(topButtonBox, new Insets(12,10,10,10));
-        StackPane.setAlignment(topButtonBox, Pos.TOP_RIGHT);
-		
-        
-//        set contents
-		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
 		
 //		set button back ke stackpane
 		Button home = new Button("Home");
-        StackPane.setMargin(home, new Insets(12,10,10,10));
-        StackPane.setAlignment(home, Pos.TOP_LEFT);
-        
-        if(option.equals("Menu")) {
-        	CustomerController.getCustomerMenuList(s, borderPane);
-        } else if(option.equals("Order")) {
-        	CustomerController.getCustomerOrder(s, borderPane, position);
-        }
 		
-	
-//     define semua action button          
-        addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane);
+        setStackpane(borderPane, topButtonBox, home);
         
-//        masukin semuanya ke stackpane
+//      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
+        CustomerMenuController.getDisplay(option, s, borderPane, position);
+		
+//     	define semua action button          
+        CustomerMenuController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane);
+        
+//      masukin semuanya ke stackpane
         root.getChildren().addAll(borderPane, home, topButtonBox);
-		
         root.setStyle("-fx-background-color: #f4f4f4;");
         
         show(scene, s);
 	}
-	
-	private static void addAction(Button allMenuBtn, Button home, Button viewOrderBtn, Stage s, Scene scene, BorderPane borderPane) {
-		allMenuBtn.setOnAction(
-				e -> {
-					windowController.displayCustomerMenu("Menu");;
-				}	
-		);
-		
-		viewOrderBtn.setOnAction(
-				e -> {
-					windowController.displayCustomerMenu("Order");
-				}	
-		);
-		
-        home.setOnAction(
-        		e -> {
-        			// ini tidak masuk controller, karena pada dasarnya back hanya dimiliki oleh Main Screen.
-        			User user = UserController.getCurrentUser();
-	            	WindowController.goToMainMenu(user);
-        		}	
-        ); 
-        
+
+	private void setStackpane(BorderPane borderPane, HBox topButtonBox, Button home) {
+		StackPane.setMargin(topButtonBox, new Insets(12,10,10,10));
+        StackPane.setAlignment(topButtonBox, Pos.TOP_RIGHT);
+		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
+        StackPane.setMargin(home, new Insets(12,10,10,10));
+        StackPane.setAlignment(home, Pos.TOP_LEFT);
 	}
 	
 	public static void show(Scene scene, Stage s) {

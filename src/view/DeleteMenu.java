@@ -3,6 +3,7 @@ package view;
 import javafx.scene.layout.BorderPane;
 import controller.OrderItemController;
 import controller.WindowController;
+import controller.customer.CustomerOrderListController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -73,7 +75,9 @@ public class DeleteMenu {
         				activityLog.pop();
 					}
 					btn.setDisable(false);
-					CustomerOrderList.refreshTableView();
+					
+					TableView<OrderItem> table = CustomerOrderList.table;
+					CustomerOrderListController.refreshTableView(table);
 				}
 		);
 		
