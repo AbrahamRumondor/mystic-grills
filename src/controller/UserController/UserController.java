@@ -89,6 +89,10 @@ public class UserController {
 		return User.getUserById(userid);
 	}
 	
+	public static String getUserNameById(Integer userId) {
+		return User.getUserNameById(userId);
+	}
+	
 	public static void deleteUser(Integer userId) {
 		User.deleteUser(userId);
 	}

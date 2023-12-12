@@ -71,6 +71,30 @@ public class MenuItem {
 		
 	}
 	
+	public static boolean updateMenuItem(Integer id, String name, String description, String price ) {
+		
+		if(!validateMenuItemCreation(name)) return false;
+		
+		// pada '?', '' di VALUES dihilangin, nanti ? dianggapnya sbg char.
+		String query = "UPDATE `mystic_grills`.`menu_item` SET `menu_item_name` = ?, `menu_item_description` = ?, `menu_item_price` = ? WHERE (`menu_item_id` = ?);";
+		
+		System.out.println(name + " " + price);
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setString(1, name);
+			prep.setString(2, description);
+			prep.setString(3, price);
+			prep.setInt(4, id);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return true;
+	}
+	
 	private static boolean validateMenuItemCreation(String name) {
 		
 		ArrayList<MenuItem> items = getAllMenuItems();
@@ -84,12 +108,49 @@ public class MenuItem {
 		return true;
 	}
 	
+	public static void deleteMenuItem(Integer menuItemId) {
+		String query = "DELETE FROM `mystic_grills`.`menu_item` WHERE (`menu_item_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, menuItemId);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
 	public static MenuItem getMenuItemById(Integer menuItemId) {
 		ArrayList<MenuItem> items = getAllMenuItems();
 		
 		for (MenuItem item : items) {
 			if(item.menuItemId == menuItemId) {
 				return item;
+			}
+		}
+	
+		return null;
+	}
+	
+	public static MenuItem getMenuItemByName(String menuName) {
+		ArrayList<MenuItem> items = getAllMenuItems();
+		
+		for (MenuItem item : items) {
+			if(item.getMenuItemName().equalsIgnoreCase(menuName)) {
+				return item;
+			}
+		}
+	
+		return null;
+	}
+	
+	public static String getMenuItemNameById(Integer menuItemId) {
+		ArrayList<MenuItem> items = getAllMenuItems();
+		
+		for (MenuItem item : items) {
+			if(item.menuItemId == menuItemId) {
+				return item.getMenuItemName();
 			}
 		}
 	

@@ -11,7 +11,7 @@ import model.User;
 import view.admin.AdminUserList;
 import view.popup.AddMenuOrder;
 import view.popup.DeleteMenuOrder;
-import view.popup.DeleteUser;
+import view.popup.DeletePopup;
 import view.popup.UpdateUser;
 
 public class AdminUserListController {
@@ -47,12 +47,14 @@ public class AdminUserListController {
 		
 		updateBtn.setOnAction(e ->{ 
 			updateBtn.setDisable(true);
+			deleteBtn.setDisable(true);
 			UpdateUser.show(currentUser.getUserId(), updateBtn);
 		});
 		
 		deleteBtn.setOnAction(e ->{ 
+			updateBtn.setDisable(true);
 			deleteBtn.setDisable(true);
-			DeleteUser.show(currentUser.getUserId(),deleteBtn, updateBtn);
+			DeletePopup.show(currentUser.getUserId(),deleteBtn, updateBtn, "User", null);
 		});
 		
 	}

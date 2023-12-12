@@ -55,20 +55,21 @@ public class AdminDefault {
 //		set borderpane ke stackpane
 		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
 		
+		Button addMenu = new Button("Add Menu Item");
 		Button allMenu = new Button("View Menu");
 		Button addUser = new Button("View User");
 		
 //		 untuk login dan signup
 		HBox tengah = new HBox();
 		tengah.setAlignment(Pos.CENTER);
-		tengah.getChildren().addAll(allMenu, addUser);
+		tengah.getChildren().addAll(addMenu, allMenu, addUser);
 		tengah.setSpacing(100);
 		
 		borderPane.setCenter(tengah);
 		activityLog.add(tengah);
 		
 //     define semua action button          
-        AdminDefaultController.addAction(allMenu, addUser, s, scene, borderPane);
+        AdminDefaultController.addAction(addMenu, allMenu, addUser, s, scene, borderPane);
         
 //        masukin semuanya ke stackpane
         root.getChildren().addAll(borderPane);

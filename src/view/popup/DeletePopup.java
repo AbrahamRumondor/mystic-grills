@@ -4,8 +4,10 @@ import javafx.scene.layout.BorderPane;
 import controller.OrderItemController;
 import controller.WindowController;
 import controller.UserController.UserController;
+import controller.admin.AdminMenuListController;
 import controller.admin.AdminUserListController;
 import controller.customer.CustomerOrderListController;
+import controller.popup.DeletePopupController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,42 +29,45 @@ import model.Order;
 import model.OrderItem;
 import model.User;
 import view.MGWindow;
+import view.admin.AdminUserList;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
 import model.ActivityLog;
 
-public class UpdateUser {
+public class DeletePopup {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	static VBox namePane, headerPane, rolePane;
+	static VBox namePane, headerPane, quantityPane;
 	static HBox buttonPane;
-	static Label nameLbl, descriptionLbl, roleLbl, fillLbl;
-	static TextField nameTxt, descriptionTxt, roleTxt;
+	static Label nameLbl, descriptionLbl, quantityLbl;
+	static TextField nameTxt, descriptionTxt, quantityTxt;
 	
-	static User currentUser;
+	static User user;
 	
-	public static StackPane show(Integer userId, Button btn) {
+	public static StackPane show(Integer id, Button deleteBtn, Button updateBtn, String target, Button addBtn) {
 		
-		currentUser = UserController.getUserById(userId);
-		
-		System.out.println(currentUser == null);
+		user = UserController.getUserById(id);
 		
 		MGWindow window = WindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
-		Label addPopup = new Label("Update User");
+		Label addPopup = new Label("Delete " + target);
 		Font font = Font.font(null, FontWeight.BOLD, 20);
 		addPopup.setFont(font);
 		
-		Label content = new Label(currentUser.getUserName());
+		Label deleteMsg = new Label("Are you sure you want to delete ");
+		Label content = new Label();
+		deleteMsg.setFont(Font.font(null, 16));
 		content.setFont(Font.font(null, 20));
 		
+		DeletePopupController.setContent(id, content, target);
+		
 		headerPane = new VBox();
-		headerPane.getChildren().addAll(addPopup, content);
-		headerPane.setSpacing(5);
+		headerPane.getChildren().addAll(addPopup, deleteMsg, content);
+		headerPane.setSpacing(10);
 		headerPane.setAlignment(Pos.TOP_CENTER);
 		
 		buttonPane = new HBox();
@@ -72,44 +77,8 @@ public class UpdateUser {
 		buttonPane.setSpacing(10);
 		buttonPane.setAlignment(Pos.BOTTOM_CENTER);
 		
-		roleTxt = new TextField(currentUser.getUserRole());
-		roleLbl = new Label("Role :");
-		fillLbl = new Label("[‘Admin’, ‘Chef’, ‘Waiter’, ‘Cashier’, ‘Customer’]");
-//		priceTxt.setDisable(true);
-		
-		rolePane = new VBox();
-		rolePane.getChildren().addAll(roleLbl, fillLbl, roleTxt);
-		rolePane.setSpacing(5);
-		
-		confirmBtn.setOnAction(
-				e -> {
-					if(roleTxt.getText().equals("Admin") || 
-							roleTxt.getText().equals("Chef") || 
-							roleTxt.getText().equals("Waiter")|| 
-							roleTxt.getText().equals("Cashier")|| 
-							roleTxt.getText().equals("Customer")
-							) {
-	//					Asumsi kami diharuskan untuk menggunakan updateUser pada class diagram.
-	//					(sebab efisiennya dibuat function hanya untuk update role saja).
-						Integer id = currentUser.getUserId();
-						String role = roleTxt.getText();
-						String name = currentUser.getUserName();
-						String email = currentUser.getUserEmail();
-						String password = currentUser.getUserPassword();
-						
-						UserController.updateUser(id, role, name, email, password);
-	
-						if(activityLog.getSceneStack().size() > 1) {
-							window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-	        				activityLog.pop();
-						}
-						
-						TableView<User> table = AdminUserListController.getTable();
-						AdminUserListController.refreshTableView(table);
-					}
-				}
-		);
-		
+		DeletePopupController.setDeleteConfirmBtn(id, confirmBtn, updateBtn, target, addBtn);
+
 		cancelBtn.setOnAction(
 				e -> {
 						if(activityLog.getSceneStack().size() > 1) {
@@ -117,19 +86,25 @@ public class UpdateUser {
 	        				activityLog.pop();
 						}
 						
-						TableView<User> table = AdminUserListController.getTable();
-						AdminUserListController.refreshTableView(table);
-						
+						if(target.equals("Menu Item")) {
+							addBtn.setDisable(false);
+							TableView<MenuItem> table = AdminMenuListController.getTable();
+							AdminMenuListController.refreshTableView(table);
+						}
+						else if(target.equals("User")) {
+							TableView<User> table = AdminUserListController.getTable();
+							AdminUserListController.refreshTableView(table);
+						}
 				}
 		);
 		
 		root.setPadding(new Insets(20, 20, 20, 20));
 		root.setTop(headerPane);
-		root.setCenter(rolePane);
+		root.setCenter(quantityPane);
 		root.setBottom(buttonPane);
 		
 		StackPane container = new StackPane(root);
-		container.setMaxSize(300, 215);
+		container.setMaxSize(300, 195);
 		
 		container.setStyle("-fx-background-color: #f4f4f4;" +
                 "-fx-border-color: black;" +
@@ -138,7 +113,7 @@ public class UpdateUser {
 		StackPane.setMargin(container, new Insets(10,10,10,10));
         window.root.getChildren().add(container);
         activityLog.getSceneStack().add(container);
-		
+        
 		return container;
 	}
 	

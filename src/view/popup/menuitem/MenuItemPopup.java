@@ -1,11 +1,14 @@
-package view.popup;
+package view.popup.menuitem;
 
 import javafx.scene.layout.BorderPane;
+import controller.MenuItemController;
 import controller.OrderItemController;
 import controller.WindowController;
 import controller.UserController.UserController;
+import controller.admin.AdminMenuListController;
 import controller.admin.AdminUserListController;
 import controller.customer.CustomerOrderListController;
+import controller.popup.MenuItemPopupController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,74 +30,87 @@ import model.Order;
 import model.OrderItem;
 import model.User;
 import view.MGWindow;
-import view.admin.AdminUserList;
+import view.Notification;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
 import model.ActivityLog;
 
-public class DeleteUser {
+public class MenuItemPopup {
 	
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	static VBox namePane, headerPane, quantityPane;
+	static VBox namePane, headerPane, addItemPane;
 	static HBox buttonPane;
-	static Label nameLbl, descriptionLbl, quantityLbl;
-	static TextField nameTxt, descriptionTxt, quantityTxt;
+	static Label nameLbl, descLbl, priceLbl, fillLbl;
+	static TextField nameTxt, descTxt, priceTxt;
 	
-	static User user;
-	
-	public static StackPane show(Integer userId, Button btn, Button updateBtn) {
-		
-		user = UserController.getUserById(userId);
+	public static StackPane show(Button btn, Button updateBtn, Button deleteBtn, MenuItem chosenMenu, String action) {		
 		
 		MGWindow window = WindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
-		Label addPopup = new Label("Delete user");
+		Label addPopup = new Label(action + " Menu");
 		Font font = Font.font(null, FontWeight.BOLD, 20);
 		addPopup.setFont(font);
 		
-		Label deleteMsg = new Label("Are you sure you want to delete ");
-		Label content = new Label(user.getUserName() + "?");
-		deleteMsg.setFont(Font.font(null, 16));
-		content.setFont(Font.font(null, 20));
-		
-		
 		headerPane = new VBox();
-		headerPane.getChildren().addAll(addPopup, deleteMsg, content);
+		headerPane.getChildren().addAll(addPopup);
 		headerPane.setSpacing(10);
 		headerPane.setAlignment(Pos.TOP_CENTER);
 		
 		buttonPane = new HBox();
+		Button cancelBtn = new Button("Cancel");
 		Button confirmBtn = new Button("Confirm");
-		buttonPane.getChildren().addAll(confirmBtn);
+		buttonPane.getChildren().addAll(cancelBtn, confirmBtn);
+		buttonPane.setSpacing(10);
 		buttonPane.setAlignment(Pos.BOTTOM_CENTER);
-
-		confirmBtn.setOnAction(
+		
+		nameLbl = new Label("Menu name :");
+		nameTxt = new TextField();
+		
+		descLbl = new Label("Menu description :");
+		descTxt = new TextField();
+		
+		priceLbl = new Label("Menu price :");
+		priceTxt = new TextField();
+		
+		addItemPane = new VBox();
+		addItemPane.getChildren().addAll(
+				nameLbl, nameTxt,
+				descLbl, descTxt,
+				priceLbl, priceTxt
+				);
+		addItemPane.setSpacing(5);
+		
+		if(action.equals("Add New"))
+			MenuItemPopupController.addMenuItem(nameTxt, descTxt, priceTxt, confirmBtn, btn);
+		else if(action.equals("Update")) {
+			MenuItemPopupController.updateMenuItem(nameTxt, descTxt, priceTxt, confirmBtn, chosenMenu, deleteBtn, updateBtn, btn);
+		}
+		
+		cancelBtn.setOnAction(
 				e -> {
-					UserController.deleteUser(userId);
-
-					if(activityLog.getSceneStack().size() > 1) {
-						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-        				activityLog.pop();
-					}
-					
-					TableView<User> table = AdminUserListController.getTable();
-					AdminUserListController.refreshTableView(table);
-					
-					updateBtn.setDisable(true);
+						if(activityLog.getSceneStack().size() > 1) {
+							window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
+	        				activityLog.pop();
+						}
+						btn.setDisable(false);
+						
+						TableView<MenuItem> table = AdminMenuListController.getTable();
+						AdminMenuListController.refreshTableView(table);
+						
 				}
 		);
 		
 		root.setPadding(new Insets(20, 20, 20, 20));
 		root.setTop(headerPane);
-		root.setCenter(quantityPane);
+		root.setCenter(addItemPane);
 		root.setBottom(buttonPane);
 		
 		StackPane container = new StackPane(root);
-		container.setMaxSize(300, 195);
+		container.setMaxSize(300, 270);
 		
 		container.setStyle("-fx-background-color: #f4f4f4;" +
                 "-fx-border-color: black;" +
@@ -103,7 +119,7 @@ public class DeleteUser {
 		StackPane.setMargin(container, new Insets(10,10,10,10));
         window.root.getChildren().add(container);
         activityLog.getSceneStack().add(container);
-        
+		
 		return container;
 	}
 	

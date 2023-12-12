@@ -116,6 +116,19 @@ public class User {
 		
 	}
 	
+	public static String getUserNameById(Integer userId) {
+		
+		ArrayList<User> users = getAllUsers();
+		
+		for (User user : users) {
+			if(user.userId == userId) {
+				return user.getUserName();
+			}
+		}
+	
+		return null;
+	}
+	
 	public static void deleteUser(Integer userId) {
 		String query = "DELETE FROM `mystic_grills`.`user` WHERE (`user_id` = ?);";
 		

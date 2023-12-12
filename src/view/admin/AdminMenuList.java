@@ -33,7 +33,7 @@ import model.Connect;
 public class AdminMenuList {
 	public static StackPane root;
 
-	TableView<MenuItem> table;
+	public static TableView<MenuItem> table;
 	Button addBtn, updateBtn, deleteBtn;
 	VBox form, namePane, passwordPane, idPane;
 	Label nameLbl, descriptionLbl, priceLbl;
@@ -67,19 +67,21 @@ public class AdminMenuList {
 				menuDescription = newValue.getMenuItemDescription();
 				menuPrice = newValue.getMenuItemPrice().toString();
 				
-				AdminMenuListController.addAction(menuName, addBtn, currentItem,table);
+				AdminMenuListController.addAction(currentItem, addBtn, updateBtn, deleteBtn, currentItem,table);
 			}
 		});
 		
 	
-		AdminMenuListController.addAction(menuName, addBtn, currentItem, table);
+		AdminMenuListController.addAction(currentItem, addBtn, updateBtn, deleteBtn, currentItem, table);
 	}
 
 	void makeForm(){
-		addBtn = new Button("Add");
+		addBtn = new Button("Add New Menu");
+		updateBtn = new Button("Update Menu");
+		deleteBtn = new Button("Delete Menu");
 
 		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(addBtn);
+		buttonPane.getChildren().addAll(addBtn, updateBtn, deleteBtn);
 		buttonPane.setSpacing(5);
 		form = new VBox(10);
 		form.getChildren().addAll(buttonPane);
