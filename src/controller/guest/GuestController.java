@@ -3,6 +3,7 @@ package controller.guest;
 import controller.OrderController;
 import controller.UserController.UserController;
 import controller.admin.AdminDefaultController;
+import controller.cashier.CashierDefaultController;
 import controller.customer.CustomerDefaultController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -96,6 +97,8 @@ public class GuestController {
     	            		CustomerDefaultController.goToCustomerDefault();
     	            	else if(user.getUserRole().equals("Admin"))
     	            		AdminDefaultController.goToAdminDefault();
+    	            	else if(user.getUserRole().equals("Cashier"))
+    	            		CashierDefaultController.goToCashierDefault();
     	            }
         		}	
         ); 

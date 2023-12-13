@@ -29,35 +29,39 @@ public class OrderItem {
 	public static ArrayList<OrderItem>getAllOrderItemsByOrderId(Integer orderId) {
 		ArrayList<OrderItem> orderItems = new ArrayList<>();
 		
-		String query = "SELECT * FROM order_item where order_id = ?";
+		String query = "SELECT * FROM order_item where order_id = " + orderId + ";";
 		
-		PreparedStatement prep = Connect.getConnection().prepare(query);
-		try {
-			prep.setInt(1, orderId);
-			Connect.getConnection().executePreparedUpdate(prep);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		PreparedStatement prep = Connect.getConnection().prepare(query);
+//		try {
+//			prep.setInt(1, orderId);
+//			Connect.getConnection().executePreparedUpdate(prep);
+//		} catch (SQLException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		
+		ArrayList<Integer> items = new ArrayList<>();
 		
 		try (ResultSet rs = Connect.getConnection().executeStatementQuery(query)) {
 			while(rs.next()) {
 				Integer id = Integer.valueOf(rs.getString("order_id"));
 				Integer itemId = Integer.valueOf(rs.getString("menu_item_id"));
 				Integer qty = Integer.valueOf(rs.getString("order_item_quantity"));;
-				
-				MenuItem item = MenuItemController.getMenuItemById(itemId);
-				
-				System.out.println(id + itemId + qty);
-				
-				orderItems.add(new OrderItem(id, item, qty));
+
+				orderItems.add(new OrderItem(id, null, qty));
+				items.add(itemId);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		for(int i = 0; i < orderItems.size(); i++) {
+			Integer itemId = items.get(i);
+			MenuItem item = MenuItemController.getMenuItemById(itemId);
+			orderItems.get(i).setMenuItem(item);
+		}
+		System.out.println("WOI LAH");
 		return orderItems;
 	}
 

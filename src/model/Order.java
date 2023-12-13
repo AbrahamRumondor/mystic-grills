@@ -12,18 +12,69 @@ import controller.OrderItemController;
 import controller.UserController.UserController;
 
 public class Order {
-	private static Integer orderId;
-	private static User orderUser;
-	private static ArrayList<OrderItem> orderItems;
-	private static Date orderDate;
-	private static Double orderTotal; // buat function khusus
+	private Integer orderId;
+	private User orderUser;
+	private ArrayList<OrderItem> orderItems;
+	private String orderStatus;
+	private Date orderDate;
+	private Double orderTotal; // buat function khusus
 	
-	public Order(Integer id, User user, ArrayList<OrderItem> items, Date date) {
+	public Order(Integer id, User user, ArrayList<OrderItem> items, String status, Date date) {
 		super();
 		orderId = id;
 		orderUser = user;
 		orderDate = date;
 		orderItems = items; 
+		orderStatus = status;
+		
+//		if(!(date == null)){
+//			setOrderTotal();
+//		}
+	}
+	
+	public static ArrayList<Order>getAllOrders() {
+		ArrayList<Order> orders = new ArrayList<>();
+		
+		String query = "SELECT * FROM mystic_grills.order;";
+		
+		ArrayList<Integer> userIds = new ArrayList<>();
+		
+		try (ResultSet rs = Connect.getConnection().executeStatementQuery(query)) {
+			while(rs.next()) {
+				Integer id = Integer.valueOf(rs.getString("order_id"));
+				Integer userId = Integer.valueOf(rs.getString("user_id"));
+				String status = rs.getString("order_status");
+				Date date = rs.getDate("order_date");
+				System.out.println(id + userId + status + date);
+				
+				userIds.add(userId);
+				orders.add(new Order(id, null, null, status, date));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < orders.size(); i++) {
+			Integer userId = userIds.get(i);
+			User user = UserController.getUserById(userId);
+			orders.get(i).setOrderUser(user);
+		}
+		
+		
+		for(int i = 0; i < orders.size(); i++) {
+			orders.get(i);
+			Integer orderId = orders.get(i).getOrderId();
+			ArrayList<OrderItem> items = OrderItemController.getAllOrderItemsByOrderId(orderId);
+			orders.get(i).setOrderItems(items);
+			orders.get(i).setOrderTotal(items);
+		}
+		
+		for(Order i : orders) {
+			System.out.println(i.getOrderId());
+		}
+		
+		return orders;
 	}
 	
 	public static Integer getLastOrderId() {
@@ -63,12 +114,12 @@ public class Order {
 				String orderStatus = rs.getString("order_status");
 				Date orderDate = Date.valueOf(rs.getString("order_date"));
 				
-				ArrayList<OrderItem> orderItms = OrderItem.getAllOrderItemsByOrderId(id); // buat controllernya
+				ArrayList<OrderItem> orderItms = OrderItemController.getAllOrderItemsByOrderId(id); // buat controllernya
 				User user = UserController.getUserById(userId);
 				
 				System.out.println(id + userId + orderStatus);
 				
-				orders.add(new Order(id, user, orderItms, orderDate));
+				orders.add(new Order(id, user, orderItms, orderStatus, orderDate));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -104,45 +155,72 @@ public class Order {
 		return true;
 		
 	}
-
-	public static Integer getOrderId() {
+	
+	
+	public Integer getOrderId() {
 		return orderId;
 	}
 
-	public static void setOrderId(Integer orderId) {
-		Order.orderId = orderId;
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 
-	public static User getOrderUser() {
+	public User getOrderUser() {
 		return orderUser;
 	}
 
-	public static void setOrderUser(User orderUser) {
-		Order.orderUser = orderUser;
+	public void setOrderUser(User orderUser) {
+		this.orderUser = orderUser;
 	}
 
-	public static ArrayList<OrderItem> getOrderItems() {
+	public String getOrderUserName() {
+		return orderUser.getUserName();
+	}
+	
+	public ArrayList<OrderItem> getOrderItems() {
 		return orderItems;
 	}
 
-	public static void setOrderItems(ArrayList<OrderItem> orderItems) {
-		Order.orderItems = orderItems;
+	public void setOrderItems(ArrayList<OrderItem> orderItems) {
+		this.orderItems = orderItems;
 	}
 
-	public static Date getOrderDate() {
+	public Date getOrderDate() {
 		return orderDate;
 	}
-
-	public static void setOrderDate(Date orderDate) {
-		Order.orderDate = orderDate;
+	
+	public String getOrderDateString() {
+		return orderDate.toString();
+	}
+	
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
 	}
 
-	public static Double getOrderTotal() {
+	public Double getOrderTotal() {
 		return orderTotal;
 	}
+	
+	public String getOrderTotalString() {
+		return orderTotal.toString();
+	}
+	
+	public void setOrderTotal(ArrayList<OrderItem> items) {
+		Double totalPrice = (double) 0;
+		
+		for(OrderItem item : items) {
+			totalPrice += item.getTotalPrice();
+		}
+		
+		this.orderTotal = totalPrice;
+	}
 
-	public static void setOrderTotal(Double orderTotal) {
-		Order.orderTotal = orderTotal;
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 	
 	

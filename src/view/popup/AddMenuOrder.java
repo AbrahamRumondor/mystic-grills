@@ -1,6 +1,7 @@
 package view.popup;
 
 import javafx.scene.layout.BorderPane;
+import controller.OrderController;
 import controller.OrderItemController;
 import controller.WindowController;
 import controller.customer.CustomerOrderListController;
@@ -77,17 +78,17 @@ public class AddMenuOrder {
 					if(!quantityTxt.getText().equals("")) {		
 						if(item == null) {
 							if(!quantityTxt.getText().equals("0")) {
-								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-								Order.getOrderItems().add(newOrderItem);
+								OrderItem newOrderItem = new OrderItem(OrderController.getOnGoingOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
+								OrderController.getOnGoingOrderItems().add(newOrderItem);
 							}
 						} else {
 							if(quantityTxt.getText().equals("0")) {
-								Order.getOrderItems().remove(item);
+								OrderController.getOnGoingOrderItems().remove(item);
 							} else {
 								// cuma ganti value qty doang tidak cukup, entah mengapa harus di hapus dan create lagi baru bisa di refresh tablenya.
-								Order.getOrderItems().remove(item);
-								OrderItem newOrderItem = new OrderItem(Order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
-								Order.getOrderItems().add(newOrderItem);
+								OrderController.getOnGoingOrderItems().remove(item);
+								OrderItem newOrderItem = new OrderItem(OrderController.getOnGoingOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
+								OrderController.getOnGoingOrderItems().add(newOrderItem);
 							}
 						}
 						

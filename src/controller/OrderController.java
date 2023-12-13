@@ -16,12 +16,18 @@ public class OrderController {
 	
 	static Order onGoingOrder;
 	
+	static Order order;
+	
+	public static void setOrder(Order currentOrder) {
+		order = currentOrder;
+	}
+	
 	public static Integer getLatestOrderId() {
 		return Order.getLastOrderId();
 	}
 	
 	public static void setOngoingOrder(User user) {
-		onGoingOrder = new Order(getLatestOrderId()+1, user, new ArrayList<OrderItem>() , null );
+		onGoingOrder = new Order(getLatestOrderId()+1, user, new ArrayList<OrderItem>() , "Pending", null );
 	}
 
 	public static Order getOnGoingOrder() {
@@ -36,6 +42,22 @@ public class OrderController {
 		
 		return Order.createOrder(user, orderItems, orderDate);
 		
+	}
+	
+	public static ArrayList<Order>getAllOrders() {
+		return Order.getAllOrders();
+	}
+	
+	public static ArrayList<OrderItem> getOnGoingOrderItems() {
+		return onGoingOrder.getOrderItems();
+	}
+	
+	public static Integer getOnGoingOrderId() {
+		return onGoingOrder.getOrderId();
+	}
+	
+	public static User getOnGoingOrderUser() {
+		return onGoingOrder.getOrderUser();
 	}
 	
 }

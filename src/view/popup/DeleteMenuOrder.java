@@ -1,6 +1,7 @@
 package view.popup;
 
 import javafx.scene.layout.BorderPane;
+import controller.OrderController;
 import controller.OrderItemController;
 import controller.WindowController;
 import controller.customer.CustomerOrderListController;
@@ -69,7 +70,7 @@ public class DeleteMenuOrder {
 
 		confirmBtn.setOnAction(
 				e -> {
-					Order.getOrderItems().remove(item);
+					OrderController.getOnGoingOrderItems().remove(item);
 
 					if(activityLog.getSceneStack().size() > 1) {
 						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());

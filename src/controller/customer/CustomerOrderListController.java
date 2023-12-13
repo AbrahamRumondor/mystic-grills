@@ -22,7 +22,7 @@ import view.popup.DeleteMenuOrder;
 public class CustomerOrderListController {
 	
 	private static WindowController windowController = WindowController.getInstance();
-	
+		
 	public static void refreshTableView(TableView<OrderItem> table) {
 		ObservableList<OrderItem> items = FXCollections.observableArrayList();
 		items = getAllData();
@@ -32,7 +32,7 @@ public class CustomerOrderListController {
 	public static ObservableList<OrderItem> getAllData() {
 		ObservableList<OrderItem> items = FXCollections.observableArrayList();
 		
-		ArrayList<OrderItem> arrayItems = Order.getOrderItems();
+		ArrayList<OrderItem> arrayItems = OrderController.getOnGoingOrderItems();
 		
 		for (OrderItem item : arrayItems) {
 			items.add(item);
@@ -51,7 +51,7 @@ public class CustomerOrderListController {
 			deleteBtn.setDisable(false);
 		}
 		
-		if(Order.getOrderItems().size() == 0) submitBtn.setDisable(true);
+		if(OrderController.getOnGoingOrderItems().size() == 0) submitBtn.setDisable(true);
 		
 		updBtn.setOnAction(e ->{ 
 			updBtn.setDisable(true);
@@ -75,7 +75,7 @@ public class CustomerOrderListController {
 			LocalDateTime currentDateTime = LocalDateTime.now();
 			Date orderDate = Date.valueOf(currentDateTime.toLocalDate());
 			
-			OrderController.createOrder(Order.getOrderUser(), Order.getOrderItems(), orderDate);
+			OrderController.createOrder(OrderController.getOnGoingOrderUser(), OrderController.getOnGoingOrderItems(), orderDate);
 			
 //			reset order trus back to main menu
 			User user = UserController.getCurrentUser();

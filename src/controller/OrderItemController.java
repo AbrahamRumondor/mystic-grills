@@ -1,7 +1,9 @@
 package controller;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import model.Connect;
 import model.MenuItem;
@@ -12,7 +14,7 @@ public class OrderItemController {
 	
 	public static OrderItem getOrderItemInList(MenuItem currentItem) {
 		
-		for(OrderItem i : Order.getOrderItems()) {
+		for(OrderItem i : OrderController.getOnGoingOrderItems()) {
 			if(i.getMenuItem().getMenuItemId() == currentItem.getMenuItemId()) {
 				return i;
 			}
@@ -23,6 +25,10 @@ public class OrderItemController {
 	
 	public static boolean createOrderItem(Integer orderId, Integer menuItemId, Integer orderItemQuantity ) {
 		return OrderItem.createOrderItem(orderId, menuItemId, orderItemQuantity);
+	}
+	
+	public static ArrayList<OrderItem>getAllOrderItemsByOrderId(Integer orderId) {
+		return OrderItem.getAllOrderItemsByOrderId(orderId);
 	}
 	
 }

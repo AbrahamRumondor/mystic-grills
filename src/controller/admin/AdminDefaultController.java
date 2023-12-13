@@ -15,8 +15,8 @@ public class AdminDefaultController {
 	
 	private static AdminDefault adminDefault = new AdminDefault();
 	
-	public static void addAction(Button allMenu, Button allUser, Button addUser, Stage s, Scene scene, BorderPane borderPane) {
-		allMenu.setOnAction(
+	public static void addAction(Button addUser,Button allMenu, Button allUser, Stage s, Scene scene, BorderPane borderPane) {
+		addUser.setOnAction(
 				e -> {	
 					AdminListController.displayAdminMenu("Menu");
 				}	
