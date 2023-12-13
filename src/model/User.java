@@ -100,8 +100,7 @@ public class User {
 	
 		return null;
 	}
-	
-	
+
 	public static User getUserById(Integer userId) {
 		
 		ArrayList<User> users = getAllUsers();

@@ -59,5 +59,10 @@ public class OrderController {
 	public static User getOnGoingOrderUser() {
 		return onGoingOrder.getOrderUser();
 	}
+
+	public static void updateOrder(Integer orderId, ArrayList<OrderItem> orderItems, String string) {
+		// TODO Auto-generated method stub
+		Order.updateOrder(orderId, orderItems, string);
+	}
 	
 }

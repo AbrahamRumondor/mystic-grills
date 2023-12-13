@@ -31,15 +31,6 @@ public class OrderItem {
 		
 		String query = "SELECT * FROM order_item where order_id = " + orderId + ";";
 		
-//		PreparedStatement prep = Connect.getConnection().prepare(query);
-//		try {
-//			prep.setInt(1, orderId);
-//			Connect.getConnection().executePreparedUpdate(prep);
-//		} catch (SQLException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		
 		ArrayList<Integer> items = new ArrayList<>();
 		
 		try (ResultSet rs = Connect.getConnection().executeStatementQuery(query)) {
@@ -61,7 +52,6 @@ public class OrderItem {
 			MenuItem item = MenuItemController.getMenuItemById(itemId);
 			orderItems.get(i).setMenuItem(item);
 		}
-		System.out.println("WOI LAH");
 		return orderItems;
 	}
 
@@ -69,9 +59,7 @@ public class OrderItem {
 		
 		// pada '?', '' di VALUES dihilangin, nanti ? dianggapnya sbg char.
 		String query = "INSERT INTO `mystic_grills`.`order_item` (`order_id`, `menu_item_id`, `order_item_quantity`) VALUES (?, ?, ?);";
-		
-		System.out.println(orderId + " " + orderItemQuantity);
-		
+				
 		PreparedStatement prep = Connect.getConnection().prepare(query);
 		try {
 			prep.setInt(1, orderId);
@@ -84,7 +72,6 @@ public class OrderItem {
 		}
 		
 		return true;
-		
 	}
 
 	public Integer getOrderId() {
@@ -117,6 +104,10 @@ public class OrderItem {
 
 	public Double getTotalPrice() {
 		return menuItem.getMenuItemPrice() * quantity;
+	}
+	
+	public Double getPrice() {
+		return menuItem.getMenuItemPrice();
 	}
 	
 	

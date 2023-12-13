@@ -15,6 +15,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.Order;
 import view.MGWindow;
 import controller.WindowController;
 import controller.UserController.*;
@@ -65,7 +66,7 @@ public class CashierList {
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
         CashierListController.getDisplay(option, s, borderPane, position);
-		
+
 //     	define semua action button          
         CashierListController.addAction(viewOrderBtn, home, viewReceiptBtn, s, scene, borderPane, logOutBtn);
         

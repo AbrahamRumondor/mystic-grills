@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import controller.admin.AdminMenuListController;
 import controller.admin.AdminUserListController;
 import controller.cashier.CashierOrderListController;
+import controller.cashier.CashierReceiptListController;
 import controller.customer.CustomerMenuListController;
 
 import java.sql.Date;
@@ -36,11 +37,11 @@ import model.Order;
 import model.Connect;
 
 
-public class CashierOrderList {
+public class CashierReceiptList {
 	public static StackPane root;
 
 	public static TableView<Order> table;
-	Button orderDetailBtn, proceedBtn;
+	Button orderDetailBtn;
 	VBox form, namePane, passwordPane, idPane;
 	Label nameLbl, emailLbl, roleLbl;
 	TextField nameTxt, emailTxt, roleTxt;
@@ -69,7 +70,7 @@ public class CashierOrderList {
 		
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
-		ObservableList<Order> items = CashierOrderListController.getAllData();
+		ObservableList<Order> items = CashierReceiptListController.getAllData();
 		table.setItems(items);
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -82,31 +83,28 @@ public class CashierOrderList {
 				totalPrice = newValue.getOrderTotal();
 				
 				
-				CashierOrderListController.addAction(
+				CashierReceiptListController.addAction(
 						orderDetailBtn,
 						currentOrder,
 						table,
-						proceedBtn,
 						s,
 						borderPane);
 			}
 		});
 	
-		CashierOrderListController.addAction(
+		CashierReceiptListController.addAction(
 				orderDetailBtn,
 				currentOrder,
 				table,
-				proceedBtn,
 				s,
 				borderPane);
 	}
 
 	void makeForm(){
-		orderDetailBtn = new Button("View Order Details");
-		proceedBtn = new Button("Proceed Order");
-
+		orderDetailBtn = new Button("View Receipt Details");
+		
 		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);
+		buttonPane.getChildren().addAll(orderDetailBtn);
 		buttonPane.setSpacing(15);
 		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
 		form = new VBox(10);

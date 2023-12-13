@@ -22,7 +22,7 @@ import view.popup.DeletePopup;
 import view.popup.ProceedOrderPopup;
 import view.popup.UpdateUser;
 
-public class CashierOrderListController {
+public class CashierReceiptListController {
 	
 	public static ActivityLog activityLog = ActivityLog.getInstance();
 	
@@ -32,7 +32,7 @@ public class CashierOrderListController {
 		ArrayList<Order> arrayOrders = OrderController.getAllOrders();
 		
 		for (Order order : arrayOrders) {
-			if(order.getOrderStatus().equals("Pending"))
+			if(order.getOrderStatus().equals("Paid"))
 				orders.add(order);
 		}
 		return orders;
@@ -48,34 +48,22 @@ public class CashierOrderListController {
 			Button orderDetailBtn,
 			Order currentOrder,
 			TableView<Order> table,
-			Button proceedBtn,
 			Stage s,
 			BorderPane borderPane)
 	{
 		if(currentOrder == null) {
 			orderDetailBtn.setDisable(true);
-			proceedBtn.setDisable(true);
 		}
 		else {
 			orderDetailBtn.setDisable(false);
-			proceedBtn.setDisable(false);
 		}
 		
 		orderDetailBtn.setOnAction(e ->{ 
 			orderDetailBtn.setDisable(true);
-			proceedBtn.setDisable(true);
 			
-			StackPane contents = CashierViewOrderDetailListController.display(s, currentOrder, borderPane);
+			StackPane contents = CashierReceiptDetailListController.display(s, currentOrder, borderPane);
 			borderPane.setCenter(contents);
 			activityLog.add(contents);
-		});
-		
-		proceedBtn.setOnAction(e ->{ 
-			orderDetailBtn.setDisable(true);
-			proceedBtn.setDisable(true);
-			ProceedOrderPopup.show(currentOrder, proceedBtn, "Order");
-			
-			refreshTableView(table);
 		});
 		
 	}

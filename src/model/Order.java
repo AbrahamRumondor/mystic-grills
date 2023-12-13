@@ -45,7 +45,6 @@ public class Order {
 				Integer userId = Integer.valueOf(rs.getString("user_id"));
 				String status = rs.getString("order_status");
 				Date date = rs.getDate("order_date");
-				System.out.println(id + userId + status + date);
 				
 				userIds.add(userId);
 				orders.add(new Order(id, null, null, status, date));
@@ -68,10 +67,6 @@ public class Order {
 			ArrayList<OrderItem> items = OrderItemController.getAllOrderItemsByOrderId(orderId);
 			orders.get(i).setOrderItems(items);
 			orders.get(i).setOrderTotal(items);
-		}
-		
-		for(Order i : orders) {
-			System.out.println(i.getOrderId());
 		}
 		
 		return orders;
@@ -156,6 +151,20 @@ public class Order {
 		
 	}
 	
+	public static void updateOrder(Integer orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
+//		NOTE: karena sepanjang aplikasi update hanya ada update status, jadi orderItems disini tidak dipakai.
+		String query = "UPDATE `mystic_grills`.`order` SET `order_status` = ? WHERE (`order_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setString(1, orderStatus);
+			prep.setInt(2, orderId);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 	
 	public Integer getOrderId() {
 		return orderId;

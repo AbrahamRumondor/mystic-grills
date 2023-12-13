@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.Order;
 import model.User;
 import view.MGWindow;
 import view.customer.CustomerMenu;
@@ -19,6 +20,7 @@ import view.customer.CustomerMenuList;
 import view.customer.CustomerOrderList;
 import view.admin.*;
 import view.cashier.CashierOrderList;
+import view.cashier.CashierReceiptList;
 import view.cashier.CashierList;
 
 public class CashierListController {
@@ -29,12 +31,13 @@ public class CashierListController {
 	
 //	static AdminMenuList adminMenuList = new AdminMenuList();
 	static CashierOrderList cashierOrderList = new CashierOrderList();
+	static CashierReceiptList cashierReceiptList = new CashierReceiptList();
 	
 	public static void getDisplay(String option, Stage s, BorderPane borderPane, Label position) {
         if(option.equals("Order")) {
         	getCashierOrderList(s, borderPane, position);
         } else if(option.equals("Receipt")) {
-        	getAdminUserList(s, borderPane, position);
+        	getCashierReceiptList(s, borderPane, position);
         }
 	}
 	
@@ -78,20 +81,16 @@ public class CashierListController {
 	public static void getCashierOrderList(Stage s, BorderPane borderPane, Label position) {
 			position.setText("All Order ");
 		
-			StackPane contents = cashierOrderList.display(s);
-	//		DISINIII
+			StackPane contents = cashierOrderList.display(s, borderPane);
 			borderPane.setCenter(contents);
-			
 			activityLog.add(contents);
 		}
 
-	public static void getAdminUserList(Stage s, BorderPane borderPane, Label position) {
-			position.setText("All User ");
+	public static void getCashierReceiptList(Stage s, BorderPane borderPane, Label position) {
+			position.setText("All Receipt ");
 			
-			StackPane contents = cashierOrderList.display(s);
-			
+			StackPane contents = cashierReceiptList.display(s, borderPane);
 			borderPane.setCenter(contents);
-			
 			activityLog.add(contents);
 		}
 	

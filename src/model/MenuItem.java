@@ -34,9 +34,7 @@ public class MenuItem {
 				String name = rs.getString("menu_item_name");
 				String desc = rs.getString("menu_item_description");
 				Double price = Double.valueOf(rs.getString("menu_item_price"));
-				
-				System.out.println(id + name + desc + price);
-				
+								
 				items.add(new MenuItem(id, name, desc, price));
 			}
 		} catch (SQLException e) {
