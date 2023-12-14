@@ -1,4 +1,4 @@
-package view.chef;
+package view.chefwaiter;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,17 +15,21 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.User;
 import view.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
-import controller.chef.ChefMenuController;
+import controller.chefwaiter.ChefWaiterMenuController;
 import controller.customer.CustomerMenuController;
 
-public class ChefMenu {
+public class ChefWaiterMenu {
 	
 	public static MGWindowController windowController = MGWindowController.getInstance();	
 	
+	
 	public void display(Stage s, String option) {
+		
+		User user = UserController.getCurrentUser();
 		
 		MGWindow window = MGWindowController.setWindow(s);
 		StackPane root = window.root;
@@ -45,7 +49,13 @@ public class ChefMenu {
 		
 		borderPane.setTop(header);
 		
-		Label position = new Label("Pending Order ");
+		String pos = new String();
+		if(user.getUserRole().equals("Chef"))
+			pos = "All Pending Order ";
+		else if(user.getUserRole().equals("Waiter"))
+			pos = "All Prepared Order";
+		
+		Label position = new Label(pos);
 		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 		Button allOrder = new Button("All Order");
 		Button logOutBtn = new Button("Log Out");
@@ -62,10 +72,10 @@ public class ChefMenu {
         setStackpane(borderPane, topButtonBox, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
-        ChefMenuController.getDisplay(option, s, borderPane, position);
+        ChefWaiterMenuController.getDisplay(option, s, borderPane, position);
 		
 //     	define semua action button          
-        ChefMenuController.addAction(allOrder, home, s, scene, borderPane, logOutBtn);
+        ChefWaiterMenuController.addAction(allOrder, home, s, scene, borderPane, logOutBtn);
         
 //      masukin semuanya ke stackpane
         root.getChildren().addAll(borderPane, home, topButtonBox);

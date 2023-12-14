@@ -1,4 +1,4 @@
-package controller.chef;
+package controller.chefwaiter;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -22,19 +22,16 @@ import model.Order;
 import model.OrderItem;
 import model.User;
 import view.cashier.CashierViewOrderDetailList;
-import view.chef.ChefOrderDetailList;
+import view.chefwaiter.ChefWaiterOrderDetailList;
 import view.customer.CustomerMenuList;
 import view.customer.CustomerOrderList;
 import view.popup.AddMenuOrder;
 import view.popup.DeleteMenuOrder;
 import view.popup.ProceedOrderPopup;
 
-public class ChefOrderDetailListController {
-	
+public class ChefWaiterOrderDetailListController {
+		
 	public static ActivityLog activityLog = ActivityLog.getInstance();
-
-	static CustomerMenuList customerMenuList = new CustomerMenuList();
-	private static ChefOrderDetailList chefOrderDetailList = new ChefOrderDetailList();
 	
 	public static void refreshTableView(TableView<OrderItem> table, Order order) {
 		ObservableList<OrderItem> items = FXCollections.observableArrayList();
@@ -55,7 +52,7 @@ public class ChefOrderDetailListController {
 	}
 	
 	public static void addAction(
-			Button prepareBtn,
+			Button proceedBtn,
 			Button addBtn,
 			Button updBtn,
 			Button deleteBtn,
@@ -66,7 +63,8 @@ public class ChefOrderDetailListController {
 			BorderPane borderPane
 			)
 	{		
-		
+		User user = UserController.getCurrentUser();
+
 		if(item == null) {
 			updBtn.setDisable(true);
 			deleteBtn.setDisable(true);
@@ -91,6 +89,7 @@ public class ChefOrderDetailListController {
 		
 		addBtn.setOnAction(e ->{ 
 			addBtn.setDisable(true);
+			CustomerMenuList customerMenuList = new CustomerMenuList();
 			StackPane contents = customerMenuList.display(s);
 			borderPane.setCenter(contents);
 			activityLog.add(contents);
@@ -98,21 +97,27 @@ public class ChefOrderDetailListController {
 			refreshTableView(table, order);
 		});
 		
-		prepareBtn.setOnAction(e ->{ 
-			prepareBtn.setDisable(true);
+		proceedBtn.setOnAction(e ->{ 
+			proceedBtn.setDisable(true);
 			 
 			Integer orderId = order.getOrderId();
 			ArrayList<OrderItem> orderItems = order.getOrderItems();
-			String status = "Prepared";
+			
+			String status = new String();
+			if(user.getUserRole().equals("Chef"))
+				status = "Prepared";
+			else if(user.getUserRole().equals("Waiter"))
+				status = "Served";	
 			
 			OrderController.updateOrder(orderId, orderItems, status);
 			
-			ChefMenuController.displayChefMenu("Order");
+			ChefWaiterMenuController.displayChefMenu("Order");
 		});
 		
 	}
 
 	public static StackPane display(Stage s, Order order, BorderPane borderPane) {
+		ChefWaiterOrderDetailList chefOrderDetailList = new ChefWaiterOrderDetailList();
 		return chefOrderDetailList.display(s, order, borderPane);
 	}
 }

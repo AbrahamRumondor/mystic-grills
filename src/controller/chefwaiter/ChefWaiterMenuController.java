@@ -1,4 +1,4 @@
-package controller.chef;
+package controller.chefwaiter;
 
 import controller.MGWindowController;
 import controller.UserController.UserController;
@@ -15,26 +15,23 @@ import model.ActivityLog;
 import model.Order;
 import model.User;
 import view.MGWindow;
+import view.chefwaiter.ChefWaiterMenu;
+import view.chefwaiter.ChefWaiterOrderDetailList;
+import view.chefwaiter.ChefWaiterOrderList;
 import view.customer.CustomerMenu;
 import view.customer.CustomerMenuList;
 import view.customer.CustomerOrderList;
-import view.chef.ChefMenu;
-import view.chef.ChefOrderDetailList;
-import view.chef.ChefOrderList;
 
-public class ChefMenuController {
+public class ChefWaiterMenuController {
 	
 	public static ActivityLog activityLog = ActivityLog.getInstance();
-	private static ChefMenu chefMenu = new ChefMenu();
-
-	static ChefOrderList chefOrderList = new ChefOrderList();
-	static ChefOrderDetailList chefOrderDetailList = new ChefOrderDetailList();
 	
 	public static void getDisplay(String option, Stage s, BorderPane borderPane, Label position) {
         	getChefOrderList(s, borderPane);
 	}
 	
 	public static void displayChefMenu(String option) {
+		ChefWaiterMenu chefMenu = new ChefWaiterMenu();
 		activityLog.getSceneStack().removeAllElements();
 		MGWindow.getWindow().root.getChildren().clear();
 		chefMenu.display(MGWindowController.getWindow().stage, option);
@@ -65,23 +62,8 @@ public class ChefMenuController {
 	    
 	}
 
-//	walaupun order, ini ditaro disini karena CustomerMenu bisa pilih untuk menampilkan menulist atau menampilkan MyOrder
-//	public static void addCustomerOrderAction(Button onGoingOrder, Label position, BorderPane borderPane, Stage s) {
-//		onGoingOrder.setOnAction(
-//	    		e -> {
-//	    			position.setText("On-Going Order ");
-//	    			
-//	    			StackPane contents = customerOrderList.display(s);
-//	    			
-//	    			borderPane.setCenter(contents);
-//	    			
-//	    			activityLog.add(contents);
-//	    		}	
-//	    ); 
-//	}
-
-
 	public static void getChefOrderList(Stage s, BorderPane borderPane) {
+			ChefWaiterOrderList chefOrderList = new ChefWaiterOrderList();	
 			StackPane contents = chefOrderList.display(s, borderPane);
 			borderPane.setCenter(contents);
 			

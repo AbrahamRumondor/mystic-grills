@@ -1,13 +1,14 @@
-package view.chef;
+package view.chefwaiter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import controller.UserController.UserController;
 import controller.admin.AdminMenuListController;
 import controller.admin.AdminUserListController;
 import controller.cashier.CashierOrderListController;
-import controller.chef.ChefOrderListController;
+import controller.chefwaiter.ChefWaiterOrderListController;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -36,9 +37,12 @@ import model.Order;
 import model.Connect;
 
 
-public class ChefOrderList {
+
+public class ChefWaiterOrderList {
 	public static StackPane root;
 
+	private static User user = UserController.getCurrentUser();
+	
 	public static TableView<Order> table;
 	Button orderDetailBtn, proceedBtn;
 	VBox form, namePane, passwordPane, idPane;
@@ -69,7 +73,7 @@ public class ChefOrderList {
 		
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
-		ObservableList<Order> items = ChefOrderListController.getAllData();
+		ObservableList<Order> items = ChefWaiterOrderListController.getAllData();
 		table.setItems(items);
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -81,8 +85,7 @@ public class ChefOrderList {
 				orderDate = newValue.getOrderDate();
 				totalPrice = newValue.getOrderTotal();
 				
-				
-				ChefOrderListController.addAction(
+				ChefWaiterOrderListController.addAction(
 						orderDetailBtn,
 						currentOrder,
 						table,
@@ -92,7 +95,7 @@ public class ChefOrderList {
 			}
 		});
 	
-		ChefOrderListController.addAction(
+		ChefWaiterOrderListController.addAction(
 				orderDetailBtn,
 				currentOrder,
 				table,
@@ -103,7 +106,15 @@ public class ChefOrderList {
 
 	void makeForm(){
 		orderDetailBtn = new Button("View Order Details");
-		proceedBtn = new Button("Prepare Order");
+		
+		String proceedBtnName = new String();
+		
+		if(user.getUserRole().equals("Chef"))
+			proceedBtnName = "Prepare Order";
+		else if(user.getUserRole().equals("Waiter"))
+			proceedBtnName = "Serve Order";
+		
+		proceedBtn = new Button(proceedBtnName);
 
 		HBox buttonPane = new HBox();
 		buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);

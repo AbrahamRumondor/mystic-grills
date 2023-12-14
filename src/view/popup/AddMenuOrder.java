@@ -4,7 +4,7 @@ import javafx.scene.layout.BorderPane;
 import controller.OrderController;
 import controller.OrderItemController;
 import controller.UserController.UserController;
-import controller.chef.ChefOrderDetailListController;
+import controller.chefwaiter.ChefWaiterOrderDetailListController;
 import controller.MGWindowController;
 import controller.customer.CustomerOrderListController;
 import javafx.event.ActionEvent;
@@ -28,7 +28,7 @@ import model.Order;
 import model.OrderItem;
 import model.User;
 import view.MGWindow;
-import view.chef.ChefOrderDetailList;
+import view.chefwaiter.ChefWaiterOrderDetailList;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
@@ -51,9 +51,12 @@ public class AddMenuOrder {
 		
 		Order order;
 		
-		if(user.getUserRole().equals("Chef")) {
+		boolean isChef = user.getUserRole().equals("Chef");
+		boolean isWaiter = user.getUserRole().equals("Waiter");
+		boolean isCustomer = user.getUserRole().equals("Customer");
+		if(isChef || isWaiter) {
 			order = OrderController.getOrder();
-		} else if(user.getUserRole().equals("Customer")) {
+		} else if(isCustomer) {
 			order = OrderController.getOnGoingOrder();
 		} else {
 			order = null;
@@ -98,7 +101,7 @@ public class AddMenuOrder {
 							if(!quantityTxt.getText().equals("0")) {
 								OrderItem newOrderItem = new OrderItem(order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
 								order.getOrderItems().add(newOrderItem);
-								if(user.getUserRole().equals("Chef")) {
+								if(isChef || isWaiter) {
 									Integer idx = order.getOrderId();
 									OrderController.deleteOrder(idx);
 									OrderController.createOrderWithCertainId(idx, order.getOrderUser(), order.getOrderItems(), order.getOrderDate());
@@ -107,7 +110,7 @@ public class AddMenuOrder {
 						} else {
 							if(quantityTxt.getText().equals("0")) {
 								order.getOrderItems().remove(item);
-								if(user.getUserRole().equals("Chef")) {
+								if(isChef || isWaiter) {
 									Integer idx = order.getOrderId();
 									OrderController.deleteOrder(idx);
 									OrderController.createOrderWithCertainId(idx, order.getOrderUser(), order.getOrderItems(), order.getOrderDate());
@@ -117,7 +120,7 @@ public class AddMenuOrder {
 								order.getOrderItems().remove(item);
 								OrderItem newOrderItem = new OrderItem(order.getOrderId(), currentItem, Integer.valueOf(quantityTxt.getText()));
 								order.getOrderItems().add(newOrderItem);
-								if(user.getUserRole().equals("Chef")) {
+								if(isChef || isWaiter) {
 									Integer idx = order.getOrderId();
 									OrderController.deleteOrder(idx);
 									OrderController.createOrderWithCertainId(idx, order.getOrderUser(), order.getOrderItems(), order.getOrderDate());
@@ -129,14 +132,15 @@ public class AddMenuOrder {
 							window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
 	        				activityLog.pop();	
 						}
+						
 						btn.setDisable(false);
 						if(input.equals("Update")) {
-							if(user.getUserRole().equals("Customer")) {
+							if(isCustomer) {
 								TableView<OrderItem> table = CustomerOrderList.table;
 								CustomerOrderListController.refreshTableView(table);
-							} else if(user.getUserRole().equals("Chef")) {
-								TableView<OrderItem> table = ChefOrderDetailList.table;
-								ChefOrderDetailListController.refreshTableView(table, order);
+							} else if(isChef || isWaiter) {
+								TableView<OrderItem> table = ChefWaiterOrderDetailList.table;
+								ChefWaiterOrderDetailListController.refreshTableView(table, order);
 							}
 							
 						}

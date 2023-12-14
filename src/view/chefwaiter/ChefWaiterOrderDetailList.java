@@ -1,4 +1,4 @@
-package view.chef;
+package view.chefwaiter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +10,7 @@ import controller.OrderController;
 import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.cashier.CashierViewOrderDetailListController;
-import controller.chef.ChefOrderDetailListController;
+import controller.chefwaiter.ChefWaiterOrderDetailListController;
 import controller.customer.CustomerDefaultController;
 import controller.customer.CustomerOrderListController;
 
@@ -45,12 +45,14 @@ import model.Connect;
 import model.OrderItem;
 
 
-public class ChefOrderDetailList {
+public class ChefWaiterOrderDetailList {
 	public static StackPane root;
-		
+	
+	private static User user = UserController.getCurrentUser();
+	
 	public static TableView<OrderItem> table;
-	Button updBtn, addBtn, deleteBtn, prepareBtn;
-	VBox namePane, passwordPane, idPane, preparePane, headerPane;
+	Button updBtn, addBtn, deleteBtn, proceedBtn;
+	VBox namePane, passwordPane, idPane, proceedPane, headerPane;
 	Label orderIdLbl, userNameLbl, orderDateLbl, orderStatusLbl, totalLbl;
 	TextField nameTxt, descriptionTxt, priceTxt;
 	HBox buttonPane;
@@ -76,7 +78,7 @@ public class ChefOrderDetailList {
 		
 		table.getColumns().addAll(menuNameColumn, priceColumn, quantityColumn, totalColumn);
 
-		ObservableList<OrderItem> items = ChefOrderDetailListController.getAllData(order);
+		ObservableList<OrderItem> items = ChefWaiterOrderDetailListController.getAllData(order);
 		table.setItems(items);
 		
 		OrderController.setOrder(order);
@@ -85,8 +87,8 @@ public class ChefOrderDetailList {
 			if (newValue != null) {
 				currentMenu = newValue.getMenuItem();
 				orderId = newValue.getOrderId();
-				ChefOrderDetailListController.addAction(
-						prepareBtn,
+				ChefWaiterOrderDetailListController.addAction(
+						proceedBtn,
 						addBtn,
 						updBtn,
 						deleteBtn,
@@ -99,8 +101,8 @@ public class ChefOrderDetailList {
 			}
 		});
 		
-		ChefOrderDetailListController.addAction(
-				prepareBtn,
+		ChefWaiterOrderDetailListController.addAction(
+				proceedBtn,
 				addBtn,
 				updBtn,
 				deleteBtn,
@@ -143,11 +145,18 @@ public class ChefOrderDetailList {
 	}
 	
 	void makeSubmitPane(Order order){
-		prepareBtn = new Button("Prepare Order");
+		String proceedBtnName = new String();
 		
-		preparePane = new VBox();
-		preparePane.getChildren().addAll( prepareBtn);
-		preparePane.setAlignment(Pos.BOTTOM_RIGHT);
+		if(user.getUserRole().equals("Chef"))
+			proceedBtnName = "Prepare Order";
+		else if(user.getUserRole().equals("Waiter"))
+			proceedBtnName = "Serve Order";
+		
+		proceedBtn = new Button(proceedBtnName);
+		
+		proceedPane = new VBox();
+		proceedPane.getChildren().addAll( proceedBtn);
+		proceedPane.setAlignment(Pos.BOTTOM_RIGHT);
 	}
 	
 	public StackPane display(Stage s, Order order, BorderPane borderPane) {
@@ -158,13 +167,13 @@ public class ChefOrderDetailList {
 		
 
 		VBox page = new VBox(10);
-		page.getChildren().addAll(headerPane, buttonPane, table, preparePane);
+		page.getChildren().addAll(headerPane, buttonPane, table, proceedPane);
 		page.setPadding(new Insets(10));
 
 		root = new StackPane();
 		root.getChildren().add(page);
 		
-		ChefOrderDetailListController.refreshTableView(table, order);
+		ChefWaiterOrderDetailListController.refreshTableView(table, order);
 		
 		return root;
 	}

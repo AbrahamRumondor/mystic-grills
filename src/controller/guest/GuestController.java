@@ -4,7 +4,7 @@ import controller.OrderController;
 import controller.UserController.UserController;
 import controller.admin.AdminDefaultController;
 import controller.cashier.CashierDefaultController;
-import controller.chef.ChefMenuController;
+import controller.chefwaiter.ChefWaiterMenuController;
 import controller.customer.CustomerDefaultController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,7 +36,7 @@ public class GuestController {
 	private static GuestSignup guestSignup = new GuestSignup();
 	private static GuestLogin guestLogin = new GuestLogin();
 	private static GuestDefault guestDefault = new GuestDefault();
-	
+		
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
 //	routing 
@@ -100,8 +100,9 @@ public class GuestController {
     	            		AdminDefaultController.goToAdminDefault();
     	            	else if(user.getUserRole().equals("Cashier"))
     	            		CashierDefaultController.goToCashierDefault();
-    	            	else if(user.getUserRole().equals("Chef"))
-    	            		ChefMenuController.displayChefMenu("Order");
+    	            	else if(user.getUserRole().equals("Chef") || 
+    	            			user.getUserRole().equals("Waiter"))
+    	            		ChefWaiterMenuController.displayChefMenu("Order");
     	            }
         		}	
         ); 

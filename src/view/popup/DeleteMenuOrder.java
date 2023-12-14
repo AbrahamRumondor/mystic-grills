@@ -4,7 +4,7 @@ import javafx.scene.layout.BorderPane;
 import controller.OrderController;
 import controller.OrderItemController;
 import controller.UserController.UserController;
-import controller.chef.ChefOrderDetailListController;
+import controller.chefwaiter.ChefWaiterOrderDetailListController;
 import controller.MGWindowController;
 import controller.customer.CustomerOrderListController;
 import javafx.event.ActionEvent;
@@ -28,7 +28,7 @@ import model.Order;
 import model.OrderItem;
 import model.User;
 import view.MGWindow;
-import view.chef.ChefOrderDetailList;
+import view.chefwaiter.ChefWaiterOrderDetailList;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
@@ -103,8 +103,8 @@ public class DeleteMenuOrder {
 						OrderController.deleteOrder(idx);
 						OrderController.createOrderWithCertainId(idx, order.getOrderUser(), order.getOrderItems(), order.getOrderDate());
 						
-						TableView<OrderItem> table = ChefOrderDetailList.table;
-						ChefOrderDetailListController.refreshTableView(table, order);
+						TableView<OrderItem> table = ChefWaiterOrderDetailList.table;
+						ChefWaiterOrderDetailListController.refreshTableView(table, order);
 					}
 				}
 		);

@@ -1,8 +1,9 @@
-package controller.chef;
+package controller.chefwaiter;
 
 import java.util.ArrayList;
 
 import controller.OrderController;
+import controller.UserController.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -23,20 +24,41 @@ import view.popup.DeletePopup;
 import view.popup.ProceedOrderPopup;
 import view.popup.UpdateUser;
 
-public class ChefOrderListController {
+public class ChefWaiterOrderListController {
+	
 	
 	public static ActivityLog activityLog = ActivityLog.getInstance();
 	
 	public static ObservableList<Order> getAllData() {
-		ObservableList<Order> orders = FXCollections.observableArrayList();
-		
+		User user = UserController.getCurrentUser();
+		ObservableList<Order> ordersC = FXCollections.observableArrayList();
+		ObservableList<Order> ordersW = FXCollections.observableArrayList();
+
 		ArrayList<Order> arrayOrders = OrderController.getAllOrders();
 		
 		for (Order order : arrayOrders) {
-			if(order.getOrderStatus().equals("Pending"))
-				orders.add(order);
+			
+			if(user.getUserRole().equals("Chef")) {
+				System.out.println("SAYA CHEF");
+				if(order.getOrderStatus().equals("Pending")) {
+					ordersC.add(order);
+				}
+			}
+			
+			if(user.getUserRole().equals("Waiter")) {
+				if(order.getOrderStatus().equals("Prepared")) {
+					ordersW.add(order);
+				}
+			}
+			
 		}
-		return orders;
+		
+		if(user.getUserRole().equals("Chef")) {
+			return ordersC;
+		}else {
+			return ordersW;
+		}
+		
 	}
 	
 	public static void refreshTableView(TableView<Order> table) {
@@ -49,38 +71,45 @@ public class ChefOrderListController {
 			Button orderDetailBtn,
 			Order order,
 			TableView<Order> table,
-			Button prepareBtn,
+			Button proceedBtn,
 			Stage s,
 			BorderPane borderPane)
-	{
+	{	
+		User user = UserController.getCurrentUser();
+		
 		if(order == null) {
 			orderDetailBtn.setDisable(true);
-			prepareBtn.setDisable(true);
+			proceedBtn.setDisable(true);
 		}
 		else {
 			orderDetailBtn.setDisable(false);
-			prepareBtn.setDisable(false);
+			proceedBtn.setDisable(false);
 		}
 		
 		orderDetailBtn.setOnAction(e ->{ 
 			orderDetailBtn.setDisable(true);
-			prepareBtn.setDisable(true);
+			proceedBtn.setDisable(true);
 			
-			StackPane contents = ChefOrderDetailListController.display(s, order, borderPane);
+			StackPane contents = ChefWaiterOrderDetailListController.display(s, order, borderPane);
 			borderPane.setCenter(contents);
 			activityLog.add(contents);
 		});
 		
-		prepareBtn.setOnAction(e ->{ 
-			prepareBtn.setDisable(true);
+		proceedBtn.setOnAction(e ->{ 
+			proceedBtn.setDisable(true);
 			 
 			Integer orderId = order.getOrderId();
 			ArrayList<OrderItem> orderItems = order.getOrderItems();
-			String status = "Prepared";
+			
+			String status = new String();
+			if(user.getUserRole().equals("Chef"))
+				status = "Prepared";
+			else if(user.getUserRole().equals("Waiter"))
+				status = "Served";	
 			
 			OrderController.updateOrder(orderId, orderItems, status);
 			
-			ChefMenuController.displayChefMenu("Order");
+			ChefWaiterMenuController.displayChefMenu("Order");
 		});
 		
 	}
