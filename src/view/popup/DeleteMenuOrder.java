@@ -3,7 +3,9 @@ package view.popup;
 import javafx.scene.layout.BorderPane;
 import controller.OrderController;
 import controller.OrderItemController;
-import controller.WindowController;
+import controller.UserController.UserController;
+import controller.chef.ChefOrderDetailListController;
+import controller.MGWindowController;
 import controller.customer.CustomerOrderListController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,7 +26,9 @@ import model.ActivityLog;
 import model.MenuItem;
 import model.Order;
 import model.OrderItem;
+import model.User;
 import view.MGWindow;
+import view.chef.ChefOrderDetailList;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
@@ -39,9 +43,22 @@ public class DeleteMenuOrder {
 	static Label nameLbl, descriptionLbl, quantityLbl;
 	static TextField nameTxt, descriptionTxt, quantityTxt;
 	
+	private static User user = UserController.getCurrentUser();
+
+	
 	public static StackPane show(MenuItem currentItem, Button btn) {
 		
-		MGWindow window = WindowController.getWindow();
+		Order order;
+		
+		if(user.getUserRole().equals("Chef")) {
+			order = OrderController.getOrder();
+		} else if(user.getUserRole().equals("Customer")) {
+			order = OrderController.getOnGoingOrder();
+		} else {
+			order = null;
+		}
+		
+		MGWindow window = MGWindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
@@ -65,12 +82,12 @@ public class DeleteMenuOrder {
 		buttonPane.getChildren().addAll(confirmBtn);
 		buttonPane.setAlignment(Pos.BOTTOM_CENTER);
 		
-		OrderItem item = OrderItemController.getOrderItemInList(currentItem);
+		OrderItem item = OrderItemController.getOrderItemInList(currentItem, order);
 		
 
 		confirmBtn.setOnAction(
 				e -> {
-					OrderController.getOnGoingOrderItems().remove(item);
+					order.getOrderItems().remove(item);
 
 					if(activityLog.getSceneStack().size() > 1) {
 						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
@@ -78,8 +95,17 @@ public class DeleteMenuOrder {
 					}
 					btn.setDisable(false);
 					
-					TableView<OrderItem> table = CustomerOrderListController.getTable();
-					CustomerOrderListController.refreshTableView(table);
+					if(user.getUserRole().equals("Customer")) {
+						TableView<OrderItem> table = CustomerOrderListController.getTable();
+						CustomerOrderListController.refreshTableView(table);
+					} else if(user.getUserRole().equals("Chef")) {
+						Integer idx = order.getOrderId();
+						OrderController.deleteOrder(idx);
+						OrderController.createOrderWithCertainId(idx, order.getOrderUser(), order.getOrderItems(), order.getOrderDate());
+						
+						TableView<OrderItem> table = ChefOrderDetailList.table;
+						ChefOrderDetailListController.refreshTableView(table, order);
+					}
 				}
 		);
 		

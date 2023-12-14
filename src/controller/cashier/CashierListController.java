@@ -1,6 +1,6 @@
 package controller.cashier;
 
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.guest.GuestController;
 import javafx.geometry.Pos;
@@ -44,7 +44,7 @@ public class CashierListController {
 	public static void displayOrderMenu(String option) {
 		activityLog.getSceneStack().removeAllElements();
 		MGWindow.getWindow().root.getChildren().clear();
-		cashierList.display(WindowController.getWindow().stage, option);
+		cashierList.display(MGWindowController.getWindow().stage, option);
 	}
 	
 	public static void addAction(Button orderBtn, Button home, Button receiptBtn, Stage s, Scene scene, BorderPane borderPane, Button logOutBtn) {
@@ -69,7 +69,7 @@ public class CashierListController {
 	    
 	    logOutBtn.setOnAction(
 	    		e -> {
-	    			WindowController.activityLog.getSceneStack().removeAllElements();
+	    			MGWindowController.activityLog.getSceneStack().removeAllElements();
 	    			MGWindow.getWindow().root.getChildren().clear();
 	    			
 	    			GuestController.displayGuestDefault(s);

@@ -1,6 +1,6 @@
 package controller.cashier;
 
-import controller.WindowController;
+import controller.MGWindowController;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -38,7 +38,7 @@ public class CashierDefaultController {
 
 	public static void goToCashierDefault() {
 	//		remove stack, remove isi stackpane
-			WindowController.activityLog.getSceneStack().removeAllElements();
+			MGWindowController.activityLog.getSceneStack().removeAllElements();
 			MGWindow.getWindow().root.getChildren().clear();
 
 			cashierDefault.display(MGWindow.getWindow().stage);

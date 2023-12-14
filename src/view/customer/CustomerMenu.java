@@ -16,17 +16,17 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
 import view.MGWindow;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.*;
 import controller.customer.CustomerMenuController;
 
 public class CustomerMenu {
 	
-	public static WindowController windowController = WindowController.getInstance();	
+	public static MGWindowController windowController = MGWindowController.getInstance();	
 	
 	public void display(Stage s, String option) {
 		
-		MGWindow window = WindowController.setWindow(s);
+		MGWindow window = MGWindowController.setWindow(s);
 		StackPane root = window.root;
 		Scene scene = window.scene;
 		

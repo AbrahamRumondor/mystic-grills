@@ -151,6 +151,33 @@ public class Order {
 		
 	}
 	
+//	Tujuan kelas ini dibuat karena untuk chef bisa terus update/add Order, saya cuma menemukan cara dengan dihapus lalu create lagi.
+	public static boolean createOrderWithCertainId(Integer userId, User user, ArrayList<OrderItem> orderItems, Date orderDate) {
+		
+		String query = "INSERT INTO `mystic_grills`.`order` (`order_id`, `user_id`, `order_status`, `order_date`) VALUES (?, ?, ?, ?);";
+
+		System.out.println(user);
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, userId);
+			prep.setInt(2, user.getUserId());
+			prep.setString(3, "Pending");
+			prep.setDate(4, orderDate);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		for(OrderItem item : orderItems) {
+			OrderItemController.createOrderItem(item.getOrderId(), item.getMenuItem().getMenuItemId(), item.getQuantity());
+		}
+		
+		return true;
+		
+	}
+	
 	public static void updateOrder(Integer orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
 //		NOTE: karena sepanjang aplikasi update hanya ada update status, jadi orderItems disini tidak dipakai.
 		String query = "UPDATE `mystic_grills`.`order` SET `order_status` = ? WHERE (`order_id` = ?);";
@@ -159,6 +186,19 @@ public class Order {
 		try {
 			prep.setString(1, orderStatus);
 			prep.setInt(2, orderId);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	public static void deleteOrder(Integer orderId) {
+		String query = "DELETE FROM `mystic_grills`.`order` WHERE (`order_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, orderId);
 			Connect.getConnection().executePreparedUpdate(prep);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block

@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import model.ActivityLog;
 import model.User;
 import view.MGWindow;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.*;
 import controller.admin.AdminDefaultController;
 import controller.cashier.CashierDefaultController;
@@ -29,7 +29,7 @@ public class CashierDefault {
 	
 	public void display(Stage s) {
 		
-		MGWindow window = WindowController.setWindow(s);
+		MGWindow window = MGWindowController.setWindow(s);
 		
 		StackPane root = window.root;
 		Scene scene = window.scene;

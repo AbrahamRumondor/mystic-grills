@@ -1,6 +1,6 @@
 package controller.admin;
 
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.guest.GuestController;
 import javafx.geometry.Pos;
@@ -39,7 +39,7 @@ public class AdminListController {
 	public static void displayAdminMenu(String option) {
 		activityLog.getSceneStack().removeAllElements();
 		MGWindow.getWindow().root.getChildren().clear();
-		adminList.display(WindowController.getWindow().stage, option);
+		adminList.display(MGWindowController.getWindow().stage, option);
 	}
 	
 	public static void addAction(Button allMenuBtn, Button home, Button viewOrderBtn, Stage s, Scene scene, BorderPane borderPane, Button logOutBtn) {
@@ -64,7 +64,7 @@ public class AdminListController {
 	    
 	    logOutBtn.setOnAction(
 	    		e -> {
-	    			WindowController.activityLog.getSceneStack().removeAllElements();
+	    			MGWindowController.activityLog.getSceneStack().removeAllElements();
 	    			MGWindow.getWindow().root.getChildren().clear();
 	    			
 	    			GuestController.displayGuestDefault(s);

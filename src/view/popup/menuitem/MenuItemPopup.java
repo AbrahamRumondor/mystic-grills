@@ -3,7 +3,7 @@ package view.popup.menuitem;
 import javafx.scene.layout.BorderPane;
 import controller.MenuItemController;
 import controller.OrderItemController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.admin.AdminMenuListController;
 import controller.admin.AdminUserListController;
@@ -47,7 +47,7 @@ public class MenuItemPopup {
 	
 	public static StackPane show(Button btn, Button updateBtn, Button deleteBtn, MenuItem chosenMenu, String action) {		
 		
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		

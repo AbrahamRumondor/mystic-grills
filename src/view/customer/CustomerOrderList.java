@@ -7,7 +7,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 
 import controller.OrderController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.customer.CustomerDefaultController;
 import controller.customer.CustomerOrderListController;

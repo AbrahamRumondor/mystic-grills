@@ -1,7 +1,7 @@
 package view;
 
 import javafx.scene.layout.BorderPane;
-import controller.WindowController;
+import controller.MGWindowController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,11 +25,11 @@ public class Notification {
 	
 	public static StackPane showErrorMessage(String message) {
 		
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
-		Label errorMessage = new Label("Error Message");
+		Label errorMessage = new Label("Notification");
 		Label content = new Label(message);
 		Font font = Font.font(null, FontWeight.BOLD, 20);
 		errorMessage.setFont(font);

@@ -1,4 +1,4 @@
-package view.cashier;
+package view.chef;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import controller.OrderController;
 import controller.MGWindowController;
 import controller.UserController.UserController;
-import controller.cashier.CashierReceiptDetailListController;
 import controller.cashier.CashierViewOrderDetailListController;
+import controller.chef.ChefOrderDetailListController;
 import controller.customer.CustomerDefaultController;
 import controller.customer.CustomerOrderListController;
 
@@ -45,22 +45,24 @@ import model.Connect;
 import model.OrderItem;
 
 
-public class CashierReceiptDetailList {
+public class ChefOrderDetailList {
 	public static StackPane root;
 		
 	public static TableView<OrderItem> table;
-	VBox namePane, passwordPane, idPane, totalPricePane, headerPane;
+	Button updBtn, addBtn, deleteBtn, prepareBtn;
+	VBox namePane, passwordPane, idPane, preparePane, headerPane;
 	Label orderIdLbl, userNameLbl, orderDateLbl, orderStatusLbl, totalLbl;
 	TextField nameTxt, descriptionTxt, priceTxt;
+	HBox buttonPane;
 	
 	Integer orderId;
 //	User orderUser;
 //	Date orderDate;
 //	String orderStatus;
 	
-	OrderItem currentItem;
+	MenuItem currentMenu;
 	
-	private void makeTable(Order order) {
+	private void makeTable(Order order, Stage s, BorderPane borderPane) {
 		table = new TableView<>();
 		
 		TableColumn<OrderItem, String> menuNameColumn = new TableColumn<>("Menu Name");
@@ -74,14 +76,39 @@ public class CashierReceiptDetailList {
 		
 		table.getColumns().addAll(menuNameColumn, priceColumn, quantityColumn, totalColumn);
 
-		ObservableList<OrderItem> items = CashierReceiptDetailListController.getAllData(order);
+		ObservableList<OrderItem> items = ChefOrderDetailListController.getAllData(order);
 		table.setItems(items);
-
+		
+		OrderController.setOrder(order);
+		
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
+				currentMenu = newValue.getMenuItem();
 				orderId = newValue.getOrderId();
+				ChefOrderDetailListController.addAction(
+						prepareBtn,
+						addBtn,
+						updBtn,
+						deleteBtn,
+						order,
+						table,
+						currentMenu,
+						s,
+						borderPane);
+
 			}
 		});
+		
+		ChefOrderDetailListController.addAction(
+				prepareBtn,
+				addBtn,
+				updBtn,
+				deleteBtn,
+				order,
+				table,
+				currentMenu,
+				s,
+				borderPane);
 	}
 	
 	void headerPane(Order order) {
@@ -105,32 +132,39 @@ public class CashierReceiptDetailList {
 		 headerPane.setPadding(new Insets(10));
 	}
 	
+	void makeForm(Order order){
+		addBtn = new Button("Add New Menu");
+		updBtn = new Button("Update Order Menu");
+		deleteBtn = new Button("Delete Order Menu");
+
+		buttonPane = new HBox();
+		buttonPane.getChildren().addAll(addBtn, updBtn, deleteBtn);
+		buttonPane.setSpacing(5);
+	}
 	
 	void makeSubmitPane(Order order){
-		String total = order.getOrderTotalString();
-		totalLbl = new Label("Total Price: $" + total);
-		totalLbl.setFont(Font.font(null, FontWeight.BOLD, 16));
+		prepareBtn = new Button("Prepare Order");
 		
-		totalPricePane = new VBox();
-		totalPricePane.getChildren().addAll(totalLbl);
-		totalPricePane.setSpacing(10);
-		totalPricePane.setAlignment(Pos.BOTTOM_RIGHT);
+		preparePane = new VBox();
+		preparePane.getChildren().addAll( prepareBtn);
+		preparePane.setAlignment(Pos.BOTTOM_RIGHT);
 	}
 	
 	public StackPane display(Stage s, Order order, BorderPane borderPane) {
+		makeForm(order);
 		headerPane(order);
 		makeSubmitPane(order);
-		makeTable(order);
+		makeTable(order, s, borderPane);
 		
 
 		VBox page = new VBox(10);
-		page.getChildren().addAll(headerPane, table, totalPricePane);
+		page.getChildren().addAll(headerPane, buttonPane, table, preparePane);
 		page.setPadding(new Insets(10));
 
 		root = new StackPane();
 		root.getChildren().add(page);
 		
-		CashierReceiptDetailListController.refreshTableView(table, order);
+		ChefOrderDetailListController.refreshTableView(table, order);
 		
 		return root;
 	}

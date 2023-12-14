@@ -2,7 +2,7 @@ package view.popup;
 
 import javafx.scene.layout.BorderPane;
 import controller.OrderItemController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.admin.AdminUserListController;
 import controller.customer.CustomerOrderListController;
@@ -49,7 +49,7 @@ public class UpdateUser {
 		
 		System.out.println(currentUser == null);
 		
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		

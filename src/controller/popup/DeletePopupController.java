@@ -1,7 +1,7 @@
 package controller.popup;
 
 import controller.MenuItemController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.admin.AdminMenuListController;
 import controller.admin.AdminUserListController;
@@ -26,7 +26,7 @@ public class DeletePopupController {
 	}
 	
 	public static void setDeleteConfirmBtn(Integer id, Button confirmBtn, Button updateBtn, String target, Button addBtn) {
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		confirmBtn.setOnAction(
 				e -> {

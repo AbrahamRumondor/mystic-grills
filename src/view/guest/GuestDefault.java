@@ -16,7 +16,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
 import view.MGWindow;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.*;
 import controller.guest.GuestController;
 
@@ -26,7 +26,7 @@ public class GuestDefault {
 	
 	public void display(Stage s) {
 		
-		MGWindow window = WindowController.setWindow(s);
+		MGWindow window = MGWindowController.setWindow(s);
 		StackPane root = window.root;
 		Scene scene = window.scene;
 		BorderPane borderPane = new BorderPane();	
@@ -64,7 +64,6 @@ public class GuestDefault {
 	
 //	set stackpane
 	public static void setStackpaneItems(BorderPane borderPane, Button back, StackPane root) {
-//		set borderpane ke stackpane
 		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
         StackPane.setMargin(back, new Insets(12,10,10,10));
         StackPane.setAlignment(back, Pos.TOP_LEFT);

@@ -4,6 +4,7 @@ import controller.OrderController;
 import controller.UserController.UserController;
 import controller.admin.AdminDefaultController;
 import controller.cashier.CashierDefaultController;
+import controller.chef.ChefMenuController;
 import controller.customer.CustomerDefaultController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -99,6 +100,8 @@ public class GuestController {
     	            		AdminDefaultController.goToAdminDefault();
     	            	else if(user.getUserRole().equals("Cashier"))
     	            		CashierDefaultController.goToCashierDefault();
+    	            	else if(user.getUserRole().equals("Chef"))
+    	            		ChefMenuController.displayChefMenu("Order");
     	            }
         		}	
         ); 

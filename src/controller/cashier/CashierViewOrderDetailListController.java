@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import controller.OrderController;
 import controller.OrderItemController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +27,7 @@ import view.popup.ProceedOrderPopup;
 
 public class CashierViewOrderDetailListController {
 	
-	private static WindowController windowController = WindowController.getInstance();
+	private static MGWindowController windowController = MGWindowController.getInstance();
 	
 	private static CashierViewOrderDetailList cashierOrderDetailList = new CashierViewOrderDetailList();
 	
@@ -62,10 +62,6 @@ public class CashierViewOrderDetailListController {
 		});
 		
 		
-	}
-
-	public static TableView<OrderItem> getTable(){
-		return CustomerOrderList.table;
 	}
 	
 	public static StackPane display(Stage s, Order order, BorderPane borderPane) {

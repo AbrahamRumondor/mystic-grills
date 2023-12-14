@@ -1,4 +1,4 @@
-package view.admin;
+package view.chef;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,10 +18,10 @@ import model.ActivityLog;
 import view.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
-import controller.admin.AdminListController;
+import controller.chef.ChefMenuController;
 import controller.customer.CustomerMenuController;
 
-public class AdminList {
+public class ChefMenu {
 	
 	public static MGWindowController windowController = MGWindowController.getInstance();	
 	
@@ -45,17 +45,16 @@ public class AdminList {
 		
 		borderPane.setTop(header);
 		
-		Label position = new Label();
+		Label position = new Label("Pending Order ");
 		position.setFont(Font.font(null, FontWeight.BOLD, 20));
-		Button allMenuBtn = new Button("View Menu");
-		Button viewOrderBtn = new Button("View User");
+		Button allOrder = new Button("All Order");
 		Button logOutBtn = new Button("Log Out");
 		
 		HBox topButtonBox = new HBox();
 		topButtonBox.setMaxSize(450, 50);
 		topButtonBox.setAlignment(Pos.TOP_RIGHT);
 		topButtonBox.setSpacing(20);
-		topButtonBox.getChildren().addAll(position, allMenuBtn, viewOrderBtn, logOutBtn);
+		topButtonBox.getChildren().addAll(position, allOrder, logOutBtn);
 		
 //		set button back ke stackpane
 		Button home = new Button("Home");
@@ -63,10 +62,10 @@ public class AdminList {
         setStackpane(borderPane, topButtonBox, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
-        AdminListController.getDisplay(option, s, borderPane, position);
+        ChefMenuController.getDisplay(option, s, borderPane, position);
 		
 //     	define semua action button          
-        AdminListController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane, logOutBtn);
+        ChefMenuController.addAction(allOrder, home, s, scene, borderPane, logOutBtn);
         
 //      masukin semuanya ke stackpane
         root.getChildren().addAll(borderPane, home, topButtonBox);

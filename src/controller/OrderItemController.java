@@ -12,9 +12,9 @@ import model.OrderItem;
 
 public class OrderItemController {
 	
-	public static OrderItem getOrderItemInList(MenuItem currentItem) {
+	public static OrderItem getOrderItemInList(MenuItem currentItem, Order order) {
 		
-		for(OrderItem i : OrderController.getOnGoingOrderItems()) {
+		for(OrderItem i : order.getOrderItems()) {
 			if(i.getMenuItem().getMenuItemId() == currentItem.getMenuItemId()) {
 				return i;
 			}

@@ -2,7 +2,7 @@ package model;
 
 import java.util.Stack;
 
-import controller.WindowController;
+import controller.MGWindowController;
 import javafx.scene.Node;
 import view.MGWindow;
 

@@ -1,6 +1,6 @@
 package controller.customer;
 
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.guest.GuestController;
 import javafx.geometry.Pos;
@@ -37,7 +37,7 @@ public class CustomerMenuController {
 	public static void displayCustomerMenu(String option) {
 		activityLog.getSceneStack().removeAllElements();
 		MGWindow.getWindow().root.getChildren().clear();
-		customerMenu.display(WindowController.getWindow().stage, option);
+		customerMenu.display(MGWindowController.getWindow().stage, option);
 	}
 	
 	public static void addAction(Button allMenuBtn, Button home, Button viewOrderBtn, Stage s, Scene scene, BorderPane borderPane, Button logOutBtn) {
@@ -63,7 +63,7 @@ public class CustomerMenuController {
 	    
 	    logOutBtn.setOnAction(
 	    		e -> {
-	    			WindowController.activityLog.getSceneStack().removeAllElements();
+	    			MGWindowController.activityLog.getSceneStack().removeAllElements();
 	    			MGWindow.getWindow().root.getChildren().clear();
 	    			
 	    			GuestController.displayGuestDefault(s);

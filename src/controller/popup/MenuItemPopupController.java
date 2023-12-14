@@ -1,7 +1,7 @@
 package controller.popup;
 
 import controller.MenuItemController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.admin.AdminMenuListController;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
@@ -21,7 +21,7 @@ public class MenuItemPopupController {
 			Button confirmBtn, 
 			Button btn) 
 	{
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		confirmBtn.setOnAction(
 				e -> {
@@ -70,7 +70,7 @@ public class MenuItemPopupController {
 			Button updateBtn, 
 			Button btn) 
 	{
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		nameTxt.setText(chosenMenu.getMenuItemName());
 		descTxt.setText(chosenMenu.getMenuItemDescription());

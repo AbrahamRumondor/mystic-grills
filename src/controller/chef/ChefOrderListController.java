@@ -1,4 +1,4 @@
-package controller.cashier;
+package controller.chef;
 
 import java.util.ArrayList;
 
@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import model.ActivityLog;
 import model.MenuItem;
 import model.Order;
+import model.OrderItem;
 import model.User;
 import view.admin.AdminUserList;
 import view.cashier.CashierOrderList;
@@ -22,7 +23,7 @@ import view.popup.DeletePopup;
 import view.popup.ProceedOrderPopup;
 import view.popup.UpdateUser;
 
-public class CashierOrderListController {
+public class ChefOrderListController {
 	
 	public static ActivityLog activityLog = ActivityLog.getInstance();
 	
@@ -31,10 +32,8 @@ public class CashierOrderListController {
 		
 		ArrayList<Order> arrayOrders = OrderController.getAllOrders();
 		
-//		karena kita cuma punya status yg bisa buat control flow order
-//		maka sebaiknya hanya bisa bayar saat sudah served.
 		for (Order order : arrayOrders) {
-			if(order.getOrderStatus().equals("Served"))
+			if(order.getOrderStatus().equals("Pending"))
 				orders.add(order);
 		}
 		return orders;
@@ -48,42 +47,43 @@ public class CashierOrderListController {
 	
 	public static void addAction(
 			Button orderDetailBtn,
-			Order currentOrder,
+			Order order,
 			TableView<Order> table,
-			Button proceedBtn,
+			Button prepareBtn,
 			Stage s,
 			BorderPane borderPane)
 	{
-		if(currentOrder == null) {
+		if(order == null) {
 			orderDetailBtn.setDisable(true);
-			proceedBtn.setDisable(true);
+			prepareBtn.setDisable(true);
 		}
 		else {
 			orderDetailBtn.setDisable(false);
-			proceedBtn.setDisable(false);
+			prepareBtn.setDisable(false);
 		}
 		
 		orderDetailBtn.setOnAction(e ->{ 
 			orderDetailBtn.setDisable(true);
-			proceedBtn.setDisable(true);
+			prepareBtn.setDisable(true);
 			
-			StackPane contents = CashierViewOrderDetailListController.display(s, currentOrder, borderPane);
+			StackPane contents = ChefOrderDetailListController.display(s, order, borderPane);
 			borderPane.setCenter(contents);
 			activityLog.add(contents);
 		});
 		
-		proceedBtn.setOnAction(e ->{ 
-			orderDetailBtn.setDisable(true);
-			proceedBtn.setDisable(true);
-			ProceedOrderPopup.show(currentOrder, proceedBtn, "Order");
+		prepareBtn.setOnAction(e ->{ 
+			prepareBtn.setDisable(true);
+			 
+			Integer orderId = order.getOrderId();
+			ArrayList<OrderItem> orderItems = order.getOrderItems();
+			String status = "Prepared";
 			
-			refreshTableView(table);
+			OrderController.updateOrder(orderId, orderItems, status);
+			
+			ChefMenuController.displayChefMenu("Order");
 		});
 		
 	}
 	
-	public static TableView<Order> getTable(){
-		return CashierOrderList.table;
-	}
 	
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import controller.OrderController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +21,7 @@ import view.popup.DeleteMenuOrder;
 
 public class CustomerOrderListController {
 	
-	private static WindowController windowController = WindowController.getInstance();
+	private static MGWindowController windowController = MGWindowController.getInstance();
 		
 	public static void refreshTableView(TableView<OrderItem> table) {
 		ObservableList<OrderItem> items = FXCollections.observableArrayList();

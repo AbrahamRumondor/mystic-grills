@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import controller.OrderController;
 import controller.OrderItemController;
 import controller.ReceiptController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.admin.AdminUserListController;
 import controller.cashier.CashierOrderListController;
@@ -57,7 +57,7 @@ public class ProceedOrderPopup {
 			String position) {
 		
 		
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		

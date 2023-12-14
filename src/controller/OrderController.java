@@ -22,6 +22,10 @@ public class OrderController {
 		order = currentOrder;
 	}
 	
+	public static Order getOrder() {
+		return order;
+	}
+	
 	public static Integer getLatestOrderId() {
 		return Order.getLastOrderId();
 	}
@@ -44,6 +48,10 @@ public class OrderController {
 		
 	}
 	
+	public static boolean createOrderWithCertainId(Integer userId, User user, ArrayList<OrderItem> orderItems, Date orderDate) {
+		return Order.createOrderWithCertainId(userId, user, orderItems, orderDate);
+	}
+	
 	public static ArrayList<Order>getAllOrders() {
 		return Order.getAllOrders();
 	}
@@ -63,6 +71,10 @@ public class OrderController {
 	public static void updateOrder(Integer orderId, ArrayList<OrderItem> orderItems, String string) {
 		// TODO Auto-generated method stub
 		Order.updateOrder(orderId, orderItems, string);
+	}
+	
+	public static void deleteOrder(Integer orderId) {
+		Order.deleteOrder(orderId);
 	}
 	
 }

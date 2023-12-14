@@ -1,6 +1,6 @@
 package controller.customer;
 
-import controller.WindowController;
+import controller.MGWindowController;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -11,7 +11,7 @@ import controller.customer.CustomerMenuController;
 
 public class CustomerDefaultController {
 	
-	private static WindowController windowController = WindowController.getInstance();
+	private static MGWindowController windowController = MGWindowController.getInstance();
 
 	
 	public static void addAction(Button allMenu, Button orderedMenu, Stage s, Scene scene, BorderPane borderPane) {
@@ -31,10 +31,10 @@ public class CustomerDefaultController {
 
 	public static void goToCustomerDefault() {
 	//		remove stack, remove isi stackpane
-			WindowController.activityLog.getSceneStack().removeAllElements();
+			MGWindowController.activityLog.getSceneStack().removeAllElements();
 			MGWindow.getWindow().root.getChildren().clear();
 			
-			WindowController.customerDefault.display(MGWindow.getWindow().stage);
+			MGWindowController.customerDefault.display(MGWindow.getWindow().stage);
 		}
 	
 }

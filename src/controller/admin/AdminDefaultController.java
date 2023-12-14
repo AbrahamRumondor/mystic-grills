@@ -1,6 +1,6 @@
 package controller.admin;
 
-import controller.WindowController;
+import controller.MGWindowController;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -37,7 +37,7 @@ public class AdminDefaultController {
 
 	public static void goToAdminDefault() {
 	//		remove stack, remove isi stackpane
-			WindowController.activityLog.getSceneStack().removeAllElements();
+			MGWindowController.activityLog.getSceneStack().removeAllElements();
 			MGWindow.getWindow().root.getChildren().clear();
 
 			adminDefault.display(MGWindow.getWindow().stage);

@@ -1,7 +1,7 @@
 package view.guest;
 
 import model.ActivityLog;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.guest.GuestController;
 import javafx.event.ActionEvent;

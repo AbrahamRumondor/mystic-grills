@@ -2,7 +2,7 @@ package view.popup;
 
 import javafx.scene.layout.BorderPane;
 import controller.OrderItemController;
-import controller.WindowController;
+import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.admin.AdminMenuListController;
 import controller.admin.AdminUserListController;
@@ -50,7 +50,7 @@ public class DeletePopup {
 		
 		user = UserController.getUserById(id);
 		
-		MGWindow window = WindowController.getWindow();
+		MGWindow window = MGWindowController.getWindow();
 		
 		BorderPane root = new BorderPane();
 		
