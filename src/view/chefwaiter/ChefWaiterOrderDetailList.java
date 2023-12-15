@@ -47,9 +47,7 @@ import model.OrderItem;
 
 public class ChefWaiterOrderDetailList {
 	public static StackPane root;
-	
-	private static User user = UserController.getCurrentUser();
-	
+		
 	public static TableView<OrderItem> table;
 	Button updBtn, addBtn, deleteBtn, proceedBtn;
 	VBox namePane, passwordPane, idPane, proceedPane, headerPane;
@@ -64,7 +62,7 @@ public class ChefWaiterOrderDetailList {
 	
 	MenuItem currentMenu;
 	
-	private void makeTable(Order order, Stage s, BorderPane borderPane) {
+	private void makeTable(Order order, Stage s, BorderPane borderPane, boolean isCustomer) {
 		table = new TableView<>();
 		
 		TableColumn<OrderItem, String> menuNameColumn = new TableColumn<>("Menu Name");
@@ -87,7 +85,9 @@ public class ChefWaiterOrderDetailList {
 			if (newValue != null) {
 				currentMenu = newValue.getMenuItem();
 				orderId = newValue.getOrderId();
-				ChefWaiterOrderDetailListController.addAction(
+				
+				if(!isCustomer)
+					ChefWaiterOrderDetailListController.addAction(
 						proceedBtn,
 						addBtn,
 						updBtn,
@@ -97,11 +97,17 @@ public class ChefWaiterOrderDetailList {
 						currentMenu,
 						s,
 						borderPane);
+				else
+					ChefWaiterOrderDetailListController.addCustomerAction(
+							proceedBtn,
+							s,
+							borderPane);
 
 			}
 		});
 		
-		ChefWaiterOrderDetailListController.addAction(
+		if(!isCustomer)
+			ChefWaiterOrderDetailListController.addAction(
 				proceedBtn,
 				addBtn,
 				updBtn,
@@ -111,6 +117,11 @@ public class ChefWaiterOrderDetailList {
 				currentMenu,
 				s,
 				borderPane);
+		else
+			ChefWaiterOrderDetailListController.addCustomerAction(
+					proceedBtn,
+					s,
+					borderPane);
 	}
 	
 	void headerPane(Order order) {
@@ -145,6 +156,8 @@ public class ChefWaiterOrderDetailList {
 	}
 	
 	void makeSubmitPane(Order order){
+		User user = UserController.getCurrentUser();
+		
 		String proceedBtnName = new String();
 		
 		if(user.getUserRole().equals("Chef"))
@@ -155,19 +168,40 @@ public class ChefWaiterOrderDetailList {
 		proceedBtn = new Button(proceedBtnName);
 		
 		proceedPane = new VBox();
-		proceedPane.getChildren().addAll( proceedBtn);
+		proceedPane.getChildren().addAll(proceedBtn);
 		proceedPane.setAlignment(Pos.BOTTOM_RIGHT);
 	}
 	
+	void makeBackBtn(Order order){
+		proceedBtn = new Button("back");
+
+		buttonPane = new HBox();
+		buttonPane.getChildren().addAll(proceedBtn);
+	}
+	
 	public StackPane display(Stage s, Order order, BorderPane borderPane) {
-		makeForm(order);
+		User user = UserController.getCurrentUser();
+		boolean isCustomer = user.getUserRole().equals("Customer");
+		
+		if(!isCustomer) {
+			makeForm(order);
+		} else {
+			makeBackBtn(order);
+		}
 		headerPane(order);
-		makeSubmitPane(order);
-		makeTable(order, s, borderPane);
+		if(!isCustomer) {
+			makeSubmitPane(order);
+		}
+		
+		makeTable(order, s, borderPane, isCustomer);
 		
 
 		VBox page = new VBox(10);
-		page.getChildren().addAll(headerPane, buttonPane, table, proceedPane);
+		if(!isCustomer)
+			page.getChildren().addAll(headerPane, buttonPane, table, proceedPane);
+		else 
+			page.getChildren().addAll(buttonPane, headerPane, table);
+
 		page.setPadding(new Insets(10));
 
 		root = new StackPane();

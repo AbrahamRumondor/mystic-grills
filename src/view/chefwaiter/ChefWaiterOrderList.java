@@ -41,7 +41,6 @@ import model.Connect;
 public class ChefWaiterOrderList {
 	public static StackPane root;
 
-	private static User user = UserController.getCurrentUser();
 	
 	public static TableView<Order> table;
 	Button orderDetailBtn, proceedBtn;
@@ -105,6 +104,9 @@ public class ChefWaiterOrderList {
 	}
 
 	void makeForm(){
+		User user = UserController.getCurrentUser();
+		boolean isCustomer = user.getUserRole().equals("Customer");
+		
 		orderDetailBtn = new Button("View Order Details");
 		
 		String proceedBtnName = new String();
@@ -117,7 +119,11 @@ public class ChefWaiterOrderList {
 		proceedBtn = new Button(proceedBtnName);
 
 		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);
+		if(!isCustomer)
+			buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);
+		else
+			buttonPane.getChildren().addAll(orderDetailBtn);
+		
 		buttonPane.setSpacing(15);
 		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
 		form = new VBox(10);

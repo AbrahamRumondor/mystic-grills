@@ -31,34 +31,34 @@ public class ChefWaiterOrderListController {
 	
 	public static ObservableList<Order> getAllData() {
 		User user = UserController.getCurrentUser();
-		ObservableList<Order> ordersC = FXCollections.observableArrayList();
-		ObservableList<Order> ordersW = FXCollections.observableArrayList();
+		ObservableList<Order> orders = FXCollections.observableArrayList();
 
 		ArrayList<Order> arrayOrders = OrderController.getAllOrders();
 		
 		for (Order order : arrayOrders) {
 			
+//			get order u/ chef
 			if(user.getUserRole().equals("Chef")) {
-				System.out.println("SAYA CHEF");
-				if(order.getOrderStatus().equals("Pending")) {
-					ordersC.add(order);
-				}
+				if(order.getOrderStatus().equals("Pending"))
+					orders.add(order);
 			}
 			
+//			get order u/ waiter
 			if(user.getUserRole().equals("Waiter")) {
-				if(order.getOrderStatus().equals("Prepared")) {
-					ordersW.add(order);
-				}
+				if(order.getOrderStatus().equals("Prepared"))
+					orders.add(order);
+			}
+			
+//			get order u/ customer
+			if(user.getUserRole().equals("Customer")) {
+				if(order.getOrderUser().getUserId() == user.getUserId()) 
+					orders.add(order);
 			}
 			
 		}
 		
-		if(user.getUserRole().equals("Chef")) {
-			return ordersC;
-		}else {
-			return ordersW;
-		}
-		
+		return orders;
+	
 	}
 	
 	public static void refreshTableView(TableView<Order> table) {

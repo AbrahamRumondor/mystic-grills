@@ -64,7 +64,7 @@ public class ChefWaiterOrderDetailListController {
 			)
 	{		
 		User user = UserController.getCurrentUser();
-
+		
 		if(item == null) {
 			updBtn.setDisable(true);
 			deleteBtn.setDisable(true);
@@ -96,28 +96,40 @@ public class ChefWaiterOrderDetailListController {
 			
 			refreshTableView(table, order);
 		});
-		
+
 		proceedBtn.setOnAction(e ->{ 
 			proceedBtn.setDisable(true);
-			 
+				 
 			Integer orderId = order.getOrderId();
 			ArrayList<OrderItem> orderItems = order.getOrderItems();
-			
+				
 			String status = new String();
 			if(user.getUserRole().equals("Chef"))
 				status = "Prepared";
 			else if(user.getUserRole().equals("Waiter"))
 				status = "Served";	
-			
+				
 			OrderController.updateOrder(orderId, orderItems, status);
-			
+				
 			ChefWaiterMenuController.displayChefMenu("Order");
 		});
-		
+
 	}
 
 	public static StackPane display(Stage s, Order order, BorderPane borderPane) {
 		ChefWaiterOrderDetailList chefOrderDetailList = new ChefWaiterOrderDetailList();
 		return chefOrderDetailList.display(s, order, borderPane);
+	}
+
+	public static void addCustomerAction(
+			Button proceedBtn,
+			Stage s,
+			BorderPane borderPane) 
+	{
+		proceedBtn.setOnAction(e ->{ 
+			proceedBtn.setDisable(true);
+			
+			ChefWaiterMenuController.getChefOrderList(s, borderPane);
+		});
 	}
 }

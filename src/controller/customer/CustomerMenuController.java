@@ -2,6 +2,7 @@ package controller.customer;
 
 import controller.MGWindowController;
 import controller.UserController.UserController;
+import controller.chefwaiter.ChefWaiterMenuController;
 import controller.guest.GuestController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -72,22 +73,6 @@ public class CustomerMenuController {
 	    
 	}
 
-//	walaupun order, ini ditaro disini karena CustomerMenu bisa pilih untuk menampilkan menulist atau menampilkan MyOrder
-	public static void addCustomerOrderAction(Button onGoingOrder, Label position, BorderPane borderPane, Stage s) {
-		onGoingOrder.setOnAction(
-	    		e -> {
-	    			position.setText("On-Going Order ");
-	    			
-	    			StackPane contents = CustomerMenuController.customerOrderList.display(s);
-	    			
-	    			borderPane.setCenter(contents);
-	    			
-	    			CustomerMenuController.activityLog.add(contents);
-	    		}	
-	    ); 
-	}
-
-
 	public static void getCustomerMenuList(Stage s, BorderPane borderPane) {
 			StackPane contents = customerMenuList.display(s);
 	//		DISINIII
@@ -113,7 +98,35 @@ public class CustomerMenuController {
 			
 			activityLog.add(tengah);
 			
-			addCustomerOrderAction( onGoingOrder,  position,  borderPane,  s);
+			addCustomerOrderAction( onGoingOrder, orderHistory,  position,  borderPane,  s);
 		}
+	
+//	walaupun order, ini ditaro disini karena CustomerMenu bisa pilih untuk menampilkan menulist atau menampilkan MyOrder
+	public static void addCustomerOrderAction(
+			Button onGoingOrder,
+			Button orderHistory,
+			Label position,
+			BorderPane borderPane,
+			Stage s) 
+	{
+		onGoingOrder.setOnAction(
+	    		e -> {
+	    			position.setText("On-Going Order ");
+	    			
+	    			StackPane contents = customerOrderList.display(s);
+	    			borderPane.setCenter(contents);
+	    			CustomerMenuController.activityLog.add(contents);
+	    		}	
+	    ); 
+		
+		orderHistory.setOnAction(
+	    		e -> {
+	    			position.setText("Order History ");
+	    			
+	    			ChefWaiterMenuController.getChefOrderList(s, borderPane);
+	    		}	
+	    ); 
+	}
+
 	
 }

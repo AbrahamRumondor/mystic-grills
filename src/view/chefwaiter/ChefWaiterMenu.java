@@ -26,7 +26,6 @@ public class ChefWaiterMenu {
 	
 	public static MGWindowController windowController = MGWindowController.getInstance();	
 	
-	
 	public void display(Stage s, String option) {
 		
 		User user = UserController.getCurrentUser();
