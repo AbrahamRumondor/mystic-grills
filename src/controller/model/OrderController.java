@@ -1,4 +1,4 @@
-package controller;
+package controller.model;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import controller.UserController.UserController;
 import model.Connect;
 import model.Order;
 import model.OrderItem;

@@ -1,12 +1,7 @@
-package controller;
+package controller.model;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-
-import model.Connect;
 import model.Order;
 import model.Receipt;
 

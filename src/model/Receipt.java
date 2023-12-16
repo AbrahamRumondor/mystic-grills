@@ -6,8 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import controller.OrderController;
-import controller.OrderItemController;
+import controller.model.OrderController;
 
 public class Receipt {
 	

@@ -1,24 +1,9 @@
 package view.chefwaiter;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import controller.UserController.UserController;
-import controller.admin.AdminMenuListController;
-import controller.admin.AdminUserListController;
-import controller.cashier.CashierOrderListController;
 import controller.chefwaiter.ChefWaiterOrderListController;
-
+import controller.model.UserController;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-
-import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -31,12 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.User;
-import view.popup.AddMenuOrder;
-import model.MenuItem;
 import model.Order;
-import model.Connect;
-
-
 
 public class ChefWaiterOrderList {
 	public static StackPane root;
@@ -73,7 +53,7 @@ public class ChefWaiterOrderList {
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
 		ObservableList<Order> items = ChefWaiterOrderListController.getAllData();
-		defineOrderToTable(items);
+		ChefWaiterOrderListController.defineOrderToTable(items, table);
 
 		assignTableItemToLocal(s, borderPane);
 		ChefWaiterOrderListController.addAction(
@@ -92,13 +72,13 @@ public class ChefWaiterOrderList {
 		orderDetailBtn = new Button("View Order Details");
 		
 		String proceedBtnName = new String();
-		proceedBtnName = getProceedBtnName(user, proceedBtnName);
+		proceedBtnName = ChefWaiterOrderListController.getProceedBtnName(user, proceedBtnName);
 		
 		proceedBtn = new Button(proceedBtnName);
 
 		HBox buttonPane = new HBox();
-		defineButtonPane(isCustomer, buttonPane);
-		defineFormPane(buttonPane);
+		ChefWaiterOrderListController.defineButtonPane(isCustomer, buttonPane, orderDetailBtn, proceedBtn);
+		formPane = ChefWaiterOrderListController.defineFormPane(buttonPane, formPane);
 	}
 	
 	public StackPane display(Stage s, BorderPane borderPane) {
@@ -106,24 +86,10 @@ public class ChefWaiterOrderList {
 		makeTable(s, borderPane);
 		
 		VBox pagePane = new VBox(10);
-		definePagePane(pagePane);
+		ChefWaiterOrderListController.definePagePane(pagePane, table, formPane);
 
-		setRootStackpane(pagePane);
+		root = ChefWaiterOrderListController.setRootStackpane(pagePane, root);
 		return root;
-	}
-
-	private void setRootStackpane(VBox pagePane) {
-		root = new StackPane();
-		root.getChildren().add(pagePane);
-	}
-
-	private void definePagePane(VBox page) {
-		page.getChildren().addAll(table, formPane);
-		page.setPadding(new Insets(10));
-	}
-	
-	private void defineOrderToTable(ObservableList<Order> items) {
-		table.setItems(items);
 	}
 
 	private void assignTableItemToLocal(Stage s, BorderPane borderPane) {
@@ -146,28 +112,4 @@ public class ChefWaiterOrderList {
 			}
 		});
 	}
-	
-	private void defineFormPane(HBox buttonPane) {
-		formPane = new VBox(10);
-		formPane.getChildren().addAll(buttonPane);
-	}
-
-	private void defineButtonPane(boolean isCustomer, HBox buttonPane) {
-		if(!isCustomer)
-			buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);
-		else
-			buttonPane.getChildren().addAll(orderDetailBtn);
-		
-		buttonPane.setSpacing(15);
-		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-	}
-
-	private String getProceedBtnName(User user, String proceedBtnName) {
-		if(user.getUserRole().equals("Chef"))
-			proceedBtnName = "Prepare Order";
-		else if(user.getUserRole().equals("Waiter"))
-			proceedBtnName = "Serve Order";
-		return proceedBtnName;
-	}
-
 }

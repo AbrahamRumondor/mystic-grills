@@ -1,47 +1,20 @@
 package view.cashier;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-
-import controller.OrderController;
-import controller.MGWindowController;
-import controller.UserController.UserController;
 import controller.cashier.CashierReceiptDetailListController;
-import controller.cashier.CashierViewOrderDetailListController;
-import controller.customer.CustomerDefaultController;
-import controller.customer.CustomerOrderListController;
-
-import java.sql.Date;
-import java.sql.PreparedStatement;
-
-import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import model.User;
-import view.popup.AddMenuOrder;
-import view.popup.DeleteMenuOrder;
-import model.MenuItem;
 import model.Order;
-import model.Connect;
 import model.OrderItem;
 
 
@@ -72,7 +45,7 @@ public class CashierReceiptDetailList {
 		table.getColumns().addAll(menuNameColumn, priceColumn, quantityColumn, totalColumn);
 
 		ObservableList<OrderItem> items = CashierReceiptDetailListController.getAllData(order);
-		defineOrderItemToTable(items);
+		CashierReceiptDetailListController.defineOrderItemToTable(items, table);
 
 		assignTableItemToLocal();
 	}
@@ -82,8 +55,17 @@ public class CashierReceiptDetailList {
 		 userNameLbl = new Label("Order Client: " + order.getOrderUser().getUserName());
 		 orderDateLbl =  new Label("Order Date: " + order.getOrderDateString());
 		 orderStatusLbl = new Label("Order Status: " + order.getOrderStatus());
-		 setLabelFont();
-		 createHeaderPane();
+		 CashierReceiptDetailListController.setLabelFont(
+				 orderIdLbl,
+				 userNameLbl,
+				 orderDateLbl,
+				 orderStatusLbl);
+		 headerPane = CashierReceiptDetailListController.createHeaderPane(
+				 headerPane,
+				 orderIdLbl, 
+				 userNameLbl, 
+				 orderDateLbl,
+				 orderStatusLbl);
 	}
 	
 	void makeSubmitPane(Order order){
@@ -103,43 +85,12 @@ public class CashierReceiptDetailList {
 		makeTable(order);
 		
 		VBox pagePane = new VBox(10);
-		createPagePane(pagePane);
+		CashierReceiptDetailListController.createPagePane(pagePane, headerPane, table, totalPricePane);
 
-		createRootStackpane(pagePane);
+		root = CashierReceiptDetailListController.createRootStackpane(pagePane, root);
 		CashierReceiptDetailListController.refreshTableView(table, order);
 		
 		return root;
-	}
-
-	private void createRootStackpane(VBox pagePane) {
-		root = new StackPane();
-		root.getChildren().add(pagePane);
-	}
-
-	private void createPagePane(VBox pagePane) {
-		pagePane.getChildren().addAll(headerPane, table, totalPricePane);
-		pagePane.setPadding(new Insets(10));
-	}
-	
-	private void createHeaderPane() {
-		headerPane = new VBox();
-		 headerPane.getChildren().addAll(
-				 orderIdLbl, 
-				 userNameLbl, 
-				 orderDateLbl,
-				 orderStatusLbl);
-		 headerPane.setPadding(new Insets(10));
-	}
-
-	private void setLabelFont() {
-		orderIdLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderDateLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderStatusLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-	}
-	
-	private void defineOrderItemToTable(ObservableList<OrderItem> items) {
-		table.setItems(items);
 	}
 
 	private void assignTableItemToLocal() {

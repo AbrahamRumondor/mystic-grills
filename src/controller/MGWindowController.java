@@ -1,11 +1,8 @@
 package controller;
 
-import controller.UserController.UserController;
-import javafx.scene.Node;
 import javafx.stage.Stage;
 import model.ActivityLog;
 import model.MGWindow;
-import view.customer.CustomerList;
 import view.customer.CustomerDefault;
 
 public class MGWindowController {

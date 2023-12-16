@@ -2,14 +2,18 @@ package controller.chefwaiter;
 
 import java.util.ArrayList;
 
-import controller.OrderController;
-import controller.UserController.UserController;
+import controller.model.OrderController;
+import controller.model.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.ActivityLog;
 import model.MenuItem;
@@ -114,5 +118,44 @@ public class ChefWaiterOrderListController {
 		
 	}
 	
+//	configure view
+	public static StackPane setRootStackpane(VBox pagePane, StackPane root) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+		return root;
+	}
+
+	public static void definePagePane(VBox page, TableView<Order> table, VBox formPane) {
+		page.getChildren().addAll(table, formPane);
+		page.setPadding(new Insets(10));
+	}
+	
+	public static void defineOrderToTable(ObservableList<Order> items, TableView<Order> table) {
+		table.setItems(items);
+	}
+
+	public static VBox defineFormPane(HBox buttonPane, VBox formPane) {
+		formPane = new VBox(10);
+		formPane.getChildren().addAll(buttonPane);
+		return formPane;
+	}
+
+	public static void defineButtonPane(boolean isCustomer, HBox buttonPane, Button orderDetailBtn, Button proceedBtn) {
+		if(!isCustomer)
+			buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);
+		else
+			buttonPane.getChildren().addAll(orderDetailBtn);
+		
+		buttonPane.setSpacing(15);
+		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
+	}
+
+	public static String getProceedBtnName(User user, String proceedBtnName) {
+		if(user.getUserRole().equals("Chef"))
+			proceedBtnName = "Prepare Order";
+		else if(user.getUserRole().equals("Waiter"))
+			proceedBtnName = "Serve Order";
+		return proceedBtnName;
+	}
 	
 }

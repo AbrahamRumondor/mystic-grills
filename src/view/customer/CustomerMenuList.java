@@ -34,7 +34,7 @@ public class CustomerMenuList {
 
 	TableView<MenuItem> table;
 	Button addBtn, updateBtn, deleteBtn;
-	VBox formBox, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, descriptionLbl, priceLbl;
 	TextField nameTxt, descriptionTxt, priceTxt;
 	
@@ -67,34 +67,21 @@ public class CustomerMenuList {
 		addBtn = new Button("Add");
 
 		HBox buttonPane = new HBox();
-		createButtonPane(buttonPane);
+		CustomerMenuListController.createButtonPane(buttonPane, addBtn);
 		
-		formBox = new VBox(10);
-		createFormBox(buttonPane);
+		formPane = new VBox(10);
+		CustomerMenuListController.createFormBox(buttonPane, formPane);
 	}
 	
 	public StackPane display(Stage s) {
 		makeForm();
 		makeTable();
 
-		VBox page = new VBox(10);
-		page.getChildren().addAll(formBox, table);
-		page.setPadding(new Insets(10));
+		VBox pagePane = new VBox(10);
+		CustomerMenuListController.createPagePane(pagePane, formPane, table);
 
-		root = new StackPane();
-//		Scene scene = new Scene(root, 400, 400);
-		root.getChildren().add(page);
-		
+		root = CustomerMenuListController.createRootStackpane(pagePane, root);
 		return root;
-	}
-	
-	private void createFormBox(HBox buttonPane) {
-		formBox.getChildren().addAll(buttonPane);
-	}
-
-	private void createButtonPane(HBox buttonPane) {
-		buttonPane.getChildren().addAll(addBtn);
-		buttonPane.setSpacing(5);
 	}
 	
 	private void assignTableItemToLocal() {

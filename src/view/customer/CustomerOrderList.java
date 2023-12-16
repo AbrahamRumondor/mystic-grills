@@ -1,26 +1,8 @@
 package view.customer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-
-import controller.OrderController;
-import controller.MGWindowController;
-import controller.UserController.UserController;
-import controller.customer.CustomerDefaultController;
 import controller.customer.CustomerOrderListController;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-
-import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -31,12 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.User;
-import view.popup.AddMenuOrder;
-import view.popup.DeleteMenuOrder;
 import model.MenuItem;
-import model.Order;
-import model.Connect;
 import model.OrderItem;
 
 
@@ -64,7 +41,8 @@ public class CustomerOrderList {
 		priceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 		
 		ObservableList<OrderItem> items = CustomerOrderListController.getAllData();
-		defineOrderItemTable(quantityColumn, menuNameColumn, priceColumn, items);
+		table.getColumns().addAll(quantityColumn, menuNameColumn, priceColumn);
+		CustomerOrderListController.defineOrderItemTable(items, table);
 
 		assignTableItemToLocal();
 		CustomerOrderListController.addAction(orderQty, updBtn, deleteBtn, submitBtn, addBtn, currentItem, table);
@@ -76,17 +54,17 @@ public class CustomerOrderList {
 		deleteBtn = new Button("Delete Order Menu");
 
 		HBox buttonPane = new HBox();
-		createButtonPane(buttonPane);
+		CustomerOrderListController.createButtonPane(buttonPane, addBtn, updBtn, deleteBtn);
 		
 		formPane = new VBox(10);
-		createFormBox(buttonPane);
+		CustomerOrderListController.createFormBox(buttonPane, formPane);
 	}
 
 	void makeSubmitPane(){
 		submitBtn = new Button("Submit Order");
 		
 		submitPane = new VBox();
-		createSubmitPane();
+		CustomerOrderListController.createSubmitPane(submitPane, submitBtn);
 	}
 	
 	public StackPane display(Stage s) {
@@ -95,38 +73,13 @@ public class CustomerOrderList {
 		makeTable();
 
 		VBox pagePane = new VBox(10);
-		createPagePane(pagePane);
+		CustomerOrderListController.createPagePane(pagePane,formPane, table, submitPane);
 
-		createRootStackpane(pagePane);
+		root = CustomerOrderListController.createRootStackpane(pagePane, root);
 		
 		CustomerOrderListController.refreshTableView(table);
 		
 		return root;
-	}
-
-	private void createFormBox(HBox buttonPane) {
-		formPane.getChildren().addAll(buttonPane);
-	}
-
-	private void createButtonPane(HBox buttonPane) {
-		buttonPane.getChildren().addAll(addBtn, updBtn, deleteBtn);
-		buttonPane.setSpacing(5);
-	}
-	
-
-	private void createSubmitPane() {
-		submitPane.getChildren().addAll(submitBtn);
-		submitPane.setAlignment(Pos.BOTTOM_RIGHT);
-	}
-	
-	private void createRootStackpane(VBox page) {
-		root = new StackPane();
-		root.getChildren().add(page);
-	}
-
-	private void createPagePane(VBox page) {
-		page.getChildren().addAll(formPane, table, submitPane);
-		page.setPadding(new Insets(10));
 	}
 	
 	private void assignTableItemToLocal() {
@@ -141,12 +94,4 @@ public class CustomerOrderList {
 			}
 		});
 	}
-	
-	private void defineOrderItemTable(TableColumn<OrderItem, String> quantityColumn,
-			TableColumn<OrderItem, String> menuNameColumn, TableColumn<OrderItem, String> priceColumn,
-			ObservableList<OrderItem> items) {
-		table.getColumns().addAll(quantityColumn, menuNameColumn, priceColumn);
-		table.setItems(items);
-	}
-	
 }

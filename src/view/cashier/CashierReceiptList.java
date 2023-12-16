@@ -71,7 +71,7 @@ public class CashierReceiptList {
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
 		ObservableList<Order> items = CashierReceiptListController.getAllData();
-		defineOrderToTable(items);
+		CashierReceiptListController.defineOrderToTable(items, table);
 
 		assignTableItemToLocal(s, borderPane);
 		CashierReceiptListController.addAction(
@@ -86,8 +86,8 @@ public class CashierReceiptList {
 		orderDetailBtn = new Button("View Receipt Details");
 		
 		HBox buttonPane = new HBox();
-		createButtonPane(buttonPane);
-		createFormPane(buttonPane);
+		CashierReceiptListController.createButtonPane(buttonPane, orderDetailBtn);
+		formPane = CashierReceiptListController.createFormPane(buttonPane, formPane);
 	}
 	
 	public StackPane display(Stage s, BorderPane borderPane) {
@@ -95,35 +95,10 @@ public class CashierReceiptList {
 		makeTable(s, borderPane);
 		
 		VBox pagePane = new VBox(10);
-		createPagePane(pagePane);
+		CashierReceiptListController.createPagePane(pagePane, table, formPane);
 
-		createRootStackpane(pagePane);
+		root = CashierReceiptListController.createRootStackpane(pagePane, root);
 		return root;
-	}
-
-	private void createRootStackpane(VBox pagePane) {
-		root = new StackPane();
-		root.getChildren().add(pagePane);
-	}
-
-	private void createPagePane(VBox pagePane) {
-		pagePane.getChildren().addAll(table, formPane);
-		pagePane.setPadding(new Insets(10));
-	}
-	
-	private void createFormPane(HBox buttonPane) {
-		formPane = new VBox(10);
-		formPane.getChildren().addAll(buttonPane);
-	}
-
-	private void createButtonPane(HBox buttonPane) {
-		buttonPane.getChildren().addAll(orderDetailBtn);
-		buttonPane.setSpacing(15);
-		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-	}
-	
-	private void defineOrderToTable(ObservableList<Order> items) {
-		table.setItems(items);
 	}
 
 	private void assignTableItemToLocal(Stage s, BorderPane borderPane) {
@@ -135,7 +110,6 @@ public class CashierReceiptList {
 				orderStatus = newValue.getOrderStatus();
 				orderDate = newValue.getOrderDate();
 				totalPrice = newValue.getOrderTotal();
-				
 				
 				CashierReceiptListController.addAction(
 						orderDetailBtn,

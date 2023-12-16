@@ -1,9 +1,10 @@
 package controller.customer;
 
 import controller.MGWindowController;
-import controller.UserController.UserController;
 import controller.chefwaiter.ChefWaiterMenuController;
-import controller.guest.GuestController;
+import controller.guest.GuestDefaultController;
+import controller.model.UserController;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.ActivityLog;
 import model.MGWindow;
@@ -19,7 +22,7 @@ import view.customer.CustomerList;
 import view.customer.CustomerMenuList;
 import view.customer.CustomerOrderList;
 
-public class CustomerMenuController {
+public class CustomerListController {
 	
 	public static ActivityLog activityLog = ActivityLog.getInstance();
 	private static CustomerList customerMenu = new CustomerList();
@@ -29,9 +32,9 @@ public class CustomerMenuController {
 	
 	public static void getDisplay(String option, Stage s, BorderPane borderPane, Label position) {
         if(option.equals("Menu")) {
-        	CustomerMenuController.getCustomerMenuList(s, borderPane);
+        	CustomerListController.getCustomerMenuList(s, borderPane);
         } else if(option.equals("Order")) {
-        	CustomerMenuController.getCustomerOrder(s, borderPane, position);
+        	CustomerListController.getCustomerOrder(s, borderPane, position);
         }
 	}
 	
@@ -67,7 +70,7 @@ public class CustomerMenuController {
 	    			MGWindowController.activityLog.getSceneStack().removeAllElements();
 	    			MGWindow.getWindow().root.getChildren().clear();
 	    			
-	    			GuestController.displayGuestDefault(s);
+	    			GuestDefaultController.displayGuestDefault(s);
 	    		}	
 	    ); 
 	    
@@ -115,7 +118,7 @@ public class CustomerMenuController {
 	    			
 	    			StackPane contents = customerOrderList.display(s);
 	    			borderPane.setCenter(contents);
-	    			CustomerMenuController.activityLog.add(contents);
+	    			CustomerListController.activityLog.add(contents);
 	    		}	
 	    ); 
 		
@@ -126,6 +129,49 @@ public class CustomerMenuController {
 	    			ChefWaiterMenuController.getChefOrderList(s, borderPane);
 	    		}	
 	    ); 
+	}
+	
+//	configure view
+	public static void setBorderpane(BorderPane borderPane, HBox headerBox) {
+		borderPane.setTop(headerBox);
+	}
+
+	public static void setRootStackpane(StackPane root, BorderPane borderPane, Button home, HBox topButtonBox) {
+		root.getChildren().addAll(borderPane, home, topButtonBox);
+        root.setStyle("-fx-background-color: #f4f4f4;");
+	}
+
+	public static void createHeaderBox(Label userNameLbl, HBox headerBox) {
+		headerBox.getChildren().addAll(userNameLbl);
+		headerBox.setAlignment(Pos.TOP_LEFT);
+		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
+	}
+
+	public static void createTopButtonBox(Label positionLbl, Button allMenuBtn, Button viewOrderBtn, Button logOutBtn,
+			HBox topButtonBox) {
+		topButtonBox.setMaxSize(450, 50);
+		topButtonBox.setAlignment(Pos.TOP_RIGHT);
+		topButtonBox.setSpacing(20);
+		topButtonBox.getChildren().addAll(positionLbl, allMenuBtn, viewOrderBtn, logOutBtn);
+	}
+
+	public static void setLabelFont(Label userNameLbl, Label positionLbl) {
+		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
+		positionLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
+	}
+
+	public static void setStackpane(BorderPane borderPane, HBox topButtonBox, Button home) {
+		StackPane.setMargin(topButtonBox, new Insets(12,10,10,10));
+        StackPane.setAlignment(topButtonBox, Pos.TOP_RIGHT);
+		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
+        StackPane.setMargin(home, new Insets(12,10,10,10));
+        StackPane.setAlignment(home, Pos.TOP_LEFT);
+	}
+	
+	public static void showCustomerList(Scene scene, Stage s) {
+		s.setScene(scene);
+		s.setTitle("Mystic Grills");
+		s.show();
 	}
 
 	

@@ -13,8 +13,6 @@ public class User {
 	private String userEmail;
 	private String userPassword;
 	
-	
-	
 	public User(Integer userId, String userRole, String userName, String userEmail, String userPassword) {
 		super();
 		this.userId = userId;

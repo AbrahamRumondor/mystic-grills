@@ -1,10 +1,8 @@
 package controller.popup;
 
-import controller.MGWindowController;
-import controller.admin.AdminMenuListController;
-import controller.admin.AdminUserListController;
-import controller.model.MenuItemController;
-import controller.model.UserController;
+import controller.chefwaiter.ChefWaiterOrderDetailListController;
+import controller.customer.CustomerOrderListController;
+import controller.model.OrderController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -18,70 +16,57 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import model.ActivityLog;
 import model.MGWindow;
-import model.MenuItem;
+import model.Order;
+import model.OrderItem;
 import model.User;
+import view.chefwaiter.ChefWaiterOrderDetailList;
 
-public class DeletePopupController {
-	
+public class DeleteMenuOrderController {
+
 	private static ActivityLog activityLog = ActivityLog.getInstance();
 	
-	public static void setContent(Integer id, Label content, String target) {
-		if(target.equals("User")) {
-			content.setText(UserController.getUserNameById(id) + " ?");
-		} else if(target.equals("Menu Item")) {
-			content.setText(MenuItemController.getMenuItemNameById(id) + " ?");
-		}
-	}
-	
-	public static void setDeleteConfirmBtn(Integer id, Button confirmBtn, Button updateBtn, String target, Button addBtn) {
-		MGWindow window = MGWindowController.getWindow();
-		
+	public static void addButtonAction(Button btn, Order order, MGWindow window, Button confirmBtn, OrderItem item, User user) {
 		confirmBtn.setOnAction(
 				e -> {
-					if(target.equals("User")) {
-						UserController.deleteUser(id);
-						TableView<User> table = AdminUserListController.getTable();
-						AdminUserListController.refreshTableView(table);
-					} else if(target.equals("Menu Item")) {
-						MenuItemController.deleteMenuItem(id);
-						TableView<MenuItem> table = AdminMenuListController.getTable();
-						AdminMenuListController.refreshTableView(table);
-						addBtn.setDisable(false);
-					}
+					order.getOrderItems().remove(item);
 
 					if(activityLog.getSceneStack().size() > 1) {
 						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
         				activityLog.pop();
 					}
+					btn.setDisable(false);
 					
+					if(user.getUserRole().equals("Customer")) {
+						TableView<OrderItem> table = CustomerOrderListController.getTable();
+						CustomerOrderListController.refreshTableView(table);
+					} else if(user.getUserRole().equals("Chef")) {
+						Integer idx = order.getOrderId();
+						OrderController.deleteOrder(idx);
+						OrderController.createOrderWithCertainId(idx, order.getOrderUser(), order.getOrderItems(), order.getOrderDate());
+						
+						TableView<OrderItem> table = ChefWaiterOrderDetailList.table;
+						ChefWaiterOrderDetailListController.refreshTableView(table, order);
+					}
 				}
 		);
 	}
 	
-	public static void addOnCancelAction(String target, Button addBtn, MGWindow window, Button cancelBtn) {
-		cancelBtn.setOnAction(
-				e -> {
-						if(activityLog.getSceneStack().size() > 1) {
-							window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-	        				activityLog.pop();
-						}
-						
-						if(target.equals("Menu Item")) {
-							addBtn.setDisable(false);
-							TableView<MenuItem> table = AdminMenuListController.getTable();
-							AdminMenuListController.refreshTableView(table);
-						}
-						else if(target.equals("User")) {
-							TableView<User> table = AdminUserListController.getTable();
-							AdminUserListController.refreshTableView(table);
-						}
-				}
-		);
+	public static Order getOrder(User user) {
+		Order order;
+		if(user.getUserRole().equals("Chef")) {
+			order = OrderController.getOrder();
+		} else if(user.getUserRole().equals("Customer")) {
+			order = OrderController.getOnGoingOrder();
+		} else {
+			order = null;
+		}
+		return order;
 	}
 	
 //	configure view
 	public static void setContainer(MGWindow window, StackPane container) {
 		container.setMaxSize(300, 195);
+		
 		container.setStyle("-fx-background-color: #f4f4f4;" +
                 "-fx-border-color: black;" +
                 "-fx-border-width: 1px;");
@@ -98,10 +83,9 @@ public class DeletePopupController {
 		root.setBottom(buttonPane);
 	}
 
-	public static HBox defineButtonPane(Button cancelBtn, Button confirmBtn, HBox buttonPane) {
+	public static HBox defineButtonPane(Button confirmBtn, HBox buttonPane) {
 		buttonPane = new HBox();
-		buttonPane.getChildren().addAll(cancelBtn, confirmBtn);
-		buttonPane.setSpacing(10);
+		buttonPane.getChildren().addAll(confirmBtn);
 		buttonPane.setAlignment(Pos.BOTTOM_CENTER);
 		return buttonPane;
 	}

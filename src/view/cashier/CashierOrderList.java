@@ -1,23 +1,8 @@
 package view.cashier;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import controller.admin.AdminMenuListController;
-import controller.admin.AdminUserListController;
 import controller.cashier.CashierOrderListController;
-import controller.customer.CustomerMenuListController;
-
 import java.sql.Date;
-import java.sql.PreparedStatement;
-
-import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -30,11 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.User;
-import view.popup.AddMenuOrder;
-import model.MenuItem;
 import model.Order;
-import model.Connect;
-
 
 public class CashierOrderList {
 	public static StackPane root;
@@ -70,7 +51,7 @@ public class CashierOrderList {
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
 		ObservableList<Order> items = CashierOrderListController.getAllData();
-		defineOrderToTable(items);
+		CashierOrderListController.defineOrderToTable(items, table);
 
 		assignTableItemToLocal(s, borderPane);
 		CashierOrderListController.addAction(
@@ -87,9 +68,9 @@ public class CashierOrderList {
 		proceedBtn = new Button("Proceed Order");
 
 		HBox buttonPane = new HBox();
-		createButtonPane(buttonPane);
+		CashierOrderListController.createButtonPane(buttonPane, orderDetailBtn, proceedBtn);
 		formPane = new VBox(10);
-		createFormPane(buttonPane);
+		CashierOrderListController.createFormPane(buttonPane, formPane);
 	}
 	
 	public StackPane display(Stage s, BorderPane borderPane) {
@@ -97,34 +78,10 @@ public class CashierOrderList {
 		makeTable(s, borderPane);
 		
 		VBox pagePane = new VBox(10);
-		createPagePane(pagePane);
+		CashierOrderListController.createPagePane(pagePane, table, formPane);
 
-		createRootStackpane(pagePane);
+		root = CashierOrderListController.createRootStackpane(pagePane, root);
 		return root;
-	}
-
-	private void createRootStackpane(VBox pagePane) {
-		root = new StackPane();
-		root.getChildren().add(pagePane);
-	}
-
-	private void createPagePane(VBox pagePane) {
-		pagePane.getChildren().addAll(table, formPane);
-		pagePane.setPadding(new Insets(10));
-	}
-
-	private void createFormPane(HBox buttonPane) {
-		formPane.getChildren().addAll(buttonPane);
-	}
-
-	private void createButtonPane(HBox buttonPane) {
-		buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);
-		buttonPane.setSpacing(15);
-		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-	}
-	
-	private void defineOrderToTable(ObservableList<Order> items) {
-		table.setItems(items);
 	}
 
 	private void assignTableItemToLocal(Stage s, BorderPane borderPane) {

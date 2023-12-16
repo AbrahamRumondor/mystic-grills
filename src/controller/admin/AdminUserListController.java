@@ -2,11 +2,15 @@ package controller.admin;
 
 import java.util.ArrayList;
 
-import controller.UserController.UserController;
+import controller.model.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import model.MenuItem;
 import model.User;
 import view.admin.AdminUserList;
@@ -62,6 +66,31 @@ public class AdminUserListController {
 	
 	public static TableView<User> getTable(){
 		return AdminUserList.table;
+	}
+	
+//	configure view
+	public static void defineFormPane(HBox buttonPane, VBox formPane) {
+		formPane.getChildren().addAll(buttonPane);
+	}
+
+	public static void defineButtonPane(HBox buttonPane, Button updateBtn, Button deleteBtn) {
+		buttonPane.getChildren().addAll(updateBtn, deleteBtn);
+		buttonPane.setSpacing(5);
+	}
+	
+	public static void defineUserToTable(ObservableList<User> items, TableView<User> table) {
+		table.setItems(items);
+	}
+	
+	public static StackPane createRootStackpane(VBox pagePane, StackPane root) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+		return root;
+	}
+
+	public static void definePagePane(VBox page, VBox formPane, TableView<User> table) {
+		page.getChildren().addAll(formPane, table);
+		page.setPadding(new Insets(10));
 	}
 	
 }

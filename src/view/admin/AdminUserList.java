@@ -58,7 +58,7 @@ public class AdminUserList {
 		table.getColumns().addAll(nameColumn, emailColumn, roleColumn);
 
 		ObservableList<User> items = AdminUserListController.getAllData();
-		defineUserToTable(items);
+		AdminUserListController.defineUserToTable(items, table);
 
 		assignTableItemToLocal();
 		AdminUserListController.addAction(updateBtn, currentUser, table, deleteBtn);
@@ -69,9 +69,9 @@ public class AdminUserList {
 		deleteBtn = new Button("Delete User");
 
 		HBox buttonPane = new HBox();
-		defineButtonPane(buttonPane);
+		AdminUserListController.defineButtonPane(buttonPane, updateBtn, deleteBtn);
 		formPane = new VBox(10);
-		defineFormPane(buttonPane);
+		AdminUserListController.defineFormPane(buttonPane, formPane);
 	}
 	
 	public StackPane display(Stage s) {
@@ -79,25 +79,12 @@ public class AdminUserList {
 		makeTable();
 
 		VBox pagePane = new VBox(10);
-		definePagePane(pagePane);
+		AdminUserListController.definePagePane(pagePane, formPane, table);
 
-		createRootStackpane(pagePane);
+		root = AdminUserListController.createRootStackpane(pagePane, root);
 		return root;
 	}
 	
-	private void defineFormPane(HBox buttonPane) {
-		formPane.getChildren().addAll(buttonPane);
-	}
-
-	private void defineButtonPane(HBox buttonPane) {
-		buttonPane.getChildren().addAll(updateBtn, deleteBtn);
-		buttonPane.setSpacing(5);
-	}
-	
-	private void defineUserToTable(ObservableList<User> items) {
-		table.setItems(items);
-	}
-
 	private void assignTableItemToLocal() {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
@@ -111,16 +98,4 @@ public class AdminUserList {
 			}
 		});
 	}
-	
-	private void createRootStackpane(VBox pagePane) {
-		root = new StackPane();
-		root.getChildren().add(pagePane);
-	}
-
-	private void definePagePane(VBox page) {
-		page.getChildren().addAll(formPane, table);
-		page.setPadding(new Insets(10));
-	}
-
-
 }

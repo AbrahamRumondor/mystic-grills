@@ -17,8 +17,8 @@ import javafx.stage.Stage;
 import model.ActivityLog;
 import model.MGWindow;
 import controller.MGWindowController;
-import controller.UserController.*;
-import controller.customer.CustomerMenuController;
+import controller.customer.CustomerListController;
+import controller.model.UserController;
 
 public class CustomerList {
 	
@@ -35,8 +35,8 @@ public class CustomerList {
 		Label userNameLbl = new Label("Welcome, " + userName);
 		
 		HBox headerBox = new HBox();
-		createHeaderBox(userNameLbl, headerBox);
-		setBorderpane(borderPane, headerBox);
+		CustomerListController.createHeaderBox(userNameLbl, headerBox);
+		CustomerListController.setBorderpane(borderPane, headerBox);
 		
 		Label positionLbl = new Label("Restaurant Menu ");
 		Button allMenuBtn = new Button("All Menu");
@@ -45,61 +45,18 @@ public class CustomerList {
 		Button home = new Button("Home");
 		
 		HBox topButtonBox = new HBox();
-		createTopButtonBox(positionLbl, allMenuBtn, viewOrderBtn, logOutBtn, topButtonBox);
+		CustomerListController.createTopButtonBox(positionLbl, allMenuBtn, viewOrderBtn, logOutBtn, topButtonBox);
 		
-		setLabelFont(userNameLbl, positionLbl);
-        setStackpane(borderPane, topButtonBox, home);
+		CustomerListController.setLabelFont(userNameLbl, positionLbl);
+		CustomerListController.setStackpane(borderPane, topButtonBox, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
-        CustomerMenuController.getDisplay(option, s, borderPane, positionLbl);
+        CustomerListController.getDisplay(option, s, borderPane, positionLbl);
 		
-        CustomerMenuController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane, logOutBtn);
+        CustomerListController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane, logOutBtn);
         
 //      masukin semuanya ke stackpane
-        setRootStackpane(root, borderPane, home, topButtonBox);
-        showCustomerList(scene, s);
+        CustomerListController.setRootStackpane(root, borderPane, home, topButtonBox);
+        CustomerListController.showCustomerList(scene, s);
 	}
-
-	private void setBorderpane(BorderPane borderPane, HBox headerBox) {
-		borderPane.setTop(headerBox);
-	}
-
-	private void setRootStackpane(StackPane root, BorderPane borderPane, Button home, HBox topButtonBox) {
-		root.getChildren().addAll(borderPane, home, topButtonBox);
-        root.setStyle("-fx-background-color: #f4f4f4;");
-	}
-
-	private void createHeaderBox(Label userNameLbl, HBox headerBox) {
-		headerBox.getChildren().addAll(userNameLbl);
-		headerBox.setAlignment(Pos.TOP_LEFT);
-		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
-	}
-
-	private void createTopButtonBox(Label positionLbl, Button allMenuBtn, Button viewOrderBtn, Button logOutBtn,
-			HBox topButtonBox) {
-		topButtonBox.setMaxSize(450, 50);
-		topButtonBox.setAlignment(Pos.TOP_RIGHT);
-		topButtonBox.setSpacing(20);
-		topButtonBox.getChildren().addAll(positionLbl, allMenuBtn, viewOrderBtn, logOutBtn);
-	}
-
-	private void setLabelFont(Label userNameLbl, Label positionLbl) {
-		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
-		positionLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
-	}
-
-	private void setStackpane(BorderPane borderPane, HBox topButtonBox, Button home) {
-		StackPane.setMargin(topButtonBox, new Insets(12,10,10,10));
-        StackPane.setAlignment(topButtonBox, Pos.TOP_RIGHT);
-		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
-        StackPane.setMargin(home, new Insets(12,10,10,10));
-        StackPane.setAlignment(home, Pos.TOP_LEFT);
-	}
-	
-	public static void showCustomerList(Scene scene, Stage s) {
-		s.setScene(scene);
-		s.setTitle("Mystic Grills");
-		s.show();
-	}
-	
 }

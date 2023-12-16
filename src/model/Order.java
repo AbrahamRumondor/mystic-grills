@@ -7,9 +7,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import controller.MenuItemController;
-import controller.OrderItemController;
-import controller.UserController.UserController;
+import controller.model.OrderItemController;
+import controller.model.UserController;
 
 public class Order {
 	private Integer orderId;
