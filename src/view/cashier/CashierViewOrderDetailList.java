@@ -75,16 +75,9 @@ public class CashierViewOrderDetailList {
 		table.getColumns().addAll(menuNameColumn, priceColumn, quantityColumn, totalColumn);
 
 		ObservableList<OrderItem> items = CashierViewOrderDetailListController.getAllData(order);
-		table.setItems(items);
+		defineOrderItemToTable(items);
 
-		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-			if (newValue != null) {
-				orderId = newValue.getOrderId();
-				CashierViewOrderDetailListController.addAction(submitBtn, order, table);
-
-			}
-		});
-		
+		assignTableItemToLocal(order);
 		CashierViewOrderDetailListController.addAction(submitBtn, order, table);
 	}
 	
@@ -93,22 +86,10 @@ public class CashierViewOrderDetailList {
 		 userNameLbl = new Label("Order Client: " + order.getOrderUser().getUserName());
 		 orderDateLbl =  new Label("Order Date: " + order.getOrderDateString());
 		 orderStatusLbl = new Label("Order Status: " + order.getOrderStatus());
-		 
-		 orderIdLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderDateLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderStatusLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-
-		 
-		 headerPane = new VBox();
-		 headerPane.getChildren().addAll(
-				 orderIdLbl, 
-				 userNameLbl, 
-				 orderDateLbl,
-				 orderStatusLbl);
-		 headerPane.setPadding(new Insets(10));
-	}
 	
+		 setLabelFont();
+		 createHeaderPane();
+	}
 	
 	void makeSubmitPane(Order order){
 		submitBtn = new Button("Submit Order");
@@ -126,18 +107,56 @@ public class CashierViewOrderDetailList {
 		headerPane(order);
 		makeSubmitPane(order);
 		makeTable(order);
-		
 
-		VBox page = new VBox(10);
-		page.getChildren().addAll(headerPane, table, submitPane);
-		page.setPadding(new Insets(10));
+		VBox pagePane = new VBox(10);
+		createPagePane(pagePane);
 
-		root = new StackPane();
-		root.getChildren().add(page);
+		createRootStackpane(pagePane);
 		
 		CashierViewOrderDetailListController.refreshTableView(table, order);
-		
 		return root;
 	}
+
+	private void createRootStackpane(VBox pagePane) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+	}
+
+	private void createPagePane(VBox page) {
+		page.getChildren().addAll(headerPane, table, submitPane);
+		page.setPadding(new Insets(10));
+	}
+	
+	private void createHeaderPane() {
+		headerPane = new VBox();
+		 headerPane.getChildren().addAll(
+				 orderIdLbl, 
+				 userNameLbl, 
+				 orderDateLbl,
+				 orderStatusLbl);
+		 headerPane.setPadding(new Insets(10));
+	}
+
+	private void setLabelFont() {
+		orderIdLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 orderDateLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 orderStatusLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+	}
+	
+	private void defineOrderItemToTable(ObservableList<OrderItem> items) {
+		table.setItems(items);
+	}
+
+	private void assignTableItemToLocal(Order order) {
+		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null) {
+				orderId = newValue.getOrderId();
+				CashierViewOrderDetailListController.addAction(submitBtn, order, table);
+
+			}
+		});
+	}
+	
 }
 

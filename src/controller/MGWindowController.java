@@ -4,8 +4,8 @@ import controller.UserController.UserController;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 import model.ActivityLog;
-import view.MGWindow;
-import view.customer.CustomerMenu;
+import model.MGWindow;
+import view.customer.CustomerList;
 import view.customer.CustomerDefault;
 
 public class MGWindowController {
@@ -17,8 +17,6 @@ public class MGWindowController {
 	private static MGWindowController windowController;
 	
 	public static CustomerDefault customerDefault = new CustomerDefault();
-	private static CustomerMenu customerMenu = new CustomerMenu();
-//	private static CustomerOrder customerOrder = new CustomerOrder();
 	
 	public static MGWindowController getInstance() {
 		if(windowController == null) {

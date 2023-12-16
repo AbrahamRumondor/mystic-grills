@@ -15,8 +15,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.MGWindow;
 import model.User;
-import view.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
 import controller.customer.CustomerDefaultController;
@@ -28,11 +28,8 @@ public class CustomerDefault {
 	public void display(Stage s) {
 		
 		MGWindow window = MGWindowController.setWindow(s);
-		
 		StackPane root = window.root;
 		Scene scene = window.scene;
-		
-		
 		BorderPane borderPane = new BorderPane();
 		
 		String userName = UserController.getCurrentUser().getUserName();
@@ -40,42 +37,60 @@ public class CustomerDefault {
 		
 		Label userNameLbl = new Label("Welcome, " + userName );
 		Label userRoleLbl = new Label("Role: " + userRole);
-		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
-		userRoleLbl.setFont(Font.font(null, FontWeight.BOLD, 16));
+		setLabelFont(userNameLbl, userRoleLbl);
+				
+		HBox headerBox = new HBox();
+		createHeaderBox(borderPane, userNameLbl, headerBox);
 		
-		borderPane.setBottom(userRoleLbl);
-		BorderPane.setAlignment(userRoleLbl, Pos.BOTTOM_RIGHT);
-		
-		HBox header = new HBox();
-		header.getChildren().addAll(userNameLbl);
-		header.setAlignment(Pos.CENTER);
-		borderPane.setTop(header);
-		
-//		set borderpane ke stackpane
-		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
-		
+//		untuk login dan signup
 		Button allMenu = new Button("All Menu");
 		Button orderedMenu = new Button("Ordered Menu");
 		
-//		 untuk login dan signup
-		HBox tengah = new HBox();
+		HBox centerBox = new HBox();
+		createCenterBox(allMenu, orderedMenu, centerBox);
+		activityLog.add(centerBox);
+		
+//		set isi borderpane dan posisi stackpanenya	
+		setBorderpane(borderPane, userRoleLbl, centerBox);
+			
+//		define semua action button          
+        CustomerDefaultController.addAction(allMenu, orderedMenu, s, scene, borderPane);
+        
+//      masukin semuanya ke stackpane
+        setRootStackpane(root, borderPane);
+
+        showCustomerDefault(scene, s);
+	}
+
+	private void setRootStackpane(StackPane root, BorderPane borderPane) {
+		root.getChildren().addAll(borderPane);
+	}
+
+	private void setBorderpane(BorderPane borderPane, Label userRoleLbl, HBox tengah) {
+		borderPane.setBottom(userRoleLbl);
+		borderPane.setCenter(tengah);
+		BorderPane.setAlignment(userRoleLbl, Pos.BOTTOM_RIGHT);
+		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
+	}
+
+	private void setLabelFont(Label userNameLbl, Label userRoleLbl) {
+		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
+		userRoleLbl.setFont(Font.font(null, FontWeight.BOLD, 16));
+	}
+
+	private void createHeaderBox(BorderPane borderPane, Label userNameLbl, HBox header) {
+		header.getChildren().addAll(userNameLbl);
+		header.setAlignment(Pos.CENTER);
+		borderPane.setTop(header);
+	}
+
+	private void createCenterBox(Button allMenu, Button orderedMenu, HBox tengah) {
 		tengah.setAlignment(Pos.CENTER);
 		tengah.getChildren().addAll(allMenu, orderedMenu);
 		tengah.setSpacing(100);
-		
-		borderPane.setCenter(tengah);
-		activityLog.add(tengah);
-		
-//     define semua action button          
-        CustomerDefaultController.addAction(allMenu, orderedMenu, s, scene, borderPane);
-        
-//        masukin semuanya ke stackpane
-        root.getChildren().addAll(borderPane);
-
-        show(scene, s);
 	}
 	
-	public static void show(Scene scene, Stage s) {
+	public static void showCustomerDefault(Scene scene, Stage s) {
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
 		s.show();

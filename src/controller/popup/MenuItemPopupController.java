@@ -7,9 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import model.ActivityLog;
+import model.MGWindow;
 import model.MenuItem;
-import view.MGWindow;
-import view.Notification;
+import view.popup.Notification;
 
 public class MenuItemPopupController {
 	

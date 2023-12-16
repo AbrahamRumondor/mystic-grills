@@ -72,56 +72,15 @@ public class Order {
 		return orders;
 	}
 	
-	public static Integer getLastOrderId() {
+	public static Order getOrderByOrderId(Integer orderId) {
+		ArrayList<Order> orders = getAllOrders();
 		
-		String query = "SELECT MAX(order_id) AS 'max_order_id' FROM mystic_grills.order;";
-		try (ResultSet rs = Connect.getConnection().executeStatementQuery(query)) {
-			if (rs.next()) {
-		        return rs.getInt("max_order_id");
-		    }
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	public static ArrayList<Order>getOrdersByCustomerId(Integer customerId) {
-		ArrayList<Order> orders = new ArrayList<>();
-		
-		String query = "SELECT * FROM order where user_id = ?";
-		
-		PreparedStatement prep = Connect.getConnection().prepare(query);
-		try {
-			prep.setInt(1, customerId);
-			Connect.getConnection().executePreparedUpdate(prep);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-		try (ResultSet rs = Connect.getConnection().executeStatementQuery(query)) {
-			while(rs.next()) {
-				Integer id = Integer.valueOf(rs.getString("order_id"));
-				Integer userId = Integer.valueOf(rs.getString("user_id"));
-				String orderStatus = rs.getString("order_status");
-				Date orderDate = Date.valueOf(rs.getString("order_date"));
-				
-				ArrayList<OrderItem> orderItms = OrderItemController.getAllOrderItemsByOrderId(id); // buat controllernya
-				User user = UserController.getUserById(userId);
-				
-				System.out.println(id + userId + orderStatus);
-				
-				orders.add(new Order(id, user, orderItms, orderStatus, orderDate));
+		for(Order order : orders) {
+			if(order.getOrderId() == orderId) {
+				return order;
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		
-		return orders;
+		return null;
 	}
 	
 //	alasan parameternya berbeda adalah karena ini akan dimasukkan di database, sehingga tidak bisa pakai yang seperti di diagram.
@@ -204,6 +163,58 @@ public class Order {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+	
+	public static Integer getLastOrderId() {
+		
+		String query = "SELECT MAX(order_id) AS 'max_order_id' FROM mystic_grills.order;";
+		try (ResultSet rs = Connect.getConnection().executeStatementQuery(query)) {
+			if (rs.next()) {
+		        return rs.getInt("max_order_id");
+		    }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public static ArrayList<Order>getOrdersByCustomerId(Integer customerId) {
+		ArrayList<Order> orders = new ArrayList<>();
+		
+		String query = "SELECT * FROM order where user_id = ?";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, customerId);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		try (ResultSet rs = Connect.getConnection().executeStatementQuery(query)) {
+			while(rs.next()) {
+				Integer id = Integer.valueOf(rs.getString("order_id"));
+				Integer userId = Integer.valueOf(rs.getString("user_id"));
+				String orderStatus = rs.getString("order_status");
+				Date orderDate = Date.valueOf(rs.getString("order_date"));
+				
+				ArrayList<OrderItem> orderItms = OrderItemController.getAllOrderItemsByOrderId(id); // buat controllernya
+				User user = UserController.getUserById(userId);
+				
+				System.out.println(id + userId + orderStatus);
+				
+				orders.add(new Order(id, user, orderItms, orderStatus, orderDate));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return orders;
 	}
 	
 	public Integer getOrderId() {

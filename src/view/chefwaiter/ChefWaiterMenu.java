@@ -15,8 +15,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.MGWindow;
 import model.User;
-import view.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
 import controller.chefwaiter.ChefWaiterMenuController;
@@ -33,42 +33,29 @@ public class ChefWaiterMenu {
 		MGWindow window = MGWindowController.setWindow(s);
 		StackPane root = window.root;
 		Scene scene = window.scene;
-		
 		BorderPane borderPane = new BorderPane();
 		
 		String userName = UserController.getCurrentUser().getUserName();
 		Label userNameLbl = new Label("Welcome, " + userName);
-		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 		
 //		set header
-		HBox header = new HBox();
-		header.getChildren().addAll(userNameLbl);
-		header.setAlignment(Pos.TOP_LEFT);
-		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
-		
-		borderPane.setTop(header);
-		
+		HBox headerPane = new HBox();
+		defineHeaderPane(userNameLbl, headerPane);
+				
 		String pos = new String();
-		if(user.getUserRole().equals("Chef"))
-			pos = "All Pending Order ";
-		else if(user.getUserRole().equals("Waiter"))
-			pos = "All Prepared Order";
+		pos = getCurrentPosition(user, pos);
 		
 		Label position = new Label(pos);
-		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 		Button allOrder = new Button("All Order");
 		Button logOutBtn = new Button("Log Out");
 		
-		HBox topButtonBox = new HBox();
-		topButtonBox.setMaxSize(450, 50);
-		topButtonBox.setAlignment(Pos.TOP_RIGHT);
-		topButtonBox.setSpacing(20);
-		topButtonBox.getChildren().addAll(position, allOrder, logOutBtn);
+		HBox topButtonPane = new HBox();
+		defineTopButtonPane(position, allOrder, logOutBtn, topButtonPane);
 		
-//		set button back ke stackpane
+		configureBorderpane(borderPane, headerPane);
+		setLabelFont(userNameLbl, position);
 		Button home = new Button("Home");
-		
-        setStackpane(borderPane, topButtonBox, home);
+        setStackpane(borderPane, topButtonPane, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
         ChefWaiterMenuController.getDisplay(option, s, borderPane, position);
@@ -77,10 +64,43 @@ public class ChefWaiterMenu {
         ChefWaiterMenuController.addAction(allOrder, home, s, scene, borderPane, logOutBtn);
         
 //      masukin semuanya ke stackpane
-        root.getChildren().addAll(borderPane, home, topButtonBox);
+        setRootStackpane(root, borderPane, topButtonPane, home);
+        showChefWaiterMenu(scene, s);
+	}
+
+	private void configureBorderpane(BorderPane borderPane, HBox headerPane) {
+		borderPane.setTop(headerPane);
+	}
+
+	private void setRootStackpane(StackPane root, BorderPane borderPane, HBox topButtonPane, Button home) {
+		root.getChildren().addAll(borderPane, home, topButtonPane);
         root.setStyle("-fx-background-color: #f4f4f4;");
-        
-        show(scene, s);
+	}
+
+	private void defineTopButtonPane(Label position, Button allOrder, Button logOutBtn, HBox topButtonPane) {
+		topButtonPane.setMaxSize(450, 50);
+		topButtonPane.setAlignment(Pos.TOP_RIGHT);
+		topButtonPane.setSpacing(20);
+		topButtonPane.getChildren().addAll(position, allOrder, logOutBtn);
+	}
+
+	private String getCurrentPosition(User user, String pos) {
+		if(user.getUserRole().equals("Chef"))
+			pos = "All Pending Order ";
+		else if(user.getUserRole().equals("Waiter"))
+			pos = "All Prepared Order";
+		return pos;
+	}
+
+	private void defineHeaderPane(Label userNameLbl, HBox headerPane) {
+		headerPane.getChildren().addAll(userNameLbl);
+		headerPane.setAlignment(Pos.TOP_LEFT);
+		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
+	}
+
+	private void setLabelFont(Label userNameLbl, Label position) {
+		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
+		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 	}
 
 	private void setStackpane(BorderPane borderPane, HBox topButtonBox, Button home) {
@@ -91,7 +111,7 @@ public class ChefWaiterMenu {
         StackPane.setAlignment(home, Pos.TOP_LEFT);
 	}
 	
-	public static void show(Scene scene, Stage s) {
+	public static void showChefWaiterMenu(Scene scene, Stage s) {
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
 		s.show();

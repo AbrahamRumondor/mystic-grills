@@ -42,7 +42,7 @@ public class CashierReceiptList {
 
 	public static TableView<Order> table;
 	Button orderDetailBtn;
-	VBox form, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, emailLbl, roleLbl;
 	TextField nameTxt, emailTxt, roleTxt;
 	
@@ -71,8 +71,62 @@ public class CashierReceiptList {
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
 		ObservableList<Order> items = CashierReceiptListController.getAllData();
-		table.setItems(items);
+		defineOrderToTable(items);
 
+		assignTableItemToLocal(s, borderPane);
+		CashierReceiptListController.addAction(
+				orderDetailBtn,
+				currentOrder,
+				table,
+				s,
+				borderPane);
+	}
+
+	void makeForm(){
+		orderDetailBtn = new Button("View Receipt Details");
+		
+		HBox buttonPane = new HBox();
+		createButtonPane(buttonPane);
+		createFormPane(buttonPane);
+	}
+	
+	public StackPane display(Stage s, BorderPane borderPane) {
+		makeForm();
+		makeTable(s, borderPane);
+		
+		VBox pagePane = new VBox(10);
+		createPagePane(pagePane);
+
+		createRootStackpane(pagePane);
+		return root;
+	}
+
+	private void createRootStackpane(VBox pagePane) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+	}
+
+	private void createPagePane(VBox pagePane) {
+		pagePane.getChildren().addAll(table, formPane);
+		pagePane.setPadding(new Insets(10));
+	}
+	
+	private void createFormPane(HBox buttonPane) {
+		formPane = new VBox(10);
+		formPane.getChildren().addAll(buttonPane);
+	}
+
+	private void createButtonPane(HBox buttonPane) {
+		buttonPane.getChildren().addAll(orderDetailBtn);
+		buttonPane.setSpacing(15);
+		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
+	}
+	
+	private void defineOrderToTable(ObservableList<Order> items) {
+		table.setItems(items);
+	}
+
+	private void assignTableItemToLocal(Stage s, BorderPane borderPane) {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
 				currentOrder = newValue;
@@ -91,39 +145,6 @@ public class CashierReceiptList {
 						borderPane);
 			}
 		});
-	
-		CashierReceiptListController.addAction(
-				orderDetailBtn,
-				currentOrder,
-				table,
-				s,
-				borderPane);
 	}
-
-	void makeForm(){
-		orderDetailBtn = new Button("View Receipt Details");
-		
-		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(orderDetailBtn);
-		buttonPane.setSpacing(15);
-		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
-	}
-	
-	public StackPane display(Stage s, BorderPane borderPane) {
-		makeForm();
-		makeTable(s, borderPane);
-		
-		VBox page = new VBox(10);
-		page.getChildren().addAll(table, form);
-		page.setPadding(new Insets(10));
-
-		root = new StackPane();
-		root.getChildren().add(page);
-
-		return root;
-	}
-
 
 }

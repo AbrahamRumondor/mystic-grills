@@ -15,12 +15,12 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
-import view.MGWindow;
+import model.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
 import controller.customer.CustomerMenuController;
 
-public class CustomerMenu {
+public class CustomerList {
 	
 	public static MGWindowController windowController = MGWindowController.getInstance();	
 	
@@ -29,49 +29,63 @@ public class CustomerMenu {
 		MGWindow window = MGWindowController.setWindow(s);
 		StackPane root = window.root;
 		Scene scene = window.scene;
-		
 		BorderPane borderPane = new BorderPane();
 		
 		String userName = UserController.getCurrentUser().getUserName();
 		Label userNameLbl = new Label("Welcome, " + userName);
-		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 		
-//		set header
-		HBox header = new HBox();
-		header.getChildren().addAll(userNameLbl);
-		header.setAlignment(Pos.TOP_LEFT);
-		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
+		HBox headerBox = new HBox();
+		createHeaderBox(userNameLbl, headerBox);
+		setBorderpane(borderPane, headerBox);
 		
-		borderPane.setTop(header);
-		
-		Label position = new Label("Restaurant Menu ");
-		position.setFont(Font.font(null, FontWeight.BOLD, 20));
+		Label positionLbl = new Label("Restaurant Menu ");
 		Button allMenuBtn = new Button("All Menu");
 		Button viewOrderBtn = new Button("My Order");
 		Button logOutBtn = new Button("Log Out");
-		
-		HBox topButtonBox = new HBox();
-		topButtonBox.setMaxSize(450, 50);
-		topButtonBox.setAlignment(Pos.TOP_RIGHT);
-		topButtonBox.setSpacing(20);
-		topButtonBox.getChildren().addAll(position, allMenuBtn, viewOrderBtn, logOutBtn);
-		
-//		set button back ke stackpane
 		Button home = new Button("Home");
 		
+		HBox topButtonBox = new HBox();
+		createTopButtonBox(positionLbl, allMenuBtn, viewOrderBtn, logOutBtn, topButtonBox);
+		
+		setLabelFont(userNameLbl, positionLbl);
         setStackpane(borderPane, topButtonBox, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
-        CustomerMenuController.getDisplay(option, s, borderPane, position);
+        CustomerMenuController.getDisplay(option, s, borderPane, positionLbl);
 		
-//     	define semua action button          
         CustomerMenuController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane, logOutBtn);
         
 //      masukin semuanya ke stackpane
-        root.getChildren().addAll(borderPane, home, topButtonBox);
+        setRootStackpane(root, borderPane, home, topButtonBox);
+        showCustomerList(scene, s);
+	}
+
+	private void setBorderpane(BorderPane borderPane, HBox headerBox) {
+		borderPane.setTop(headerBox);
+	}
+
+	private void setRootStackpane(StackPane root, BorderPane borderPane, Button home, HBox topButtonBox) {
+		root.getChildren().addAll(borderPane, home, topButtonBox);
         root.setStyle("-fx-background-color: #f4f4f4;");
-        
-        show(scene, s);
+	}
+
+	private void createHeaderBox(Label userNameLbl, HBox headerBox) {
+		headerBox.getChildren().addAll(userNameLbl);
+		headerBox.setAlignment(Pos.TOP_LEFT);
+		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
+	}
+
+	private void createTopButtonBox(Label positionLbl, Button allMenuBtn, Button viewOrderBtn, Button logOutBtn,
+			HBox topButtonBox) {
+		topButtonBox.setMaxSize(450, 50);
+		topButtonBox.setAlignment(Pos.TOP_RIGHT);
+		topButtonBox.setSpacing(20);
+		topButtonBox.getChildren().addAll(positionLbl, allMenuBtn, viewOrderBtn, logOutBtn);
+	}
+
+	private void setLabelFont(Label userNameLbl, Label positionLbl) {
+		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
+		positionLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 	}
 
 	private void setStackpane(BorderPane borderPane, HBox topButtonBox, Button home) {
@@ -82,7 +96,7 @@ public class CustomerMenu {
         StackPane.setAlignment(home, Pos.TOP_LEFT);
 	}
 	
-	public static void show(Scene scene, Stage s) {
+	public static void showCustomerList(Scene scene, Stage s) {
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
 		s.show();

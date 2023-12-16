@@ -1,6 +1,7 @@
 package view.guest;
 
 import model.ActivityLog;
+import model.MGWindow;
 import controller.UserController.UserController;
 import controller.guest.GuestController;
 import javafx.event.ActionEvent;
@@ -20,13 +21,11 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import model.User;
-import view.MGWindow;
 
 public class GuestSignup{
 	
 
 	public GridPane display() {
-		
 		GridPane gridPane = new GridPane();
 		
 		Label username = new Label("Username");
@@ -35,11 +34,9 @@ public class GuestSignup{
 		Label confirmPassword = new Label("Confirm Password");
 		
 		TextField nameTf = new TextField();
-		
 		TextField emailTf = new TextField();
 		
 		PasswordField passwordPf = new PasswordField();
-
 		PasswordField confirmPf = new PasswordField();
 
 		Button submit = new Button("Submit");
@@ -48,10 +45,8 @@ public class GuestSignup{
         
 //      masukin semua ke gridpane
         addGridpane(gridPane,username,email, nameTf, emailTf, password, confirmPassword, passwordPf, confirmPf, submit);
-		
 //		set gridpane
         setGridpane(gridPane);
-		
 		
 		return gridPane;
 	}

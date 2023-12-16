@@ -7,34 +7,34 @@ import java.util.ArrayList;
 import javafx.scene.control.TextField;
 import model.Connect;
 import model.MenuItem;
-import view.Notification;
+import view.popup.Notification;
 
 public class MenuItemController {
-	
-	public static ArrayList<MenuItem> getAllMenuItems() {
-		return MenuItem.getAllMenuItems();
-	}
-	
+//	controller dari model
 	public static boolean createMenuItem(String name, String description, String price ) {
 		return MenuItem.createMenuItem(name, description, price);
-	}
-	
-	public static MenuItem getMenuItemById(Integer menuItemId) {
-		return MenuItem.getMenuItemById(menuItemId);
-	}
-	
-	public static MenuItem getMenuItemByName(String menuName) {
-		return MenuItem.getMenuItemByName(menuName);
 	}
 	
 	public static boolean updateMenuItem(Integer id, String name, String description, String price ) {
 		return MenuItem.updateMenuItem(id, name, description, price);
 	}
-	
+
 	public static void deleteMenuItem(Integer menuItemId) {
 		MenuItem.deleteMenuItem(menuItemId);
 	}
+
+	public static MenuItem getMenuItemById(Integer menuItemId) {
+		return MenuItem.getMenuItemById(menuItemId);
+	}
 	
+	public static ArrayList<MenuItem> getAllMenuItems() {
+		return MenuItem.getAllMenuItems();
+	}
+
+	public static MenuItem getMenuItemByName(String menuName) {
+		return MenuItem.getMenuItemByName(menuName);
+	}
+			
 	public static String getMenuItemNameById(Integer menuItemId) {
 		return MenuItem.getMenuItemNameById(menuItemId);
 	}
@@ -65,4 +65,5 @@ public class MenuItemController {
 		
 		return true;
 	}
+
 }

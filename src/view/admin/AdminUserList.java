@@ -36,7 +36,7 @@ public class AdminUserList {
 
 	public static TableView<User> table;
 	Button updateBtn, deleteBtn;
-	VBox form, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, emailLbl, roleLbl;
 	TextField nameTxt, emailTxt, roleTxt;
 	
@@ -58,8 +58,47 @@ public class AdminUserList {
 		table.getColumns().addAll(nameColumn, emailColumn, roleColumn);
 
 		ObservableList<User> items = AdminUserListController.getAllData();
-		table.setItems(items);
+		defineUserToTable(items);
 
+		assignTableItemToLocal();
+		AdminUserListController.addAction(updateBtn, currentUser, table, deleteBtn);
+	}
+
+	void makeForm(){
+		updateBtn = new Button("Update User's Role");
+		deleteBtn = new Button("Delete User");
+
+		HBox buttonPane = new HBox();
+		defineButtonPane(buttonPane);
+		formPane = new VBox(10);
+		defineFormPane(buttonPane);
+	}
+	
+	public StackPane display(Stage s) {
+		makeForm();
+		makeTable();
+
+		VBox pagePane = new VBox(10);
+		definePagePane(pagePane);
+
+		createRootStackpane(pagePane);
+		return root;
+	}
+	
+	private void defineFormPane(HBox buttonPane) {
+		formPane.getChildren().addAll(buttonPane);
+	}
+
+	private void defineButtonPane(HBox buttonPane) {
+		buttonPane.getChildren().addAll(updateBtn, deleteBtn);
+		buttonPane.setSpacing(5);
+	}
+	
+	private void defineUserToTable(ObservableList<User> items) {
+		table.setItems(items);
+	}
+
+	private void assignTableItemToLocal() {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
 				currentUser = newValue;
@@ -71,33 +110,16 @@ public class AdminUserList {
 				AdminUserListController.addAction(updateBtn, currentUser,table, deleteBtn);
 			}
 		});
-	
-		AdminUserListController.addAction(updateBtn, currentUser, table, deleteBtn);
-	}
-
-	void makeForm(){
-		updateBtn = new Button("Update User's Role");
-		deleteBtn = new Button("Delete User");
-
-		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(updateBtn, deleteBtn);
-		buttonPane.setSpacing(5);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
 	}
 	
-	public StackPane display(Stage s) {
-		makeForm();
-		makeTable();
-
-		VBox page = new VBox(10);
-		page.getChildren().addAll(form, table);
-		page.setPadding(new Insets(10));
-
+	private void createRootStackpane(VBox pagePane) {
 		root = new StackPane();
-		root.getChildren().add(page);
+		root.getChildren().add(pagePane);
+	}
 
-		return root;
+	private void definePagePane(VBox page) {
+		page.getChildren().addAll(formPane, table);
+		page.setPadding(new Insets(10));
 	}
 
 

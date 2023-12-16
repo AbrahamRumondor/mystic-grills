@@ -12,13 +12,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.MGWindow;
 import model.Order;
 import model.User;
-import view.MGWindow;
 import view.chefwaiter.ChefWaiterMenu;
 import view.chefwaiter.ChefWaiterOrderDetailList;
 import view.chefwaiter.ChefWaiterOrderList;
-import view.customer.CustomerMenu;
+import view.customer.CustomerList;
 import view.customer.CustomerMenuList;
 import view.customer.CustomerOrderList;
 

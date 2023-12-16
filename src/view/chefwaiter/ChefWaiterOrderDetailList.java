@@ -81,31 +81,128 @@ public class ChefWaiterOrderDetailList {
 		
 		OrderController.setOrder(order);
 		
-		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-			if (newValue != null) {
-				currentMenu = newValue.getMenuItem();
-				orderId = newValue.getOrderId();
-				
-				if(!isCustomer)
-					ChefWaiterOrderDetailListController.addAction(
-						proceedBtn,
-						addBtn,
-						updBtn,
-						deleteBtn,
-						order,
-						table,
-						currentMenu,
-						s,
-						borderPane);
-				else
-					ChefWaiterOrderDetailListController.addCustomerAction(
-							proceedBtn,
-							s,
-							borderPane);
+		assignTableItemToLocal(order, s, borderPane, isCustomer);
+		getButtonAction(order, s, borderPane, isCustomer);
+	}
+	
+	void headerPane(Order order) {
+		 orderIdLbl = new Label("Order Id: " + order.getOrderId());
+		 userNameLbl = new Label("Order Client: " + order.getOrderUser().getUserName());
+		 orderDateLbl =  new Label("Order Date: " + order.getOrderDateString());
+		 orderStatusLbl = new Label("Order Status: " + order.getOrderStatus());
+		 
+		 setLabelFont();
+		 defineHeaderPane();
+	}
+	
+	void makeForm(Order order){
+		addBtn = new Button("Add New Menu");
+		updBtn = new Button("Update Order Menu");
+		deleteBtn = new Button("Delete Order Menu");
 
-			}
-		});
+		buttonPane = new HBox();
+		buttonPane.getChildren().addAll(addBtn, updBtn, deleteBtn);
+		buttonPane.setSpacing(5);
+	}
+	
+	void makeSubmitPane(Order order){
+		User user = UserController.getCurrentUser();
 		
+		String proceedBtnName = new String();
+		proceedBtnName = getProceedBtnName(user, proceedBtnName);
+		
+		proceedBtn = new Button(proceedBtnName);
+		defineProceedPane();
+	}
+	
+	void makeBackBtn(Order order){
+		proceedBtn = new Button("back");
+		defineButtonPane();
+	}
+	
+	public StackPane display(Stage s, Order order, BorderPane borderPane) {
+		User user = UserController.getCurrentUser();
+		boolean isCustomer = user.getUserRole().equals("Customer");
+		
+		getForm(order, isCustomer);
+		headerPane(order);
+		getSubmitPane(order, isCustomer);
+		makeTable(order, s, borderPane, isCustomer);
+		
+		VBox pagePane = new VBox(10);
+		definePagePane(isCustomer, pagePane);
+
+		setRootStackpane(pagePane);
+		
+		ChefWaiterOrderDetailListController.refreshTableView(table, order);
+		return root;
+	}
+
+	private void setRootStackpane(VBox pagePane) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+	}
+
+	private void definePagePane(boolean isCustomer, VBox pagePane) {
+		if(!isCustomer)
+			pagePane.getChildren().addAll(headerPane, buttonPane, table, proceedPane);
+		else 
+			pagePane.getChildren().addAll(buttonPane, headerPane, table);
+
+		pagePane.setPadding(new Insets(10));
+	}
+
+	private void getSubmitPane(Order order, boolean isCustomer) {
+		if(!isCustomer) {
+			makeSubmitPane(order);
+		}
+	}
+
+	private void getForm(Order order, boolean isCustomer) {
+		if(!isCustomer) {
+			makeForm(order);
+		} else {
+			makeBackBtn(order);
+		}
+	}
+	
+	private void defineButtonPane() {
+		buttonPane = new HBox();
+		buttonPane.getChildren().addAll(proceedBtn);
+	}
+	
+	private void defineProceedPane() {
+		proceedPane = new VBox();
+		proceedPane.getChildren().addAll(proceedBtn);
+		proceedPane.setAlignment(Pos.BOTTOM_RIGHT);
+	}
+
+	private String getProceedBtnName(User user, String proceedBtnName) {
+		if(user.getUserRole().equals("Chef"))
+			proceedBtnName = "Prepare Order";
+		else if(user.getUserRole().equals("Waiter"))
+			proceedBtnName = "Serve Order";
+		return proceedBtnName;
+	}
+	
+	private void defineHeaderPane() {
+		headerPane = new VBox();
+		 headerPane.getChildren().addAll(
+				 orderIdLbl, 
+				 userNameLbl, 
+				 orderDateLbl,
+				 orderStatusLbl);
+		 headerPane.setPadding(new Insets(10));
+	}
+
+	private void setLabelFont() {
+		orderIdLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 orderDateLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 orderStatusLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+	}
+	
+	private void getButtonAction(Order order, Stage s, BorderPane borderPane, boolean isCustomer) {
 		if(!isCustomer)
 			ChefWaiterOrderDetailListController.addAction(
 				proceedBtn,
@@ -123,93 +220,18 @@ public class ChefWaiterOrderDetailList {
 					s,
 					borderPane);
 	}
-	
-	void headerPane(Order order) {
-		 orderIdLbl = new Label("Order Id: " + order.getOrderId());
-		 userNameLbl = new Label("Order Client: " + order.getOrderUser().getUserName());
-		 orderDateLbl =  new Label("Order Date: " + order.getOrderDateString());
-		 orderStatusLbl = new Label("Order Status: " + order.getOrderStatus());
-		 
-		 orderIdLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderDateLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderStatusLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
 
-		 
-		 headerPane = new VBox();
-		 headerPane.getChildren().addAll(
-				 orderIdLbl, 
-				 userNameLbl, 
-				 orderDateLbl,
-				 orderStatusLbl);
-		 headerPane.setPadding(new Insets(10));
+	private void assignTableItemToLocal(Order order, Stage s, BorderPane borderPane, boolean isCustomer) {
+		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null) {
+				currentMenu = newValue.getMenuItem();
+				orderId = newValue.getOrderId();
+				
+				getButtonAction(order, s, borderPane, isCustomer);
+
+			}
+		});
 	}
 	
-	void makeForm(Order order){
-		addBtn = new Button("Add New Menu");
-		updBtn = new Button("Update Order Menu");
-		deleteBtn = new Button("Delete Order Menu");
-
-		buttonPane = new HBox();
-		buttonPane.getChildren().addAll(addBtn, updBtn, deleteBtn);
-		buttonPane.setSpacing(5);
-	}
-	
-	void makeSubmitPane(Order order){
-		User user = UserController.getCurrentUser();
-		
-		String proceedBtnName = new String();
-		
-		if(user.getUserRole().equals("Chef"))
-			proceedBtnName = "Prepare Order";
-		else if(user.getUserRole().equals("Waiter"))
-			proceedBtnName = "Serve Order";
-		
-		proceedBtn = new Button(proceedBtnName);
-		
-		proceedPane = new VBox();
-		proceedPane.getChildren().addAll(proceedBtn);
-		proceedPane.setAlignment(Pos.BOTTOM_RIGHT);
-	}
-	
-	void makeBackBtn(Order order){
-		proceedBtn = new Button("back");
-
-		buttonPane = new HBox();
-		buttonPane.getChildren().addAll(proceedBtn);
-	}
-	
-	public StackPane display(Stage s, Order order, BorderPane borderPane) {
-		User user = UserController.getCurrentUser();
-		boolean isCustomer = user.getUserRole().equals("Customer");
-		
-		if(!isCustomer) {
-			makeForm(order);
-		} else {
-			makeBackBtn(order);
-		}
-		headerPane(order);
-		if(!isCustomer) {
-			makeSubmitPane(order);
-		}
-		
-		makeTable(order, s, borderPane, isCustomer);
-		
-
-		VBox page = new VBox(10);
-		if(!isCustomer)
-			page.getChildren().addAll(headerPane, buttonPane, table, proceedPane);
-		else 
-			page.getChildren().addAll(buttonPane, headerPane, table);
-
-		page.setPadding(new Insets(10));
-
-		root = new StackPane();
-		root.getChildren().add(page);
-		
-		ChefWaiterOrderDetailListController.refreshTableView(table, order);
-		
-		return root;
-	}
 }
 

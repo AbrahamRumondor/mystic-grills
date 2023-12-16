@@ -35,7 +35,7 @@ public class AdminMenuList {
 
 	public static TableView<MenuItem> table;
 	Button addBtn, updateBtn, deleteBtn;
-	VBox form, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, descriptionLbl, priceLbl;
 	TextField nameTxt, descriptionTxt, priceTxt;
 	
@@ -46,7 +46,6 @@ public class AdminMenuList {
 	private void makeTable() {
 		table = new TableView<>();
 
-		table = new TableView<>();
 		TableColumn<MenuItem, String> nameColumn = new TableColumn<>("Name");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("menuItemName" ));
 		TableColumn<MenuItem, String> descriptionColumn = new TableColumn<>("Description");
@@ -57,8 +56,39 @@ public class AdminMenuList {
 		table.getColumns().addAll(nameColumn, descriptionColumn, priceColumn);
 
 		ObservableList<MenuItem> items = CustomerMenuListController.getAllData();
-		table.setItems(items);
+		defineMenuItemTable(items);
 
+		assignTableItemToLocal();
+		AdminMenuListController.addAction(currentItem, addBtn, updateBtn, deleteBtn, currentItem, table);
+	}
+
+	void makeForm(){
+		addBtn = new Button("Add New Menu");
+		updateBtn = new Button("Update Menu");
+		deleteBtn = new Button("Delete Menu");
+
+		HBox buttonPane = new HBox();
+		createButtonPane(buttonPane);
+		formPane = new VBox(10);
+		createFormPane(buttonPane);
+	}
+	
+	public StackPane display(Stage s) {
+		makeForm();
+		makeTable();
+
+		VBox pagePane = new VBox(10);
+		createPagePane(pagePane);
+
+		createRootStackpane(pagePane);
+		return root;
+	}
+
+	private void defineMenuItemTable(ObservableList<MenuItem> items) {
+		table.setItems(items);
+	}
+
+	private void assignTableItemToLocal() {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
 				currentItem = newValue;
@@ -70,37 +100,26 @@ public class AdminMenuList {
 				AdminMenuListController.addAction(currentItem, addBtn, updateBtn, deleteBtn, currentItem,table);
 			}
 		});
-		
+	}
 	
-		AdminMenuListController.addAction(currentItem, addBtn, updateBtn, deleteBtn, currentItem, table);
+	private void createRootStackpane(VBox pagePane) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
 	}
 
-	void makeForm(){
-		addBtn = new Button("Add New Menu");
-		updateBtn = new Button("Update Menu");
-		deleteBtn = new Button("Delete Menu");
+	private void createPagePane(VBox pagePane) {
+		pagePane.getChildren().addAll(formPane, table);
+		pagePane.setPadding(new Insets(10));
+	}
+	
+	private void createFormPane(HBox buttonPane) {
+		formPane.getChildren().addAll(buttonPane);
+	}
 
-		HBox buttonPane = new HBox();
+	private void createButtonPane(HBox buttonPane) {
 		buttonPane.getChildren().addAll(addBtn, updateBtn, deleteBtn);
 		buttonPane.setSpacing(5);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
 	}
 	
-	public StackPane display(Stage s) {
-		makeForm();
-		makeTable();
-
-		VBox page = new VBox(10);
-		page.getChildren().addAll(form, table);
-		page.setPadding(new Insets(10));
-
-		root = new StackPane();
-//		Scene scene = new Scene(root, 400, 400);
-		root.getChildren().add(page);
-		
-		return root;
-	}
-
 
 }

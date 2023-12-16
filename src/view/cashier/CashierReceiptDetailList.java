@@ -54,9 +54,6 @@ public class CashierReceiptDetailList {
 	TextField nameTxt, descriptionTxt, priceTxt;
 	
 	Integer orderId;
-//	User orderUser;
-//	Date orderDate;
-//	String orderStatus;
 	
 	OrderItem currentItem;
 	
@@ -75,13 +72,9 @@ public class CashierReceiptDetailList {
 		table.getColumns().addAll(menuNameColumn, priceColumn, quantityColumn, totalColumn);
 
 		ObservableList<OrderItem> items = CashierReceiptDetailListController.getAllData(order);
-		table.setItems(items);
+		defineOrderItemToTable(items);
 
-		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-			if (newValue != null) {
-				orderId = newValue.getOrderId();
-			}
-		});
+		assignTableItemToLocal();
 	}
 	
 	void headerPane(Order order) {
@@ -89,22 +82,9 @@ public class CashierReceiptDetailList {
 		 userNameLbl = new Label("Order Client: " + order.getOrderUser().getUserName());
 		 orderDateLbl =  new Label("Order Date: " + order.getOrderDateString());
 		 orderStatusLbl = new Label("Order Status: " + order.getOrderStatus());
-		 
-		 orderIdLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderDateLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-		 orderStatusLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
-
-		 
-		 headerPane = new VBox();
-		 headerPane.getChildren().addAll(
-				 orderIdLbl, 
-				 userNameLbl, 
-				 orderDateLbl,
-				 orderStatusLbl);
-		 headerPane.setPadding(new Insets(10));
+		 setLabelFont();
+		 createHeaderPane();
 	}
-	
 	
 	void makeSubmitPane(Order order){
 		String total = order.getOrderTotalString();
@@ -122,17 +102,53 @@ public class CashierReceiptDetailList {
 		makeSubmitPane(order);
 		makeTable(order);
 		
+		VBox pagePane = new VBox(10);
+		createPagePane(pagePane);
 
-		VBox page = new VBox(10);
-		page.getChildren().addAll(headerPane, table, totalPricePane);
-		page.setPadding(new Insets(10));
-
-		root = new StackPane();
-		root.getChildren().add(page);
-		
+		createRootStackpane(pagePane);
 		CashierReceiptDetailListController.refreshTableView(table, order);
 		
 		return root;
 	}
+
+	private void createRootStackpane(VBox pagePane) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+	}
+
+	private void createPagePane(VBox pagePane) {
+		pagePane.getChildren().addAll(headerPane, table, totalPricePane);
+		pagePane.setPadding(new Insets(10));
+	}
+	
+	private void createHeaderPane() {
+		headerPane = new VBox();
+		 headerPane.getChildren().addAll(
+				 orderIdLbl, 
+				 userNameLbl, 
+				 orderDateLbl,
+				 orderStatusLbl);
+		 headerPane.setPadding(new Insets(10));
+	}
+
+	private void setLabelFont() {
+		orderIdLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 orderDateLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+		 orderStatusLbl.setFont(Font.font(null, FontWeight.BOLD, 14));
+	}
+	
+	private void defineOrderItemToTable(ObservableList<OrderItem> items) {
+		table.setItems(items);
+	}
+
+	private void assignTableItemToLocal() {
+		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null) {
+				orderId = newValue.getOrderId();
+			}
+		});
+	}
+	
 }
 

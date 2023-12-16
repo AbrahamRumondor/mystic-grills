@@ -1,6 +1,7 @@
 package view.guest;
 
 import model.ActivityLog;
+import model.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.UserController;
 import controller.guest.GuestController;
@@ -21,7 +22,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import model.User;
-import view.MGWindow;
 
 public class GuestLogin{
 	

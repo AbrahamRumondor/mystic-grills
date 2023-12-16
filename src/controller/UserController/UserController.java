@@ -1,64 +1,60 @@
 package controller.UserController;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import controller.guest.GuestController;
 import javafx.scene.Node;
 import model.Connect;
+import model.MGWindow;
 import model.User;
-import view.MGWindow;
-import view.Notification;
 import view.guest.GuestLogin;
 import view.guest.GuestSignup;
+import view.popup.Notification;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class UserController {
 	private static User currentUser;
 	
-	private static UserController userController;
-	
 //	NOTE: ASUMSI MVC CONTROLLER DISINI MODEL HANYA MENANGANI LOGIC UNTUK KE DATABASE
 //		  SEHINGGA HAL HAL TERKAIT VALIDASI DILUAR ITU, DILAKUKAN DI CONTROLLER
 	
-//	memastikan usercontroller hanya boleh ada satu, why? karena kita hanya butuh 1 user controller,
-//	selain itu, adanya usercontroller baru artinya currentUsernya berbeda.
-	public static UserController getInstance() {
-		if(userController == null) {
-			synchronized (UserController.class) {
-				if(userController==null)userController = new UserController();
-			}
+//	controller model
+	public static void createUser(String userRole, String userName, String userEmail, String userPassword, String confirmPassword) {
+		if(userName.isEmpty() || userEmail.isEmpty() || userPassword.isEmpty()) {
+			Notification.showErrorMessage("Please fill all fields");
+			return;
+		} else if(!userEmail.endsWith("@gmail.com")) {
+			Notification.showErrorMessage("Email must ends with @gmail.com");
+			return;
+		} else if(userPassword.length() < 6) {
+			 Notification.showErrorMessage("Password must be at least 6 chars long");
+			 return;
+		} else if (!userPassword.equals(confirmPassword)) {
+			 Notification.showErrorMessage("Password didn't match");
+			 return;
 		}
-		return userController;
+		
+		boolean creation = User.createUser(userRole, userName, userEmail, userPassword);
+		
+		if(!creation) {
+//			show error message
+			 Notification.showErrorMessage("Email already registered");
+			 return;
+		}
+		
+		 Notification.showErrorMessage("Account created successfully");
+}
+	
+	public static void updateUser(Integer id, String role, String name, String email, String password) {
+		User.updateUser(id, role, name, email, password);
 	}
 	
-	
-	public static void createUser(String userRole, String userName, String userEmail, String userPassword, String confirmPassword) {
-			if(userName.isEmpty() || userEmail.isEmpty() || userPassword.isEmpty()) {
-				Notification.showErrorMessage("Please fill all fields");
-				return;
-			} else if(!userEmail.endsWith("@gmail.com")) {
-				Notification.showErrorMessage("Email must ends with @gmail.com");
-				return;
-			} else if(userPassword.length() < 6) {
-				 Notification.showErrorMessage("Password must be at least 6 chars long");
-				 return;
-			} else if (!userPassword.equals(confirmPassword)) {
-				 Notification.showErrorMessage("Password didn't match");
-				 return;
-			}
-			
-			boolean creation = User.createUser(userRole, userName, userEmail, userPassword);
-			
-			if(!creation) {
-//				show error message
-				 Notification.showErrorMessage("Email already registered");
-				 return;
-			}
-			
-			 Notification.showErrorMessage("Account created successfully");
+	public static void deleteUser(Integer userId) {
+		User.deleteUser(userId);
 	}
 	
 	public static Integer authenticateUser(String email, String password ) {
@@ -85,6 +81,10 @@ public class UserController {
 		 return null;
 	}
 	
+	public static ArrayList<User>getAllUsers() {
+		return User.getAllUsers();
+	}
+			
 	public static User getUserById(Integer userid) {
 		return User.getUserById(userid);
 	}
@@ -92,27 +92,14 @@ public class UserController {
 	public static String getUserNameById(Integer userId) {
 		return User.getUserNameById(userId);
 	}
-	
-	public static void deleteUser(Integer userId) {
-		User.deleteUser(userId);
-	}
-	
-	public static void updateUser(Integer id, String role, String name, String email, String password) {
-		User.updateUser(id, role, name, email, password);
-	}
 
-
-
+//	controller current user
 	public static User getCurrentUser() {
 		return currentUser;
 	}
 
-
 	public static void setCurrentUser(User currentuser) {
 		currentUser = currentuser;
 	}
-	
-	
-	
 	
 }

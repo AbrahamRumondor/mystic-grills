@@ -44,7 +44,7 @@ public class ChefWaiterOrderList {
 	
 	public static TableView<Order> table;
 	Button orderDetailBtn, proceedBtn;
-	VBox form, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, emailLbl, roleLbl;
 	TextField nameTxt, emailTxt, roleTxt;
 	
@@ -73,8 +73,60 @@ public class ChefWaiterOrderList {
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
 		ObservableList<Order> items = ChefWaiterOrderListController.getAllData();
-		table.setItems(items);
+		defineOrderToTable(items);
 
+		assignTableItemToLocal(s, borderPane);
+		ChefWaiterOrderListController.addAction(
+				orderDetailBtn,
+				currentOrder,
+				table,
+				proceedBtn,
+				s,
+				borderPane);
+	}
+
+	void makeForm(){
+		User user = UserController.getCurrentUser();
+		boolean isCustomer = user.getUserRole().equals("Customer");
+		
+		orderDetailBtn = new Button("View Order Details");
+		
+		String proceedBtnName = new String();
+		proceedBtnName = getProceedBtnName(user, proceedBtnName);
+		
+		proceedBtn = new Button(proceedBtnName);
+
+		HBox buttonPane = new HBox();
+		defineButtonPane(isCustomer, buttonPane);
+		defineFormPane(buttonPane);
+	}
+	
+	public StackPane display(Stage s, BorderPane borderPane) {
+		makeForm();
+		makeTable(s, borderPane);
+		
+		VBox pagePane = new VBox(10);
+		definePagePane(pagePane);
+
+		setRootStackpane(pagePane);
+		return root;
+	}
+
+	private void setRootStackpane(VBox pagePane) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+	}
+
+	private void definePagePane(VBox page) {
+		page.getChildren().addAll(table, formPane);
+		page.setPadding(new Insets(10));
+	}
+	
+	private void defineOrderToTable(ObservableList<Order> items) {
+		table.setItems(items);
+	}
+
+	private void assignTableItemToLocal(Stage s, BorderPane borderPane) {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
 				currentOrder = newValue;
@@ -93,32 +145,14 @@ public class ChefWaiterOrderList {
 						borderPane);
 			}
 		});
+	}
 	
-		ChefWaiterOrderListController.addAction(
-				orderDetailBtn,
-				currentOrder,
-				table,
-				proceedBtn,
-				s,
-				borderPane);
+	private void defineFormPane(HBox buttonPane) {
+		formPane = new VBox(10);
+		formPane.getChildren().addAll(buttonPane);
 	}
 
-	void makeForm(){
-		User user = UserController.getCurrentUser();
-		boolean isCustomer = user.getUserRole().equals("Customer");
-		
-		orderDetailBtn = new Button("View Order Details");
-		
-		String proceedBtnName = new String();
-		
-		if(user.getUserRole().equals("Chef"))
-			proceedBtnName = "Prepare Order";
-		else if(user.getUserRole().equals("Waiter"))
-			proceedBtnName = "Serve Order";
-		
-		proceedBtn = new Button(proceedBtnName);
-
-		HBox buttonPane = new HBox();
+	private void defineButtonPane(boolean isCustomer, HBox buttonPane) {
 		if(!isCustomer)
 			buttonPane.getChildren().addAll(orderDetailBtn, proceedBtn);
 		else
@@ -126,23 +160,14 @@ public class ChefWaiterOrderList {
 		
 		buttonPane.setSpacing(15);
 		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
-	}
-	
-	public StackPane display(Stage s, BorderPane borderPane) {
-		makeForm();
-		makeTable(s, borderPane);
-		
-		VBox page = new VBox(10);
-		page.getChildren().addAll(table, form);
-		page.setPadding(new Insets(10));
-
-		root = new StackPane();
-		root.getChildren().add(page);
-
-		return root;
 	}
 
+	private String getProceedBtnName(User user, String proceedBtnName) {
+		if(user.getUserRole().equals("Chef"))
+			proceedBtnName = "Prepare Order";
+		else if(user.getUserRole().equals("Waiter"))
+			proceedBtnName = "Serve Order";
+		return proceedBtnName;
+	}
 
 }

@@ -13,16 +13,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.MGWindow;
 import model.User;
-import view.MGWindow;
-import view.customer.CustomerMenu;
+import view.customer.CustomerList;
 import view.customer.CustomerMenuList;
 import view.customer.CustomerOrderList;
 
 public class CustomerMenuController {
 	
 	public static ActivityLog activityLog = ActivityLog.getInstance();
-	private static CustomerMenu customerMenu = new CustomerMenu();
+	private static CustomerList customerMenu = new CustomerList();
 
 	static CustomerMenuList customerMenuList = new CustomerMenuList();
 	static CustomerOrderList customerOrderList = new CustomerOrderList();

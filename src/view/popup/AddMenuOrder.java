@@ -23,11 +23,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.MGWindow;
 import model.MenuItem;
 import model.Order;
 import model.OrderItem;
 import model.User;
-import view.MGWindow;
 import view.chefwaiter.ChefWaiterOrderDetailList;
 import view.customer.CustomerOrderList;
 import view.guest.GuestDefault;
@@ -48,52 +48,60 @@ public class AddMenuOrder {
 	public static StackPane show(MenuItem currentItem, Button btn, String input) {
 		
 		MGWindow window = MGWindowController.getWindow();
-		
-		Order order;
+		BorderPane root = new BorderPane();
 		
 		boolean isChef = user.getUserRole().equals("Chef");
 		boolean isWaiter = user.getUserRole().equals("Waiter");
 		boolean isCustomer = user.getUserRole().equals("Customer");
-		if(isChef || isWaiter) {
-			order = OrderController.getOrder();
-		} else if(isCustomer) {
-			order = OrderController.getOnGoingOrder();
-		} else {
-			order = null;
-		}
 		
-		System.out.println("order ==> " + order.getOrderId());
-		
-		BorderPane root = new BorderPane();
+		Order order;
+		order = getOrder(isChef, isWaiter, isCustomer);
 		
 		Label addPopup = new Label(input + " Menu");
-		Font font = Font.font(null, FontWeight.BOLD, 20);
-		addPopup.setFont(font);
-		
 		Label content = new Label(currentItem.getMenuItemName());
-		content.setFont(Font.font(null, 20));
+		setLabelFont(addPopup, content);
+		defineHeaderPane(addPopup, content);
 		
-		headerPane = new VBox();
-		headerPane.getChildren().addAll(addPopup, content);
-		headerPane.setSpacing(5);
-		headerPane.setAlignment(Pos.TOP_CENTER);
-		
-		buttonPane = new HBox();
 		Button confirmBtn = new Button("Confirm");
-		buttonPane.getChildren().addAll(confirmBtn);
-		buttonPane.setAlignment(Pos.BOTTOM_CENTER);
+		defineButtonPane(confirmBtn);
 		
 		OrderItem item = OrderItemController.getOrderItemInList(currentItem, order);
 		
 		quantityTxt = new TextField();
-		quantityTxt.setText(String.valueOf(item == null ? 0 : item.getQuantity()));
+		setQuantityTxt(item);
 		quantityLbl = new Label("Quantity :");
-//		priceTxt.setDisable(true);
+		defineQuantityPane();
 		
-		quantityPane = new VBox();
-		quantityPane.getChildren().addAll(quantityLbl, quantityTxt);
-		quantityPane.setSpacing(15);
+		addButtonAction(currentItem, btn, input, window, isChef, isWaiter, isCustomer, order, confirmBtn, item);
 		
+		configureBorderpane(root);
+		
+		StackPane container = new StackPane(root);
+		setContainer(window, container);
+		return container;
+	}
+
+	private static void setContainer(MGWindow window, StackPane container) {
+		container.setMaxSize(300, 215);
+		
+		container.setStyle("-fx-background-color: #f4f4f4;" +
+                "-fx-border-color: black;" +
+                "-fx-border-width: 1px;");
+		
+		StackPane.setMargin(container, new Insets(10,10,10,10));
+        window.root.getChildren().add(container);
+        activityLog.getSceneStack().add(container);
+	}
+
+	private static void configureBorderpane(BorderPane root) {
+		root.setPadding(new Insets(20, 20, 20, 20));
+		root.setTop(headerPane);
+		root.setCenter(quantityPane);
+		root.setBottom(buttonPane);
+	}
+
+	private static void addButtonAction(MenuItem currentItem, Button btn, String input, MGWindow window, boolean isChef,
+			boolean isWaiter, boolean isCustomer, Order order, Button confirmBtn, OrderItem item) {
 		confirmBtn.setOnAction(
 				e -> {
 					if(!quantityTxt.getText().equals("")) {		
@@ -147,24 +155,47 @@ public class AddMenuOrder {
 					}
 				}
 		);
-		
-		root.setPadding(new Insets(20, 20, 20, 20));
-		root.setTop(headerPane);
-		root.setCenter(quantityPane);
-		root.setBottom(buttonPane);
-		
-		StackPane container = new StackPane(root);
-		container.setMaxSize(300, 215);
-		
-		container.setStyle("-fx-background-color: #f4f4f4;" +
-                "-fx-border-color: black;" +
-                "-fx-border-width: 1px;");
-		
-		StackPane.setMargin(container, new Insets(10,10,10,10));
-        window.root.getChildren().add(container);
-        activityLog.getSceneStack().add(container);
-		
-		return container;
+	}
+
+	private static void defineQuantityPane() {
+		quantityPane = new VBox();
+		quantityPane.getChildren().addAll(quantityLbl, quantityTxt);
+		quantityPane.setSpacing(15);
+	}
+
+	private static void setQuantityTxt(OrderItem item) {
+		quantityTxt.setText(String.valueOf(item == null ? 0 : item.getQuantity()));
+	}
+
+	private static void defineButtonPane(Button confirmBtn) {
+		buttonPane = new HBox();
+		buttonPane.getChildren().addAll(confirmBtn);
+		buttonPane.setAlignment(Pos.BOTTOM_CENTER);
+	}
+
+	private static void defineHeaderPane(Label addPopup, Label content) {
+		headerPane = new VBox();
+		headerPane.getChildren().addAll(addPopup, content);
+		headerPane.setSpacing(5);
+		headerPane.setAlignment(Pos.TOP_CENTER);
+	}
+
+	private static void setLabelFont(Label addPopup, Label content) {
+		Font font = Font.font(null, FontWeight.BOLD, 20);
+		addPopup.setFont(font);
+		content.setFont(Font.font(null, 20));
+	}
+
+	private static Order getOrder(boolean isChef, boolean isWaiter, boolean isCustomer) {
+		Order order;
+		if(isChef || isWaiter) {
+			order = OrderController.getOrder();
+		} else if(isCustomer) {
+			order = OrderController.getOnGoingOrder();
+		} else {
+			order = null;
+		}
+		return order;
 	}
 	
 }

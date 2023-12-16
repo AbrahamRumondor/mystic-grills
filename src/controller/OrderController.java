@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import controller.UserController.UserController;
 import model.Connect;
 import model.Order;
 import model.OrderItem;
@@ -42,24 +43,6 @@ public class OrderController {
 		OrderController.onGoingOrder = onGoingOrder;
 	}
 	
-	public static boolean createOrder(User user, ArrayList<OrderItem> orderItems, Date orderDate) {
-		
-		return Order.createOrder(user, orderItems, orderDate);
-		
-	}
-	
-	public static boolean createOrderWithCertainId(Integer userId, User user, ArrayList<OrderItem> orderItems, Date orderDate) {
-		return Order.createOrderWithCertainId(userId, user, orderItems, orderDate);
-	}
-	
-	public static ArrayList<Order>getAllOrders() {
-		return Order.getAllOrders();
-	}
-	
-	public static ArrayList<OrderItem> getOnGoingOrderItems() {
-		return onGoingOrder.getOrderItems();
-	}
-	
 	public static Integer getOnGoingOrderId() {
 		return onGoingOrder.getOrderId();
 	}
@@ -68,13 +51,43 @@ public class OrderController {
 		return onGoingOrder.getOrderUser();
 	}
 
+	
+//	controller model
+	public static boolean createOrder(User user, ArrayList<OrderItem> orderItems, Date orderDate) {
+		
+		return Order.createOrder(user, orderItems, orderDate);
+		
+	}
+	
 	public static void updateOrder(Integer orderId, ArrayList<OrderItem> orderItems, String string) {
 		// TODO Auto-generated method stub
 		Order.updateOrder(orderId, orderItems, string);
+	}
+
+	public static ArrayList<Order>getOrdersByCustomerId(Integer customerId) {
+		return Order.getOrdersByCustomerId(customerId);
 	}
 	
 	public static void deleteOrder(Integer orderId) {
 		Order.deleteOrder(orderId);
 	}
+	
+	public static ArrayList<Order>getAllOrders() {
+		return Order.getAllOrders();
+	}
+	
+	public static boolean createOrderWithCertainId(Integer userId, User user, ArrayList<OrderItem> orderItems, Date orderDate) {
+		return Order.createOrderWithCertainId(userId, user, orderItems, orderDate);
+	}
+		
+	public static Order getOrderByOrderId(Integer orderId) {
+		return Order.getOrderByOrderId(orderId);
+	}
+	
+	public static ArrayList<OrderItem> getOnGoingOrderItems() {
+		return onGoingOrder.getOrderItems();
+	}
+	
+//	controller view
 	
 }

@@ -45,7 +45,7 @@ public class CustomerOrderList {
 		
 	public static TableView<OrderItem> table;
 	Button updBtn, addBtn, deleteBtn, submitBtn;
-	VBox form, namePane, passwordPane, idPane, submitPane;
+	VBox formPane, namePane, passwordPane, idPane, submitPane;
 	Label nameLbl, descriptionLbl, priceLbl;
 	TextField nameTxt, descriptionTxt, priceTxt;
 	
@@ -56,7 +56,6 @@ public class CustomerOrderList {
 	private void makeTable() {
 		table = new TableView<>();
 
-		table = new TableView<>();
 		TableColumn<OrderItem, String> quantityColumn = new TableColumn<>("Quantity");
 		quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity" ));
 		TableColumn<OrderItem, String> menuNameColumn = new TableColumn<>("Menu Name");
@@ -64,24 +63,10 @@ public class CustomerOrderList {
 		TableColumn<OrderItem, String> priceColumn = new TableColumn<>("Price");
 		priceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 		
-		table.getColumns().addAll(quantityColumn, menuNameColumn, priceColumn);
-
 		ObservableList<OrderItem> items = CustomerOrderListController.getAllData();
-		table.setItems(items);
+		defineOrderItemTable(quantityColumn, menuNameColumn, priceColumn, items);
 
-		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-			if (newValue != null) {
-				currentItem = newValue.getMenuItem();
-				System.out.println(newValue.getMenuItem().getMenuItemName() + " is " + newValue.getQuantity() +" months old");
-				orderQty = newValue.getQuantity().toString();
-				orderName = newValue.getMenuItem().getMenuItemName();
-				menuPrice = String.valueOf(newValue.getMenuItem().getMenuItemPrice() * newValue.getQuantity());
-				
-				CustomerOrderListController.addAction(orderQty, updBtn, deleteBtn, submitBtn, addBtn, currentItem, table);
-			}
-		});
-		
-		
+		assignTableItemToLocal();
 		CustomerOrderListController.addAction(orderQty, updBtn, deleteBtn, submitBtn, addBtn, currentItem, table);
 	}
 
@@ -91,18 +76,17 @@ public class CustomerOrderList {
 		deleteBtn = new Button("Delete Order Menu");
 
 		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(addBtn, updBtn, deleteBtn);
-		buttonPane.setSpacing(5);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
+		createButtonPane(buttonPane);
+		
+		formPane = new VBox(10);
+		createFormBox(buttonPane);
 	}
-	
+
 	void makeSubmitPane(){
 		submitBtn = new Button("Submit Order");
 		
 		submitPane = new VBox();
-		submitPane.getChildren().addAll(submitBtn);
-		submitPane.setAlignment(Pos.BOTTOM_RIGHT);
+		createSubmitPane();
 	}
 	
 	public StackPane display(Stage s) {
@@ -110,15 +94,59 @@ public class CustomerOrderList {
 		makeSubmitPane();
 		makeTable();
 
-		VBox page = new VBox(10);
-		page.getChildren().addAll(form, table, submitPane);
-		page.setPadding(new Insets(10));
+		VBox pagePane = new VBox(10);
+		createPagePane(pagePane);
 
-		root = new StackPane();
-		root.getChildren().add(page);
+		createRootStackpane(pagePane);
 		
 		CustomerOrderListController.refreshTableView(table);
 		
 		return root;
 	}
+
+	private void createFormBox(HBox buttonPane) {
+		formPane.getChildren().addAll(buttonPane);
+	}
+
+	private void createButtonPane(HBox buttonPane) {
+		buttonPane.getChildren().addAll(addBtn, updBtn, deleteBtn);
+		buttonPane.setSpacing(5);
+	}
+	
+
+	private void createSubmitPane() {
+		submitPane.getChildren().addAll(submitBtn);
+		submitPane.setAlignment(Pos.BOTTOM_RIGHT);
+	}
+	
+	private void createRootStackpane(VBox page) {
+		root = new StackPane();
+		root.getChildren().add(page);
+	}
+
+	private void createPagePane(VBox page) {
+		page.getChildren().addAll(formPane, table, submitPane);
+		page.setPadding(new Insets(10));
+	}
+	
+	private void assignTableItemToLocal() {
+		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null) {
+				currentItem = newValue.getMenuItem();
+				orderQty = newValue.getQuantity().toString();
+				orderName = newValue.getMenuItem().getMenuItemName();
+				menuPrice = String.valueOf(newValue.getMenuItem().getMenuItemPrice() * newValue.getQuantity());
+				
+				CustomerOrderListController.addAction(orderQty, updBtn, deleteBtn, submitBtn, addBtn, currentItem, table);
+			}
+		});
+	}
+	
+	private void defineOrderItemTable(TableColumn<OrderItem, String> quantityColumn,
+			TableColumn<OrderItem, String> menuNameColumn, TableColumn<OrderItem, String> priceColumn,
+			ObservableList<OrderItem> items) {
+		table.getColumns().addAll(quantityColumn, menuNameColumn, priceColumn);
+		table.setItems(items);
+	}
+	
 }

@@ -15,8 +15,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.MGWindow;
 import model.Order;
-import view.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
 import controller.admin.AdminListController;
@@ -28,41 +28,31 @@ public class CashierList {
 	public static MGWindowController windowController = MGWindowController.getInstance();	
 	
 	public void display(Stage s, String option) {
-		
 		MGWindow window = MGWindowController.setWindow(s);
 		StackPane root = window.root;
 		Scene scene = window.scene;
-		
 		BorderPane borderPane = new BorderPane();
 		
 		String userName = UserController.getCurrentUser().getUserName();
 		Label userNameLbl = new Label("Welcome, " + userName);
-		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 		
 //		set header
-		HBox header = new HBox();
-		header.getChildren().addAll(userNameLbl);
-		header.setAlignment(Pos.TOP_LEFT);
-		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
-		
-		borderPane.setTop(header);
-		
+		HBox headerPane = new HBox();
+		createHeaderPane(userNameLbl, headerPane);
+				
 		Label position = new Label();
-		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 		Button viewOrderBtn = new Button("View Orders");
 		Button viewReceiptBtn = new Button("View Receipts");
 		Button logOutBtn = new Button("Log Out");
 		
-		HBox topButtonBox = new HBox();
-		topButtonBox.setMaxSize(450, 50);
-		topButtonBox.setAlignment(Pos.TOP_RIGHT);
-		topButtonBox.setSpacing(20);
-		topButtonBox.getChildren().addAll(position, viewOrderBtn, viewReceiptBtn, logOutBtn);
+		HBox topButtonPane = new HBox();
+		createTopButtonPane(position, viewOrderBtn, viewReceiptBtn, logOutBtn, topButtonPane);
 		
-//		set button back ke stackpane
+		setLabelFont(userNameLbl, position);
+		configureBorderpane(borderPane, headerPane);
+		
 		Button home = new Button("Home");
-		
-        setStackpane(borderPane, topButtonBox, home);
+        setStackpane(borderPane, topButtonPane, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
         CashierListController.getDisplay(option, s, borderPane, position);
@@ -71,10 +61,36 @@ public class CashierList {
         CashierListController.addAction(viewOrderBtn, home, viewReceiptBtn, s, scene, borderPane, logOutBtn);
         
 //      masukin semuanya ke stackpane
-        root.getChildren().addAll(borderPane, home, topButtonBox);
+        setRootStackpane(root, borderPane, topButtonPane, home);
+        showCashierList(scene, s);
+	}
+
+	private void setRootStackpane(StackPane root, BorderPane borderPane, HBox topButtonPane, Button home) {
+		root.getChildren().addAll(borderPane, home, topButtonPane);
         root.setStyle("-fx-background-color: #f4f4f4;");
-        
-        show(scene, s);
+	}
+
+	private void configureBorderpane(BorderPane borderPane, HBox headerPane) {
+		borderPane.setTop(headerPane);
+	}
+
+	private void createTopButtonPane(Label position, Button viewOrderBtn, Button viewReceiptBtn, Button logOutBtn,
+			HBox topButtonPane) {
+		topButtonPane.setMaxSize(450, 50);
+		topButtonPane.setAlignment(Pos.TOP_RIGHT);
+		topButtonPane.setSpacing(20);
+		topButtonPane.getChildren().addAll(position, viewOrderBtn, viewReceiptBtn, logOutBtn);
+	}
+
+	private void createHeaderPane(Label userNameLbl, HBox headerPane) {
+		headerPane.getChildren().addAll(userNameLbl);
+		headerPane.setAlignment(Pos.TOP_LEFT);
+		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
+	}
+
+	private void setLabelFont(Label userNameLbl, Label position) {
+		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
+		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 	}
 
 	private void setStackpane(BorderPane borderPane, HBox topButtonBox, Button home) {
@@ -85,7 +101,7 @@ public class CashierList {
         StackPane.setAlignment(home, Pos.TOP_LEFT);
 	}
 	
-	public static void show(Scene scene, Stage s) {
+	public static void showCashierList(Scene scene, Stage s) {
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
 		s.show();

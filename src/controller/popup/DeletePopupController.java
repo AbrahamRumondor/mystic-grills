@@ -9,9 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import model.ActivityLog;
+import model.MGWindow;
 import model.MenuItem;
 import model.User;
-import view.MGWindow;
 
 public class DeletePopupController {
 	

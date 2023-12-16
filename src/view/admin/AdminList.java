@@ -15,7 +15,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
-import view.MGWindow;
+import model.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
 import controller.admin.AdminListController;
@@ -30,49 +30,67 @@ public class AdminList {
 		MGWindow window = MGWindowController.setWindow(s);
 		StackPane root = window.root;
 		Scene scene = window.scene;
-		
 		BorderPane borderPane = new BorderPane();
 		
 		String userName = UserController.getCurrentUser().getUserName();
 		Label userNameLbl = new Label("Welcome, " + userName);
-		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
 		
 //		set header
-		HBox header = new HBox();
-		header.getChildren().addAll(userNameLbl);
-		header.setAlignment(Pos.TOP_LEFT);
-		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
-		
-		borderPane.setTop(header);
+		HBox headerPane = new HBox();
+		createHeaderPane(userNameLbl, headerPane);
 		
 		Label position = new Label();
-		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 		Button allMenuBtn = new Button("View Menu");
 		Button viewOrderBtn = new Button("View User");
 		Button logOutBtn = new Button("Log Out");
 		
-		HBox topButtonBox = new HBox();
-		topButtonBox.setMaxSize(450, 50);
-		topButtonBox.setAlignment(Pos.TOP_RIGHT);
-		topButtonBox.setSpacing(20);
-		topButtonBox.getChildren().addAll(position, allMenuBtn, viewOrderBtn, logOutBtn);
+		HBox topButtonPane = new HBox();
+		createTopButtonPane(position, allMenuBtn, viewOrderBtn, logOutBtn, topButtonPane);
 		
 //		set button back ke stackpane
 		Button home = new Button("Home");
 		
-        setStackpane(borderPane, topButtonBox, home);
+		setLabelFont(userNameLbl, position);
+		configureBorderpane(borderPane, headerPane);
+        setStackpane(borderPane, topButtonPane, home);
         
 //      Disini Customer Menu bisa tampilin 2 jenis display, itu ditentukan dari function ini.
         AdminListController.getDisplay(option, s, borderPane, position);
-		
+        
 //     	define semua action button          
         AdminListController.addAction(allMenuBtn, home, viewOrderBtn, s, scene, borderPane, logOutBtn);
         
-//      masukin semuanya ke stackpane
-        root.getChildren().addAll(borderPane, home, topButtonBox);
+//      masukin dan setting semuanya ke stackpane
+        setRootStackpane(root, borderPane, topButtonPane, home);
+        showAdminList(scene, s);
+	}
+
+	private void setRootStackpane(StackPane root, BorderPane borderPane, HBox topButtonPane, Button home) {
+		root.getChildren().addAll(borderPane, home, topButtonPane);
         root.setStyle("-fx-background-color: #f4f4f4;");
-        
-        show(scene, s);
+	}
+
+	private void configureBorderpane(BorderPane borderPane, HBox headerPane) {
+		borderPane.setTop(headerPane);
+	}
+
+	private void createTopButtonPane(Label position, Button allMenuBtn, Button viewOrderBtn, Button logOutBtn,
+			HBox topButtonPane) {
+		topButtonPane.setMaxSize(450, 50);
+		topButtonPane.setAlignment(Pos.TOP_RIGHT);
+		topButtonPane.setSpacing(20);
+		topButtonPane.getChildren().addAll(position, allMenuBtn, viewOrderBtn, logOutBtn);
+	}
+
+	private void createHeaderPane(Label userNameLbl, HBox headerPane) {
+		headerPane.getChildren().addAll(userNameLbl);
+		headerPane.setAlignment(Pos.TOP_LEFT);
+		HBox.setMargin(userNameLbl, new Insets(0,0,0,80));
+	}
+
+	private void setLabelFont(Label userNameLbl, Label position) {
+		userNameLbl.setFont(Font.font(null, FontWeight.BOLD, 20));
+		position.setFont(Font.font(null, FontWeight.BOLD, 20));
 	}
 
 	private void setStackpane(BorderPane borderPane, HBox topButtonBox, Button home) {
@@ -83,7 +101,7 @@ public class AdminList {
         StackPane.setAlignment(home, Pos.TOP_LEFT);
 	}
 	
-	public static void show(Scene scene, Stage s) {
+	public static void showAdminList(Scene scene, Stage s) {
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
 		s.show();

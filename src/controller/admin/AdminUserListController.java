@@ -2,6 +2,7 @@ package controller.admin;
 
 import java.util.ArrayList;
 
+import controller.UserController.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -19,7 +20,7 @@ public class AdminUserListController {
 	public static ObservableList<User> getAllData() {
 		ObservableList<User> users = FXCollections.observableArrayList();
 		
-		ArrayList<User> arrayUsers = User.getAllUsers();
+		ArrayList<User> arrayUsers = UserController.getAllUsers();
 		
 		for (User menuItem : arrayUsers) {
 			users.add(menuItem);

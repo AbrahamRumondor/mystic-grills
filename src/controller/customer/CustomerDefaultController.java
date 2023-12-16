@@ -5,8 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import model.MGWindow;
 import model.User;
-import view.MGWindow;
 import controller.customer.CustomerMenuController;
 
 public class CustomerDefaultController {

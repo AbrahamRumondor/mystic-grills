@@ -15,7 +15,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
-import view.MGWindow;
+import model.MGWindow;
 import controller.MGWindowController;
 import controller.UserController.*;
 import controller.guest.GuestController;
@@ -31,12 +31,10 @@ public class GuestDefault {
 		Scene scene = window.scene;
 		BorderPane borderPane = new BorderPane();	
 		Label restaurantName = new Label("WELCOME TO MYSTIC GRILLS");
-		restaurantName.setFont(Font.font(null, FontWeight.BOLD, 20));
+		setLabelFont(restaurantName);
 		
-		HBox header = new HBox();
-		header.getChildren().addAll(restaurantName);
-		header.setAlignment(Pos.CENTER);
-		borderPane.setTop(header);
+		HBox headerBox = new HBox();
+		createHeaderBox(restaurantName, headerBox);
 		
 //		set button back ke stackpane
 		Button back = new Button("Back");
@@ -45,13 +43,11 @@ public class GuestDefault {
 		Button signup = new Button("Sign Up");
 		
 //		 set hbox dan itemsnya.
-		HBox tengah = new HBox();
-		tengah.setAlignment(Pos.CENTER);
-		tengah.getChildren().addAll(login, signup);
-		tengah.setSpacing(100);
-		borderPane.setCenter(tengah);
+		HBox centerBox = new HBox();
+		createCenterBox(login, signup, centerBox);
 		
-		activityLog.add(tengah);
+		setBorderpane(borderPane, headerBox, centerBox);
+		activityLog.add(centerBox);
 		
 //     define semua action button          
         GuestController.addDefaultGuestAction(login, back, signup, s, scene, borderPane);
@@ -59,7 +55,27 @@ public class GuestDefault {
 //     set stackpane items & masukin semuanya ke stackpane
 		setStackpaneItems(borderPane, back, root);
         
-        show(scene, s);
+        showGuestDefault(scene, s);
+	}
+
+	private void setBorderpane(BorderPane borderPane, HBox headerBox, HBox centerBox) {
+		borderPane.setTop(headerBox);
+		borderPane.setCenter(centerBox);
+	}
+
+	private void createCenterBox(Button login, Button signup, HBox centerBox) {
+		centerBox.setAlignment(Pos.CENTER);
+		centerBox.getChildren().addAll(login, signup);
+		centerBox.setSpacing(100);
+	}
+
+	private void setLabelFont(Label restaurantName) {
+		restaurantName.setFont(Font.font(null, FontWeight.BOLD, 20));
+	}
+
+	private void createHeaderBox(Label restaurantName, HBox headerBox) {
+		headerBox.getChildren().addAll(restaurantName);
+		headerBox.setAlignment(Pos.CENTER);
 	}
 	
 //	set stackpane
@@ -70,7 +86,7 @@ public class GuestDefault {
         root.getChildren().addAll(borderPane, back);
 	}
 	
-	public static void show(Scene scene, Stage s) {
+	public static void showGuestDefault(Scene scene, Stage s) {
 		s.setScene(scene);
 		s.setTitle("Mystic Grills");
 		s.show();
