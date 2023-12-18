@@ -7,9 +7,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import controller.MenuItemController;
-import controller.OrderItemController;
-import controller.UserController.UserController;
+import controller.model.OrderItemController;
+import controller.model.UserController;
 
 public class Order {
 	private Integer orderId;
@@ -72,6 +71,106 @@ public class Order {
 		return orders;
 	}
 	
+	public static Order getOrderByOrderId(Integer orderId) {
+		ArrayList<Order> orders = getAllOrders();
+		
+		for(Order order : orders) {
+			if(order.getOrderId() == orderId) {
+				return order;
+			}
+		}
+		return null;
+	}
+	
+//	alasan parameternya berbeda adalah karena ini akan dimasukkan di database, sehingga tidak bisa pakai yang seperti di diagram.
+	public static boolean createOrder(User user, ArrayList<OrderItem> orderItems, Date orderDate) {
+		
+		// pada '?', '' di VALUES dihilangin, nanti ? dianggapnya sbg char.
+		String query = "INSERT INTO `mystic_grills`.`order` (`user_id`, `order_status`, `order_date`) VALUES (?, ?, ?);";
+		
+		System.out.println(user);
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, user.getUserId());
+			prep.setString(2, "Pending");
+			prep.setDate(3, orderDate);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		for(OrderItem item : orderItems) {
+			OrderItemController.createOrderItem(item.getOrderId(), item.getMenuItem().getMenuItemId(), item.getQuantity());
+		}
+		
+		return true;
+		
+	}
+	
+//	Tujuan kelas ini dibuat karena untuk chef bisa terus update/add Order, saya cuma menemukan cara dengan dihapus lalu create lagi.
+	public static boolean createOrderWithCertainId(Integer userId, User user, ArrayList<OrderItem> orderItems, Date orderDate) {
+		
+		String query = "INSERT INTO `mystic_grills`.`order` (`order_id`, `user_id`, `order_status`, `order_date`) VALUES (?, ?, ?, ?);";
+
+		User usr = UserController.getCurrentUser();
+		
+		String status = "";
+		
+		if(usr.getUserRole().equals("Chef"))
+			status = "Pending";
+		else if(usr.getUserRole().equals("Waiter"))
+			status = "Prepared";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, userId);
+			prep.setInt(2, user.getUserId());
+			prep.setString(3, status);
+			prep.setDate(4, orderDate);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		for(OrderItem item : orderItems) {
+			OrderItemController.createOrderItem(item.getOrderId(), item.getMenuItem().getMenuItemId(), item.getQuantity());
+		}
+		
+		return true;
+		
+	}
+	
+	public static void updateOrder(Integer orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
+//		NOTE: karena sepanjang aplikasi update hanya ada update status, jadi orderItems disini tidak dipakai.
+		String query = "UPDATE `mystic_grills`.`order` SET `order_status` = ? WHERE (`order_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setString(1, orderStatus);
+			prep.setInt(2, orderId);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	public static void deleteOrder(Integer orderId) {
+		String query = "DELETE FROM `mystic_grills`.`order` WHERE (`order_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, orderId);
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
 	public static Integer getLastOrderId() {
 		
 		String query = "SELECT MAX(order_id) AS 'max_order_id' FROM mystic_grills.order;";
@@ -122,88 +221,6 @@ public class Order {
 		}
 		
 		return orders;
-	}
-	
-//	alasan parameternya berbeda adalah karena ini akan dimasukkan di database, sehingga tidak bisa pakai yang seperti di diagram.
-	public static boolean createOrder(User user, ArrayList<OrderItem> orderItems, Date orderDate) {
-		
-		// pada '?', '' di VALUES dihilangin, nanti ? dianggapnya sbg char.
-		String query = "INSERT INTO `mystic_grills`.`order` (`user_id`, `order_status`, `order_date`) VALUES (?, ?, ?);";
-		
-		System.out.println(user);
-		
-		PreparedStatement prep = Connect.getConnection().prepare(query);
-		try {
-			prep.setInt(1, user.getUserId());
-			prep.setString(2, "Pending");
-			prep.setDate(3, orderDate);
-			Connect.getConnection().executePreparedUpdate(prep);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		for(OrderItem item : orderItems) {
-			OrderItemController.createOrderItem(item.getOrderId(), item.getMenuItem().getMenuItemId(), item.getQuantity());
-		}
-		
-		return true;
-		
-	}
-	
-//	Tujuan kelas ini dibuat karena untuk chef bisa terus update/add Order, saya cuma menemukan cara dengan dihapus lalu create lagi.
-	public static boolean createOrderWithCertainId(Integer userId, User user, ArrayList<OrderItem> orderItems, Date orderDate) {
-		
-		String query = "INSERT INTO `mystic_grills`.`order` (`order_id`, `user_id`, `order_status`, `order_date`) VALUES (?, ?, ?, ?);";
-
-		System.out.println(user);
-		
-		PreparedStatement prep = Connect.getConnection().prepare(query);
-		try {
-			prep.setInt(1, userId);
-			prep.setInt(2, user.getUserId());
-			prep.setString(3, "Pending");
-			prep.setDate(4, orderDate);
-			Connect.getConnection().executePreparedUpdate(prep);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		for(OrderItem item : orderItems) {
-			OrderItemController.createOrderItem(item.getOrderId(), item.getMenuItem().getMenuItemId(), item.getQuantity());
-		}
-		
-		return true;
-		
-	}
-	
-	public static void updateOrder(Integer orderId, ArrayList<OrderItem> orderItems, String orderStatus) {
-//		NOTE: karena sepanjang aplikasi update hanya ada update status, jadi orderItems disini tidak dipakai.
-		String query = "UPDATE `mystic_grills`.`order` SET `order_status` = ? WHERE (`order_id` = ?);";
-		
-		PreparedStatement prep = Connect.getConnection().prepare(query);
-		try {
-			prep.setString(1, orderStatus);
-			prep.setInt(2, orderId);
-			Connect.getConnection().executePreparedUpdate(prep);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
-	
-	public static void deleteOrder(Integer orderId) {
-		String query = "DELETE FROM `mystic_grills`.`order` WHERE (`order_id` = ?);";
-		
-		PreparedStatement prep = Connect.getConnection().prepare(query);
-		try {
-			prep.setInt(1, orderId);
-			Connect.getConnection().executePreparedUpdate(prep);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 	}
 	
 	public Integer getOrderId() {

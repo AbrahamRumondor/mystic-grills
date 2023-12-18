@@ -34,7 +34,7 @@ public class CustomerMenuList {
 
 	TableView<MenuItem> table;
 	Button addBtn, updateBtn, deleteBtn;
-	VBox form, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, descriptionLbl, priceLbl;
 	TextField nameTxt, descriptionTxt, priceTxt;
 	
@@ -58,6 +58,33 @@ public class CustomerMenuList {
 		ObservableList<MenuItem> items = CustomerMenuListController.getAllData();
 		table.setItems(items);
 
+		assignTableItemToLocal();
+		
+		CustomerMenuListController.addAction(menuName, addBtn, currentItem, table);
+	}
+
+	void makeForm(){
+		addBtn = new Button("Add");
+
+		HBox buttonPane = new HBox();
+		CustomerMenuListController.createButtonPane(buttonPane, addBtn);
+		
+		formPane = new VBox(10);
+		CustomerMenuListController.createFormBox(buttonPane, formPane);
+	}
+	
+	public StackPane display(Stage s) {
+		makeForm();
+		makeTable();
+
+		VBox pagePane = new VBox(10);
+		CustomerMenuListController.createPagePane(pagePane, formPane, table);
+
+		root = CustomerMenuListController.createRootStackpane(pagePane, root);
+		return root;
+	}
+	
+	private void assignTableItemToLocal() {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
 				currentItem = newValue;
@@ -69,35 +96,6 @@ public class CustomerMenuList {
 				CustomerMenuListController.addAction(menuName, addBtn, currentItem,table);
 			}
 		});
-		
-	
-		CustomerMenuListController.addAction(menuName, addBtn, currentItem, table);
-	}
-
-	void makeForm(){
-		addBtn = new Button("Add");
-
-		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(addBtn);
-		buttonPane.setSpacing(5);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
 	}
 	
-	public StackPane display(Stage s) {
-		makeForm();
-		makeTable();
-
-		VBox page = new VBox(10);
-		page.getChildren().addAll(form, table);
-		page.setPadding(new Insets(10));
-
-		root = new StackPane();
-//		Scene scene = new Scene(root, 400, 400);
-		root.getChildren().add(page);
-		
-		return root;
-	}
-
-
 }

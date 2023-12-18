@@ -42,7 +42,7 @@ public class CashierReceiptList {
 
 	public static TableView<Order> table;
 	Button orderDetailBtn;
-	VBox form, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, emailLbl, roleLbl;
 	TextField nameTxt, emailTxt, roleTxt;
 	
@@ -71,27 +71,9 @@ public class CashierReceiptList {
 		table.getColumns().addAll(idColumn, nameColumn, statusColumn, dateColumn, totalColumn);
 
 		ObservableList<Order> items = CashierReceiptListController.getAllData();
-		table.setItems(items);
+		CashierReceiptListController.defineOrderToTable(items, table);
 
-		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-			if (newValue != null) {
-				currentOrder = newValue;
-				orderId = newValue.getOrderId();
-				orderUser = newValue.getOrderUser();
-				orderStatus = newValue.getOrderStatus();
-				orderDate = newValue.getOrderDate();
-				totalPrice = newValue.getOrderTotal();
-				
-				
-				CashierReceiptListController.addAction(
-						orderDetailBtn,
-						currentOrder,
-						table,
-						s,
-						borderPane);
-			}
-		});
-	
+		assignTableItemToLocal(s, borderPane);
 		CashierReceiptListController.addAction(
 				orderDetailBtn,
 				currentOrder,
@@ -104,26 +86,39 @@ public class CashierReceiptList {
 		orderDetailBtn = new Button("View Receipt Details");
 		
 		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(orderDetailBtn);
-		buttonPane.setSpacing(15);
-		buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
+		CashierReceiptListController.createButtonPane(buttonPane, orderDetailBtn);
+		formPane = CashierReceiptListController.createFormPane(buttonPane, formPane);
 	}
 	
 	public StackPane display(Stage s, BorderPane borderPane) {
 		makeForm();
 		makeTable(s, borderPane);
 		
-		VBox page = new VBox(10);
-		page.getChildren().addAll(table, form);
-		page.setPadding(new Insets(10));
+		VBox pagePane = new VBox(10);
+		CashierReceiptListController.createPagePane(pagePane, table, formPane);
 
-		root = new StackPane();
-		root.getChildren().add(page);
-
+		root = CashierReceiptListController.createRootStackpane(pagePane, root);
 		return root;
 	}
 
+	private void assignTableItemToLocal(Stage s, BorderPane borderPane) {
+		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null) {
+				currentOrder = newValue;
+				orderId = newValue.getOrderId();
+				orderUser = newValue.getOrderUser();
+				orderStatus = newValue.getOrderStatus();
+				orderDate = newValue.getOrderDate();
+				totalPrice = newValue.getOrderTotal();
+				
+				CashierReceiptListController.addAction(
+						orderDetailBtn,
+						currentOrder,
+						table,
+						s,
+						borderPane);
+			}
+		});
+	}
 
 }

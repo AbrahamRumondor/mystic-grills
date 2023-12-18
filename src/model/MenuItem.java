@@ -47,7 +47,7 @@ public class MenuItem {
 
 	public static boolean createMenuItem(String name, String description, String price ) {
 		
-		if(!validateMenuItemCreation(name)) return false;
+		if(!validateMenuItemCreation(name, -1)) return false;
 		
 		// pada '?', '' di VALUES dihilangin, nanti ? dianggapnya sbg char.
 		String query = "INSERT INTO `mystic_grills`.`menu_item` (`menu_item_name`, `menu_item_description`, `menu_item_price`) VALUES (?, ?, ?);";
@@ -71,12 +71,14 @@ public class MenuItem {
 	
 	public static boolean updateMenuItem(Integer id, String name, String description, String price ) {
 		
-		if(!validateMenuItemCreation(name)) return false;
+		if(!validateMenuItemCreation(name, id)) return false;
 		
 		// pada '?', '' di VALUES dihilangin, nanti ? dianggapnya sbg char.
 		String query = "UPDATE `mystic_grills`.`menu_item` SET `menu_item_name` = ?, `menu_item_description` = ?, `menu_item_price` = ? WHERE (`menu_item_id` = ?);";
 		
 		System.out.println(name + " " + price);
+		
+		System.out.println(description);
 		
 		PreparedStatement prep = Connect.getConnection().prepare(query);
 		try {
@@ -93,12 +95,12 @@ public class MenuItem {
 		return true;
 	}
 	
-	private static boolean validateMenuItemCreation(String name) {
+	private static boolean validateMenuItemCreation(String name, Integer id) {
 		
 		ArrayList<MenuItem> items = getAllMenuItems();
 		
 		for (MenuItem item : items) {
-			if(item.menuItemName.equalsIgnoreCase(name)) {
+			if(item.getMenuItemId() != id && item.menuItemName.equalsIgnoreCase(name)) {
 				return false;
 			}
 		}

@@ -36,7 +36,7 @@ public class AdminUserList {
 
 	public static TableView<User> table;
 	Button updateBtn, deleteBtn;
-	VBox form, namePane, passwordPane, idPane;
+	VBox formPane, namePane, passwordPane, idPane;
 	Label nameLbl, emailLbl, roleLbl;
 	TextField nameTxt, emailTxt, roleTxt;
 	
@@ -58,8 +58,34 @@ public class AdminUserList {
 		table.getColumns().addAll(nameColumn, emailColumn, roleColumn);
 
 		ObservableList<User> items = AdminUserListController.getAllData();
-		table.setItems(items);
+		AdminUserListController.defineUserToTable(items, table);
 
+		assignTableItemToLocal();
+		AdminUserListController.addAction(updateBtn, currentUser, table, deleteBtn);
+	}
+
+	void makeForm(){
+		updateBtn = new Button("Update User's Role");
+		deleteBtn = new Button("Delete User");
+
+		HBox buttonPane = new HBox();
+		AdminUserListController.defineButtonPane(buttonPane, updateBtn, deleteBtn);
+		formPane = new VBox(10);
+		AdminUserListController.defineFormPane(buttonPane, formPane);
+	}
+	
+	public StackPane display(Stage s) {
+		makeForm();
+		makeTable();
+
+		VBox pagePane = new VBox(10);
+		AdminUserListController.definePagePane(pagePane, formPane, table);
+
+		root = AdminUserListController.createRootStackpane(pagePane, root);
+		return root;
+	}
+	
+	private void assignTableItemToLocal() {
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
 				currentUser = newValue;
@@ -71,34 +97,5 @@ public class AdminUserList {
 				AdminUserListController.addAction(updateBtn, currentUser,table, deleteBtn);
 			}
 		});
-	
-		AdminUserListController.addAction(updateBtn, currentUser, table, deleteBtn);
 	}
-
-	void makeForm(){
-		updateBtn = new Button("Update User's Role");
-		deleteBtn = new Button("Delete User");
-
-		HBox buttonPane = new HBox();
-		buttonPane.getChildren().addAll(updateBtn, deleteBtn);
-		buttonPane.setSpacing(5);
-		form = new VBox(10);
-		form.getChildren().addAll(buttonPane);
-	}
-	
-	public StackPane display(Stage s) {
-		makeForm();
-		makeTable();
-
-		VBox page = new VBox(10);
-		page.getChildren().addAll(form, table);
-		page.setPadding(new Insets(10));
-
-		root = new StackPane();
-		root.getChildren().add(page);
-
-		return root;
-	}
-
-
 }

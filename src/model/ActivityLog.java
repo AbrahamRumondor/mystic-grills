@@ -4,7 +4,6 @@ import java.util.Stack;
 
 import controller.MGWindowController;
 import javafx.scene.Node;
-import view.MGWindow;
 
 public class ActivityLog {
 	private Stack<Node> sceneStack = new Stack<>();

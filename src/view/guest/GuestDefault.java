@@ -1,7 +1,5 @@
 package view.guest;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,13 +10,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.ActivityLog;
-import view.MGWindow;
+import model.MGWindow;
 import controller.MGWindowController;
-import controller.UserController.*;
-import controller.guest.GuestController;
+import controller.guest.GuestDefaultController;
 
 public class GuestDefault {
 	
@@ -31,12 +27,10 @@ public class GuestDefault {
 		Scene scene = window.scene;
 		BorderPane borderPane = new BorderPane();	
 		Label restaurantName = new Label("WELCOME TO MYSTIC GRILLS");
-		restaurantName.setFont(Font.font(null, FontWeight.BOLD, 20));
+		GuestDefaultController.setLabelFont(restaurantName);
 		
-		HBox header = new HBox();
-		header.getChildren().addAll(restaurantName);
-		header.setAlignment(Pos.CENTER);
-		borderPane.setTop(header);
+		HBox headerBox = new HBox();
+		GuestDefaultController.createHeaderBox(restaurantName, headerBox);
 		
 //		set button back ke stackpane
 		Button back = new Button("Back");
@@ -45,35 +39,17 @@ public class GuestDefault {
 		Button signup = new Button("Sign Up");
 		
 //		 set hbox dan itemsnya.
-		HBox tengah = new HBox();
-		tengah.setAlignment(Pos.CENTER);
-		tengah.getChildren().addAll(login, signup);
-		tengah.setSpacing(100);
-		borderPane.setCenter(tengah);
+		HBox centerBox = new HBox();
+		GuestDefaultController.createCenterBox(login, signup, centerBox);
 		
-		activityLog.add(tengah);
+		GuestDefaultController.setBorderpane(borderPane, headerBox, centerBox);
+		activityLog.add(centerBox);
 		
 //     define semua action button          
-        GuestController.addDefaultGuestAction(login, back, signup, s, scene, borderPane);
-        
+        GuestDefaultController.addDefaultGuestAction(login, back, signup, s, scene, borderPane);
 //     set stackpane items & masukin semuanya ke stackpane
-		setStackpaneItems(borderPane, back, root);
+        GuestDefaultController.setStackpaneItems(borderPane, back, root);
         
-        show(scene, s);
+        GuestDefaultController.showGuestDefault(scene, s);
 	}
-	
-//	set stackpane
-	public static void setStackpaneItems(BorderPane borderPane, Button back, StackPane root) {
-		StackPane.setMargin(borderPane, new Insets(10,10,10,10));
-        StackPane.setMargin(back, new Insets(12,10,10,10));
-        StackPane.setAlignment(back, Pos.TOP_LEFT);
-        root.getChildren().addAll(borderPane, back);
-	}
-	
-	public static void show(Scene scene, Stage s) {
-		s.setScene(scene);
-		s.setTitle("Mystic Grills");
-		s.show();
-	}
-	
 }

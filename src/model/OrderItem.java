@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import controller.MenuItemController;
+import controller.model.MenuItemController;
 
 public class OrderItem {
 	
@@ -74,6 +74,38 @@ public class OrderItem {
 		return true;
 	}
 
+//	update orderItem disini hanya bisa untuk update quantity
+//	karena kebutuhan update hanya untuk quantity.
+//	(dibanding harus buat update untuk ganti orderId, menuitemId dan quantity, mending delete trus create baru aja)
+	public static void updateOrderItem(Integer orderId, MenuItem menuItem, Integer quantity) {
+		String query = "update `order_item` set `order_item_quantity` = ? where `order_id` = ? and menu_item_id = ?;";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, quantity);
+			prep.setInt(2, orderId);
+			prep.setInt(3, menuItem.getMenuItemId());
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	public static void deleteOrderItem(Integer orderId, MenuItem menuItem) {
+		String query = "DELETE FROM `mystic_grills`.`order_item` WHERE (`order_id` = ? and `menu_item_id` = ?);";
+		
+		PreparedStatement prep = Connect.getConnection().prepare(query);
+		try {
+			prep.setInt(1, orderId);
+			prep.setInt(2, menuItem.getMenuItemId());
+			Connect.getConnection().executePreparedUpdate(prep);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
 	public Integer getOrderId() {
 		return orderId;
 	}

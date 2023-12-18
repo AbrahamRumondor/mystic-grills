@@ -1,19 +1,18 @@
 package controller.admin;
 
 import java.util.ArrayList;
-
-import controller.popup.DeletePopupController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import model.MenuItem;
-import model.User;
 import view.admin.AdminMenuList;
-import view.admin.AdminUserList;
-import view.popup.AddMenuOrder;
 import view.popup.DeletePopup;
-import view.popup.menuitem.MenuItemPopup;
+import view.popup.MenuItemPopup;
 
 public class AdminMenuListController {
 	
@@ -70,6 +69,31 @@ public class AdminMenuListController {
 			DeletePopup.show(chosenMenu.getMenuItemId(), deleteBtn, updateBtn, "Menu Item", addBtn);
 		});
 		
+	}
+	
+//	configure view
+	public static StackPane createRootStackpane(VBox pagePane, StackPane root) {
+		root = new StackPane();
+		root.getChildren().add(pagePane);
+		return root;
+	}
+
+	public static void createPagePane(VBox pagePane, VBox formPane, TableView<MenuItem> table) {
+		pagePane.getChildren().addAll(formPane, table);
+		pagePane.setPadding(new Insets(10));
+	}
+	
+	public static void createFormPane(HBox buttonPane, VBox formPane) {
+		formPane.getChildren().addAll(buttonPane);
+	}
+
+	public static void createButtonPane(HBox buttonPane, Button addBtn, Button updateBtn, Button deleteBtn) {
+		buttonPane.getChildren().addAll(addBtn, updateBtn, deleteBtn);
+		buttonPane.setSpacing(5);
+	}
+	
+	public static void defineMenuItemTable(ObservableList<MenuItem> items, TableView<MenuItem> table) {
+		table.setItems(items);
 	}
 	
 }

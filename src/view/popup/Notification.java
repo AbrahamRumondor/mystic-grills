@@ -1,7 +1,8 @@
-package view;
+package view.popup;
 
 import javafx.scene.layout.BorderPane;
 import controller.MGWindowController;
+import controller.popup.NotificationController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,55 +16,27 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.ActivityLog;
+import model.MGWindow;
 import view.guest.GuestDefault;
 import view.guest.GuestLogin;
 import model.ActivityLog;
 
-public class Notification {
-	
-	private static ActivityLog activityLog = ActivityLog.getInstance();
-	
+public class Notification {	
 	public static StackPane showErrorMessage(String message) {
-		
 		MGWindow window = MGWindowController.getWindow();
-		
 		BorderPane root = new BorderPane();
 		
 		Label errorMessage = new Label("Notification");
 		Label content = new Label(message);
-		Font font = Font.font(null, FontWeight.BOLD, 20);
-		errorMessage.setFont(font);
+		NotificationController.setLabelFont(errorMessage);
 		
 		Button ok = new Button("Ok");
 		
-		ok.setOnAction(
-				e -> {
-					if(activityLog.getSceneStack().size() > 1) {
-						window.root.getChildren().remove(activityLog.getSceneStack().lastElement());
-        				activityLog.pop();
-					}
-					
-				}
-		);
-		
-		root.setPadding(new Insets(10, 10, 10, 10));
-		root.setTop(errorMessage);
-		root.setCenter(content);
-		root.setBottom(ok);
+		NotificationController.addButtonAction(window, ok);
+		NotificationController.configureBorderpane(root, errorMessage, content, ok);
 		
 		StackPane container = new StackPane(root);
-		container.setMaxSize(250, 150);
-		
-		container.setStyle("-fx-background-color: #f4f4f4;" +
-                "-fx-border-color: black;" +
-                "-fx-border-width: 1px;");
-		
-		StackPane.setMargin(container, new Insets(10,10,10,10));
-        window.root.getChildren().add(container);
-        activityLog.getSceneStack().add(container);
-		
+		NotificationController.setContainer(window, container);
 		return container;
-		
 	}
-	
 }
