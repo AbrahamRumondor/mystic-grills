@@ -53,7 +53,7 @@ public class DeleteMenuOrderController {
 	
 	public static Order getOrder(User user) {
 		Order order;
-		if(user.getUserRole().equals("Chef")) {
+		if(user.getUserRole().equals("Chef") || user.getUserRole().equals("Waiter")) {
 			order = OrderController.getOrder();
 		} else if(user.getUserRole().equals("Customer")) {
 			order = OrderController.getOnGoingOrder();

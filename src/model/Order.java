@@ -114,13 +114,20 @@ public class Order {
 		
 		String query = "INSERT INTO `mystic_grills`.`order` (`order_id`, `user_id`, `order_status`, `order_date`) VALUES (?, ?, ?, ?);";
 
-		System.out.println(user);
+		User usr = UserController.getCurrentUser();
+		
+		String status = "";
+		
+		if(usr.getUserRole().equals("Chef"))
+			status = "Pending";
+		else if(usr.getUserRole().equals("Waiter"))
+			status = "Prepared";
 		
 		PreparedStatement prep = Connect.getConnection().prepare(query);
 		try {
 			prep.setInt(1, userId);
 			prep.setInt(2, user.getUserId());
-			prep.setString(3, "Pending");
+			prep.setString(3, status);
 			prep.setDate(4, orderDate);
 			Connect.getConnection().executePreparedUpdate(prep);
 		} catch (SQLException e1) {

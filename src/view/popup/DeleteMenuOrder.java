@@ -24,10 +24,10 @@ public class DeleteMenuOrder {
 	static Label nameLbl, descriptionLbl, quantityLbl;
 	static TextField nameTxt, descriptionTxt, quantityTxt;
 	
-	private static User user = UserController.getCurrentUser();
-
-	
 	public static StackPane show(MenuItem currentItem, Button btn) {
+		
+		User user = UserController.getCurrentUser();
+		
 		Order order;
 		order = DeleteMenuOrderController.getOrder(user);
 		

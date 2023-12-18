@@ -35,9 +35,9 @@ public class AddMenuOrder {
 	static Label nameLbl, descriptionLbl, quantityLbl;
 	static TextField nameTxt, descriptionTxt, quantityTxt;
 	
-	private static User user = UserController.getCurrentUser();
-	
 	public static StackPane show(MenuItem currentItem, Button btn, String input) {
+		
+		User user = UserController.getCurrentUser();
 		
 		MGWindow window = MGWindowController.getWindow();
 		BorderPane root = new BorderPane();
